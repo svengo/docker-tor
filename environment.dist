@@ -1,0 +1,15 @@
+# Ports
+ORPORT=
+DIRPORT=
+
+# ExitPolicy
+EXITPOLICY=
+
+# Control port
+CONTROLPORT=
+HASHEDCONTROLPASSWORD=
+
+# Server infor
+NICKNAME=
+CONTACTINFO=
+MYFAMILY=

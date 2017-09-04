@@ -1,0 +1,18 @@
+# Paths
+DataDirectory /data
+
+# Ports
+ORPort {{getenv "ORPORT"}}
+DirPort {{getenv "DIRPORT"}}
+
+# ExitPolicy
+ExitPolicy {{getenv "EXITPOLICY"}}
+
+# Control port
+ControlPort {{getenv "CONTROLPORT"}}
+HashedControlPassword {{getenv "HASHEDCONTROLPASSWORD"}}
+
+# Server infor
+Nickname {{getenv "NICKNAME"}}
+ContactInfo {{getenv "CONTACTINFO"}}
+MyFamily {{getenv "MYFAMILY"}}
