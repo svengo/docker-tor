@@ -20,7 +20,7 @@ COPY torrc.toml /etc/confd/conf.d
 COPY torrc.tmpl /etc/confd/templates 
 
 COPY docker-entry-point.sh /entrypoint.sh
-
 ENTRYPOINT ["/entrypoint.sh"]
 
+EXPOSE 9001 9003
 CMD ["tor", "-f", "/data/torrc"]
