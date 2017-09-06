@@ -2,17 +2,17 @@
 DataDirectory /data
 
 # Ports
-ORPort {{getenv "ORPORT"}}
-DirPort {{getenv "DIRPORT"}}
+ORPort {{getenv "ORPORT" 9001}}
+DirPort {{getenv "DIRPORT" 9030}}  # what port to advertise for directory connections
 
 # ExitPolicy
-ExitPolicy {{getenv "EXITPOLICY"}}
+ExitPolicy {{getenv "EXITPOLICY" "reject *:* # no exits allowed"}}
 
 # Control port
-ControlPort {{getenv "CONTROLPORT"}}
+ControlPort {{getenv "CONTROLPORT" 9051}}
 HashedControlPassword {{getenv "HASHEDCONTROLPASSWORD"}}
 
 # Server infor
-Nickname {{getenv "NICKNAME"}}
-ContactInfo {{getenv "CONTACTINFO"}}
+Nickname {{getenv "NICKNAME" "ididnteditheconfig"}}
+ContactInfo {{getenv "CONTACTINFO" "Random Person <nobody AT example dot com>"}}
 MyFamily {{getenv "MYFAMILY"}}

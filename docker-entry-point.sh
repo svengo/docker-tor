@@ -4,7 +4,7 @@ set -e
 if [ "$1" == 'tor' ]; then
   chown -R tor:tor /data
   if [ -s /data/torrc ]; then
-    echo "WARNING: Using existent /data/torrc!"
+    echo "Using existent /data/torrc!" 1>&2
   else
     confd -onetime
   fi
