@@ -20,7 +20,7 @@ Start container:
 
 ## Environment Variables
 
-The tor image uses several environment variables to generate the ``torrc``-file, the variables are set to reasonable defaults. The image uses only a small selection of configuration options - feel free to file an [issue](https://github.com/svengo/docker-tor/issues) if you are missing something!
+The tor image uses several environment variables to generate the ``torrc``-file on the first run, the variables are set to reasonable defaults. The image uses only a small selection of configuration options - feel free to file an [issue](https://github.com/svengo/docker-tor/issues) if you are missing something! If you need to change ``torrc`` after the first run, you can  edit ``/data/torrc`` manually.
 
 ### ORPORT
 
