@@ -3,6 +3,7 @@ set -e
 
 if [ "$1" == 'tor' ]; then
   chown -R tor:tor /data
+  chmod 0700 /data
   if [ -s /data/torrc ]; then
     echo "Using existent /data/torrc!" 1>&2
   else

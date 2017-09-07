@@ -11,6 +11,7 @@ RUN addgroup -S tor && \
   id -u tor &>/dev/null || adduser -s /bin/false -SDH -G tor tor && \
   mkdir /data && \
   chown tor:tor /data && \
+  chmod 0700 /data && \
   mkdir -p /etc/confd/conf.d && \
   mkdir -p /etc/confd/templates
 
