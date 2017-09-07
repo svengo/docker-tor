@@ -16,5 +16,5 @@ HashedControlPassword {{getenv "HASHEDCONTROLPASSWORD"}}
 
 # Server infor
 Nickname {{ or (getenv "NICKNAME") "ididnteditheconfig"}}
-ContactInfo { or ({getenv "CONTACTINFO") "Random Person <nobody AT example dot com>"}}
+ContactInfo {{ or (getenv "CONTACTINFO") "Random Person <nobody AT example dot com>"}}
 MyFamily {{getenv "MYFAMILY"}}
