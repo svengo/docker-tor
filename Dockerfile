@@ -1,24 +1,45 @@
 FROM alpine:edge
 MAINTAINER Sven Gottwald <svengo@gmx.net>
 
-RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories && \
-  echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
-  apk update && \
-  apk add --update tor libevent confd su-exec && \
-  rm -rf /var/cache/apk/*
+ENV VERSION 0.3.0.10
 
-RUN addgroup -S tor && \
-  id -u tor &>/dev/null || adduser -s /bin/false -SDH -G tor tor && \
-  mkdir /data && \
-  chown tor:tor /data && \
-  chmod 0700 /data && \
+ADD https://www.torproject.org/dist/tor-${VERSION}.tar.gz /tmp/
+ADD https://www.torproject.org/dist/tor-${VERSION}.tar.gz.asc /tmp/
+
+WORKDIR /tmp/
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
+  apk add --update --no-cache libevent libcap zlib confd su-exec && \
+  apk add --update --no-cache --virtual build wget w3m ca-certificates gnupg build-base linux-headers libressl-dev libevent-dev zlib-dev libcap-dev && \
+  \
+  gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys 0x6AFEE6D49E92B601 && \
+  gpg --verify tor-${VERSION}.tar.gz.asc && \
+  \
+  tar -zxf tor-${VERSION}.tar.gz && \
+  cd tor-${VERSION} && \
+  ./configure \ 
+    --silent \
+    --prefix=/usr \
+    --localstatedir=/var \
+    --sysconfdir=/etc \
+    --disable-gcc-warnings-advisory	&& \
+  make && \
+  make install && \
+  \
+  apk del build && \
+  rm -rf /tmp/* && \
+  rm -rf /var/cache/apk/* && \
+  \
+  addgroup -S tor && \
+  adduser -s /bin/false -SDH -G tor tor && \
   mkdir -p /etc/confd/conf.d && \
   mkdir -p /etc/confd/templates
+  
+WORKDIR /
 
 VOLUME /data
 
 COPY torrc.toml /etc/confd/conf.d
-COPY torrc.tmpl /etc/confd/templates 
+COPY torrc.tmpl /etc/confd/templates
 
 COPY docker-entry-point.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
