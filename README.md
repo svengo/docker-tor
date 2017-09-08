@@ -1,16 +1,19 @@
 # docker-tor
 
+[![](https://images.microbadger.com/badges/version/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own image badge on microbadger.com")
+
 Simple docker container for a tor node.
 
 The container uses the tor package from the community repository of [alpine:edge](https://pkgs.alpinelinux.org/packages?name=tor&branch=edge&repo=&arch=&maintainer=).
 
-# How to use this image
+## How to use this image
 
-## Start a simple tor node
+### Start a simple tor node
 
 ``docker run -p 9001:9001 -p 9030:9030 svengo/tor``
 
-## Data storage
+### Data storage
 
 Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. The directory could exist, the permissions are handled by the container.
 
@@ -18,11 +21,11 @@ Start container:
 
 ``docker run -p 9001:9001 -p 9030:9030  -v /data/tor:/data  --name tor svengo/tor``
 
-## Environment Variables
+### Environment Variables
 
 The tor image uses several environment variables to generate the ``torrc``-file on the first run, the variables are set to reasonable defaults. The image uses only a small selection of configuration options - feel free to file an [issue](https://github.com/svengo/docker-tor/issues) if you are missing something! If you need to change ``torrc`` after the first run, you can  edit ``/data/torrc`` manually.
 
-### ORPORT
+#### ORPORT
 
 **ORPORT=[address:]PORT|auto [flags]**
 
@@ -30,7 +33,7 @@ Advertise this port to listen for connections from Tor clients and servers. This
 
 (Default: 9001)
 
-### DIRPORT
+#### DIRPORT
 
 **DIRPORT=[address:]PORT|auto [flags]**
 
@@ -38,7 +41,7 @@ If this option is nonzero, advertise the directory service on this port. Set it 
 
 (Default: 9030)
 
-### EXITPOLICY
+#### EXITPOLICY
 
 **EXITPOLICY=policy,policy,…**
 
@@ -46,7 +49,7 @@ Set an exit policy for this server. Each policy is of the form "accept[6]|reject
 
 (Default: reject *:* # no exits allowed)
 
-### CONTROLPORT
+#### CONTROLPORT
 
 **CONTROLPORT=PORT|unix:path|auto [flags]**
 
@@ -54,7 +57,7 @@ If set, Tor will accept connections on this port and allow those connections to 
 
 (Default: 9051)
 
-### HASHEDCONTROLPASSWORD
+#### HASHEDCONTROLPASSWORD
 
 **HASHEDCONTROLPASSWORD=hashed_password**
 
@@ -62,7 +65,7 @@ Allow connections on the control port if they present the password whose one-way
 
 (Default: *empty*)
 
-### NICKNAME
+#### NICKNAME
 
 **NICKNAME=name**
 
@@ -70,7 +73,7 @@ Set the server’s nickname to 'name'. Nicknames must be between 1 and 19 charac
 
 (Default: ididnteditheconfig)
 
-### CONTACTINFO
+#### CONTACTINFO
 
 **CONTACTINFO=email_address**
 
@@ -78,7 +81,7 @@ Administrative contact information for this relay or bridge. This line can be us
 
 (Default: ``Random Person <nobody AT example dot com>``)
 
-### MYFAMILY
+#### MYFAMILY
 **MYFAMILY=node,node,…**
 Declare that this Tor server is controlled or administered by a group or organization identical or similar to that of the other servers, defined by their identity fingerprints. When two servers both declare that they are in the same 'family', Tor clients will not use them in the same circuit. (Each server only needs to list the other servers in its family; it doesn’t need to list itself, but it won’t hurt.) Do not list any bridge relay as it would compromise its concealment.
 
