@@ -1,7 +1,6 @@
 # docker-tor
 
-[![](https://images.microbadger.com/badges/version/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/image/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own image badge on microbadger.com")
 
 Simple docker container for a tor node.
 
