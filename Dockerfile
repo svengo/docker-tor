@@ -34,8 +34,6 @@ RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/reposit
   mkdir -p /etc/confd/conf.d && \
   mkdir -p /etc/confd/templates
   
-WORKDIR /
-
 VOLUME /data
 
 COPY torrc.toml /etc/confd/conf.d
