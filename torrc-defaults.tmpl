@@ -14,7 +14,6 @@ ExitPolicy {{ or (getenv "EXITPOLICY") "reject *:* # no exits allowed"}}
 
 # Control port
 ControlPort {{ or (getenv "CONTROLPORT") "9051"}}
-ControlListenAddress {{ or (getenv "CONTROLLISTENADDRESS") "127.0.0.1"}}
 HashedControlPassword {{ or (getenv "HASHEDCONTROLPASSWORD") "16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C"}}
 
 # Server infor

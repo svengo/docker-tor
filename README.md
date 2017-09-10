@@ -64,14 +64,6 @@ If set, Tor will accept connections on this port and allow those connections to 
 
 (Default: ``9051``)
 
-#### CONTROLLISTENADDRESS
-
-**CONTROLLISTENADDRESS=IP[:PORT]**
-
-Bind the controller listener to this address. If you specify a port, bind to this port rather than the one specified in ControlPort. We strongly recommend that you leave this alone unless you know what you’re doing, since giving attackers access to your control listener is really dangerous. This directive can be specified multiple times to bind to multiple addresses/ports. 
-
-(Default: ``127.0.0.1``)
-
 #### HASHEDCONTROLPASSWORD
 
 **HASHEDCONTROLPASSWORD=hashed_password**
