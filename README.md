@@ -9,6 +9,8 @@ Simple docker container for running a tor node.
 
 ### Start a simple tor node
 
+The command starts a tor node and open ports 9001 and 9030:
+
 ``docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor``
 
 ### Data storage
@@ -23,12 +25,12 @@ Start container:
 
 Use environment variables for basic configuration:
 
-``docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" -e svengo/tor``
+``docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor``
 
 
 ### Environment Variables
 
-svengo/tor uses several environment variables to generate the ``torrc-defaults``-file, the variables are set to reasonable defaults (see below). You can edit ``/data/torrc`` to your needs after the first run .
+svengo/tor uses several environment variables to generate the ``torrc-defaults``-file, the variables are set to reasonable defaults (see below). You can edit ``/data/torrc`` to your needs after the first run.
 
 #### ORPORT
 
