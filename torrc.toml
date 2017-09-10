@@ -1,3 +1,0 @@
-[template]
-src = "torrc.tmpl"
-dest = "/data/torrc"

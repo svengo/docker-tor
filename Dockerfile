@@ -36,8 +36,8 @@ RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/reposit
   
 VOLUME /data
 
-COPY torrc.toml /etc/confd/conf.d
-COPY torrc.tmpl /etc/confd/templates
+COPY torrc-defaults.toml /etc/confd/conf.d
+COPY torrc-defaults.tmpl /etc/confd/templates
 
 COPY docker-entry-point.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
