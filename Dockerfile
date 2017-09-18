@@ -11,7 +11,7 @@ RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/reposit
   apk add --update --no-cache libevent libcap zlib confd su-exec && \
   apk add --update --no-cache --virtual build wget w3m ca-certificates gnupg build-base linux-headers libressl-dev libevent-dev zlib-dev libcap-dev && \
   \
-  gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys 0x6AFEE6D49E92B601 && \
+  gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys 0x6AFEE6D49E92B601 0x28988BF5 0x19F78451 && \
   gpg --verify tor-${VERSION}.tar.gz.asc && \
   \
   tar -zxf tor-${VERSION}.tar.gz && \
@@ -35,6 +35,7 @@ RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/reposit
   mkdir -p /etc/confd/templates
   
 VOLUME /data
+WORKDIR /data
 
 COPY torrc-defaults.toml /etc/confd/conf.d
 COPY torrc-defaults.tmpl /etc/confd/templates
