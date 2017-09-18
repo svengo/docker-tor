@@ -1,7 +1,7 @@
 FROM alpine:edge
 MAINTAINER Sven Gottwald <svengo@gmx.net>
 
-ENV VERSION 0.3.0.10
+ENV VERSION 0.3.0.11
 
 ADD https://www.torproject.org/dist/tor-${VERSION}.tar.gz /tmp/
 ADD https://www.torproject.org/dist/tor-${VERSION}.tar.gz.asc /tmp/
