@@ -6,6 +6,7 @@ ENV VERSION 0.3.0.11
 ADD https://www.torproject.org/dist/tor-${VERSION}.tar.gz /tmp/
 ADD https://www.torproject.org/dist/tor-${VERSION}.tar.gz.asc /tmp/
 
+
 WORKDIR /tmp/
 RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
   apk add --update libevent libcap zlib confd su-exec && \
@@ -13,6 +14,8 @@ RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/reposit
   \
   gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys 0x6AFEE6D49E92B601 0x28988BF5 0x19F78451 && \
   gpg --verify tor-${VERSION}.tar.gz.asc && \
+  \
+  export "CFLAGS=-Wno-cpp" && \
   \
   tar -zxf tor-${VERSION}.tar.gz && \
   cd tor-${VERSION} && \
