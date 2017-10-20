@@ -1,6 +1,6 @@
 # docker-tor
 
-[![](https://images.microbadger.com/badges/version/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own image badge on microbadger.com") [![Anchore Image Policy](https://anchore.io/service/badges/policy/e2f5cbb0326c9487c529e84c2efc00210cd5b04be71d339e4268d188319bca7c?registry=dockerhub&repository=svengo/teamspeak&tag=3.0.13.8)](https://anchore.io)
+[![](https://images.microbadger.com/badges/version/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own image badge on microbadger.com")
 
 Simple docker container for running a tor node.
 
@@ -55,6 +55,16 @@ If this option is nonzero, advertise the directory service on this port. Set it 
 Set an exit policy for this server. Each policy is of the form "accept[6]|reject[6] ADDR[/MASK][:PORT]". If /MASK is omitted then this policy just applies to the host given. Instead of giving a host or network you can also use "*" to denote the universe (0.0.0.0/0 and ::/128), or *4 to denote all IPv4 addresses, and *6 to denote all IPv6 addresses. PORT can be a single port number, an interval of ports "FROM_PORT-TO_PORT", or "*". If PORT is omitted, that means "*".
 
 (Default: ``reject *:* # no exits allowed``)
+
+#### CONTROLPORT
+
+**CONTROLPORT=PORT|unix:path|auto [flags]**
+
+If set, Tor will accept connections on this port and allow those connections to control the Tor process using the Tor Control Prot
+ocol (described in control-spec.txt in torspec). Note: unless you also specify HASHEDCONTROLPASSWORD, setting this option will cau
+se Tor to allow any process on the local host to control it.
+
+(Default: ``9051``)
 
 #### HASHEDCONTROLPASSWORD
 
