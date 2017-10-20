@@ -50,7 +50,6 @@ RUN \
     build-base \
     ca-certificates \
     gnupg \
-    go \
     libcap-dev \
     libevent-dev \
     libressl-dev \
