@@ -8,7 +8,7 @@
 set -e
 
 # Tag and push image for each additional tag
-for tag in {0.3.0.11,latest}; do
+for tag in {`git describe --abbrev=0 --tags \`git rev-list --tags --max-count=1\``,latest}; do
   docker tag $IMAGE_NAME ${DOCKER_REPO}:${tag}
   docker push ${DOCKER_REPO}:${tag}
 done
