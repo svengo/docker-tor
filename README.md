@@ -1,6 +1,6 @@
 # docker-tor
 
-[![](https://images.microbadger.com/badges/version/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own image badge on microbadger.com") [![Anchore Image Policy](https://anchore.io/service/badges/policy/e2f5cbb0326c9487c529e84c2efc00210cd5b04be71d339e4268d188319bca7c?registry=dockerhub&repository=svengo/teamspeak&tag=3.0.13.8)](https://anchore.io)
 
 Simple docker container for running a tor node.
 
