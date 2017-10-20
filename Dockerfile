@@ -1,10 +1,31 @@
-FROM alpine:edge
+# Multi-Stage build - https://goo.gl/qejG4w
+FROM golang:1.9-alpine as confd
+
+ARG CONFD_VERSION=0.14.0
+
+ADD https://github.com/kelseyhightower/confd/archive/v${CONFD_VERSION}.tar.gz /tmp/
+
+RUN \
+  apk add --no-cache \
+    bzip2 \
+    make && \
+  \
+  mkdir -p /go/src/github.com/kelseyhightower/confd && \
+  cd /go/src/github.com/kelseyhightower/confd && \
+  tar --strip-components=1 -zxf /tmp/v${CONFD_VERSION}.tar.gz && \
+  \
+  go install github.com/kelseyhightower/confd && \
+  \
+  rm -rf /tmp/v${CONFD_VERSION}.tar.gz
+
+
+FROM alpine:3.6
 
 ARG TOR_VERSION=0.3.0.11
-
-# Build-time metadata as defined at http://label-schema.org
 ARG BUILD_DATE
 ARG VCS_REF
+
+# Build-time metadata as defined at http://label-schema.org
 LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.name="docker-tor" \
   org.label-schema.description="Simple docker container for a tor node" \
@@ -14,14 +35,13 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.version=$TOR_VERSION \
   org.label-schema.schema-version="1.0"
 
+COPY --from=confd /go/bin/confd /usr/bin/confd
 ADD https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz /tmp/
 ADD https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc /tmp/
 
-WORKDIR /tmp/
+WORKDIR /tmp
 RUN \
-  echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
   apk add --update \
-    confd \
     libcap \
     libevent \
     su-exec \
@@ -30,6 +50,7 @@ RUN \
     build-base \
     ca-certificates \
     gnupg \
+    go \
     libcap-dev \
     libevent-dev \
     libressl-dev \
