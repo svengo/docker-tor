@@ -56,14 +56,6 @@ Set an exit policy for this server. Each policy is of the form "accept[6]|reject
 
 (Default: ``reject *:* # no exits allowed``)
 
-#### CONTROLPORT
-
-**CONTROLPORT=PORT|unix:path|auto [flags]**
-
-If set, Tor will accept connections on this port and allow those connections to control the Tor process using the Tor Control Protocol (described in control-spec.txt in torspec). Note: unless you also specify HASHEDCONTROLPASSWORD, setting this option will cause Tor to allow any process on the local host to control it.
-
-(Default: ``9051``)
-
 #### HASHEDCONTROLPASSWORD
 
 **HASHEDCONTROLPASSWORD=hashed_password**
