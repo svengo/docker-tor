@@ -14,8 +14,8 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.version=$TOR_VERSION \
   org.label-schema.schema-version="1.0"
 
-ADD https://www.torproject.org/dist/tor-${TOR-VERSION}.tar.gz /tmp/
-ADD https://www.torproject.org/dist/tor-${TOR-VERSION}.tar.gz.asc /tmp/
+ADD https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz /tmp/
+ADD https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc /tmp/
 
 WORKDIR /tmp/
 RUN \
@@ -24,12 +24,12 @@ RUN \
   apk add --virtual build wget w3m ca-certificates gnupg build-base linux-headers libressl-dev libevent-dev zlib-dev libcap-dev && \
   \
   gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys 0x6AFEE6D49E92B601 0x28988BF5 0x19F78451 && \
-  gpg --verify tor-${TOR-VERSION}.tar.gz.asc && \
+  gpg --verify tor-${TOR_VERSION}.tar.gz.asc && \
   \
   export "CFLAGS=-Wno-cpp" && \
   \
-  tar -zxf tor-${TOR-VERSION}.tar.gz && \
-  cd tor-${TOR-VERSION} && \
+  tar -zxf tor-${TOR_VERSION}.tar.gz && \
+  cd tor-${TOR_VERSION} && \
   ./configure \ 
     --silent \
     --prefix=/usr \
