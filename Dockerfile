@@ -20,10 +20,28 @@ ADD https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc /tmp/
 WORKDIR /tmp/
 RUN \
   echo 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories && \
-  apk add --update libevent libcap zlib confd su-exec && \
-  apk add --virtual build wget w3m ca-certificates gnupg build-base linux-headers libressl-dev libevent-dev zlib-dev libcap-dev && \
+  apk add --update \
+    confd \
+    libcap \
+    libevent \
+    su-exec \
+    zlib && \
+  apk add --virtual build \
+    build-base \
+    ca-certificates \
+    gnupg \
+    libcap-dev \
+    libevent-dev \
+    libressl-dev \
+    linux-headers \
+    w3m \
+    wget \
+    zlib-dev && \
   \
-  gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys 0x6AFEE6D49E92B601 0x28988BF5 0x19F78451 && \
+  gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys \
+    0x6AFEE6D49E92B601 \
+    0x28988BF5 \
+    0x19F78451 && \
   gpg --verify tor-${TOR_VERSION}.tar.gz.asc && \
   \
   export "CFLAGS=-Wno-cpp" && \
@@ -31,11 +49,11 @@ RUN \
   tar -zxf tor-${TOR_VERSION}.tar.gz && \
   cd tor-${TOR_VERSION} && \
   ./configure \ 
-    --silent \
-    --prefix=/usr \
+    --disable-gcc-warnings-advisory \
     --localstatedir=/var \
-    --sysconfdir=/etc \
-    --disable-gcc-warnings-advisory	&& \
+    --prefix=/usr \
+    --silent \
+    --sysconfdir=/etc && \
   make && \
   make install && \
   \
