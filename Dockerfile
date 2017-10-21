@@ -9,13 +9,10 @@ RUN \
   apk add --no-cache \
     bzip2 \
     make && \
-  \
   mkdir -p /go/src/github.com/kelseyhightower/confd && \
   cd /go/src/github.com/kelseyhightower/confd && \
   tar --strip-components=1 -zxf /tmp/v${CONFD_VERSION}.tar.gz && \
-  \
   go install github.com/kelseyhightower/confd && \
-  \
   rm -rf /tmp/v${CONFD_VERSION}.tar.gz
 
 
@@ -42,6 +39,7 @@ ADD https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc /tmp/
 WORKDIR /tmp
 RUN \
   apk add --update \
+    curl \
     libcap \
     libevent \
     su-exec \
@@ -97,3 +95,5 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 9001 9003
 CMD ["tor", "-f", "/data/torrc"]
+
+HEALTHCHECK --timeout=5s CMD echo quit | curl -sS telnet://localhost:${ORPORT:-9001} && curl -sSf http://localhost:${DIRPORT:-9030}/tor/server/authority || exit 1
