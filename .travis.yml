@@ -2,3 +2,14 @@ sudo: required
 
 services:
   - docker
+
+before_install:
+  - docker build -t svengo/tor .
+  - docker run -d -p 9001:9001 -p 9030:9030 --rm --name tor svengo/tor
+  - docker ps -a
+
+script:
+  - /bin/sh -c "echo quit | curl -sS telnet://localhost:9001 && curl -sSf http://localhost:9030/tor/server/authority;"
+
+after_script:
+  - docker stop tor
