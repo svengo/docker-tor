@@ -3,12 +3,13 @@ FROM golang:1.9-alpine as confd
 
 ARG CONFD_VERSION=0.14.0
 
-ADD https://github.com/kelseyhightower/confd/archive/v${CONFD_VERSION}.tar.gz /tmp/
-
+WORKDIR /tmp
 RUN \
   apk add --no-cache \
     bzip2 \
-    make && \
+    make \
+    wget && \
+  wget --no-verbose https://github.com/kelseyhightower/confd/archive/v${CONFD_VERSION}.tar.gz && \
   mkdir -p /go/src/github.com/kelseyhightower/confd && \
   cd /go/src/github.com/kelseyhightower/confd && \
   tar --strip-components=1 -zxf /tmp/v${CONFD_VERSION}.tar.gz && \
@@ -33,8 +34,6 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.schema-version="1.0"
 
 COPY --from=confd /go/bin/confd /usr/bin/confd
-ADD https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz /tmp/
-ADD https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc /tmp/
 
 WORKDIR /tmp
 RUN \
@@ -56,6 +55,8 @@ RUN \
     wget \
     zlib-dev && \
   \
+  wget --no-verbose https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz && \
+  wget --no-verbose https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc && \
   gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys \
     0x6AFEE6D49E92B601 \
     0x28988BF5 \
