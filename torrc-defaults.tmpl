@@ -8,17 +8,17 @@
 DataDirectory /data
 
 # Ports
-ORPort {{ or (getenv "ORPORT") "9001"}}
-DirPort {{ or (getenv "DIRPORT") "9030"}}  # what port to advertise for directory connections
+ORPort {{getenv "ORPORT" "9001"}}
+DirPort {{getenv "DIRPORT" "9030"}}  # what port to advertise for directory connections
 
 # ExitPolicy
-ExitPolicy {{ or (getenv "EXITPOLICY") "reject *:* # no exits allowed"}}
+ExitPolicy {{getenv "EXITPOLICY" "reject *:* # no exits allowed"}}
 
 # Control port
-ControlPort {{ or (getenv "CONTROLPORT") "9051"}}
-HashedControlPassword {{ or (getenv "HASHEDCONTROLPASSWORD") "16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C"}}
+ControlPort {{getenv "CONTROLPORT" "9051"}}
+HashedControlPassword {{getenv "HASHEDCONTROLPASSWORD" "16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C"}}
 
 # Server infor
-Nickname {{ or (getenv "NICKNAME") "ididnteditheconfig"}}
-ContactInfo {{ or (getenv "CONTACTINFO") "Random Person <nobody AT example dot com>"}}
+Nickname {{getenv "NICKNAME" "ididnteditheconfig"}}
+ContactInfo {{getenv "CONTACTINFO" "Random Person <nobody AT example dot com>"}}
 MyFamily {{getenv "MYFAMILY"}}
