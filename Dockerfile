@@ -19,7 +19,7 @@ RUN \
 
 FROM alpine:3.6
 
-ARG TOR_VERSION=0.3.0.12
+ARG TOR_VERSION=0.3.1.9
 ARG BUILD_DATE
 ARG VCS_REF
 
@@ -74,6 +74,7 @@ RUN \
     --silent \
     --sysconfdir=/etc && \
   make && \
+  make test && \
   make install && \
   \
   apk del build && \
