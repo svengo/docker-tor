@@ -4,6 +4,7 @@
 [![](https://images.microbadger.com/badges/image/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own image badge on microbadger.com") 
 [![](https://images.microbadger.com/badges/commit/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own commit badge on microbadger.com")
 [![Anchore Image Policy](https://anchore.io/service/badges/policy/3b412bad53d7b9f2f3bf24599f531c3bb05ef6daa94b31df8aa003c9f5eaa22d?registry=dockerhub&repository=svengo/tor&tag=0.3.0.11)](https://anchore.io)
+[![GitHub license](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
 
 Simple docker container for running a tor node.
 
