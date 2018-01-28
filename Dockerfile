@@ -1,7 +1,7 @@
 # Multi-Stage build - https://goo.gl/qejG4w
-FROM golang:1.9-alpine as confd
+FROM golang:1.9-alpine3.7 as confd
 
-ARG CONFD_VERSION=0.14.0
+ARG CONFD_VERSION=0.15.0
 
 WORKDIR /tmp
 RUN \
@@ -17,7 +17,7 @@ RUN \
   rm -rf /tmp/v${CONFD_VERSION}.tar.gz
 
 
-FROM alpine:3.6
+FROM alpine:3.7
 
 ARG TOR_VERSION=0.3.2.9
 ARG BUILD_DATE
@@ -42,7 +42,9 @@ RUN \
     libcap \
     libevent \
     su-exec \
-    zlib && \
+    xz-libs \
+    zlib \
+    zstd && \
   apk add --virtual build \
     build-base \
     ca-certificates \
@@ -53,7 +55,9 @@ RUN \
     linux-headers \
     w3m \
     wget \
-    zlib-dev && \
+    xz-dev \
+    zlib-dev \
+    zstd-dev && \
   \
   wget --no-verbose https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz && \
   wget --no-verbose https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc && \
