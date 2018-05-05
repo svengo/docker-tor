@@ -1,7 +1,7 @@
 # Multi-Stage build - https://goo.gl/qejG4w
 FROM golang:1.9-alpine3.7 as confd
 
-ARG CONFD_VERSION=0.15.0
+ARG CONFD_VERSION=0.16.0
 
 WORKDIR /tmp
 RUN \
