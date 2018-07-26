@@ -1,7 +1,7 @@
 # Multi-Stage build - https://goo.gl/qejG4w
-FROM golang:1.9-alpine3.7 as confd
+FROM golang:1.10-alpine3.7 as confd
 
-ARG CONFD_VERSION=0.15.0
+ARG CONFD_VERSION=0.16.0
 
 WORKDIR /tmp
 RUN \
@@ -19,7 +19,7 @@ RUN \
 
 FROM alpine:3.7
 
-ARG TOR_VERSION=0.3.2.10
+ARG TOR_VERSION=0.3.3.9
 ARG BUILD_DATE
 ARG VCS_REF
 
