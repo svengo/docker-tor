@@ -1,5 +1,5 @@
 # Multi-Stage build - https://goo.gl/qejG4w
-FROM golang:1.10-alpine3.7 as confd
+FROM golang:latest as confd
 
 ARG CONFD_VERSION=0.16.0
 
@@ -17,7 +17,7 @@ RUN \
   rm -rf /tmp/v${CONFD_VERSION}.tar.gz
 
 
-FROM alpine:3.7
+FROM alpine:latest
 
 ARG TOR_VERSION=0.3.3.9
 ARG BUILD_DATE
