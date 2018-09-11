@@ -44,7 +44,8 @@ RUN \
     su-exec \
     xz-libs \
     zlib \
-    zstd && \
+    zstd \
+    zstd-libs && \
   apk add --virtual build \
     build-base \
     ca-certificates \
