@@ -1,5 +1,5 @@
 # Multi-Stage build - https://goo.gl/qejG4w
-FROM golang:latest as confd
+FROM golang:alpine as confd
 
 ARG CONFD_VERSION=0.16.0
 
@@ -19,7 +19,7 @@ RUN \
 
 FROM alpine:latest
 
-ARG TOR_VERSION=0.3.3.9
+ARG TOR_VERSION=0.3.4.8
 ARG BUILD_DATE
 ARG VCS_REF
 
