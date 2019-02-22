@@ -41,6 +41,7 @@ RUN \
     curl \
     libcap \
     libevent \
+    libressl \
     su-exec \
     xz-libs \
     zlib \
