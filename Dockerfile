@@ -101,7 +101,7 @@ COPY torrc-defaults.tmpl /etc/confd/templates
 COPY docker-entry-point.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 9001 9003
+EXPOSE 9001 9030
 CMD ["tor", "-f", "/data/torrc"]
 
 HEALTHCHECK --timeout=5s CMD echo quit | curl -sS telnet://localhost:${ORPORT:-9001} && curl -sSf http://localhost:${DIRPORT:-9030}/tor/server/authority || exit 1
