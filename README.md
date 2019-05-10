@@ -102,3 +102,6 @@ Declare that this Tor server is controlled or administered by a group or organiz
 When listing a node, it’s better to list it by fingerprint than by nickname: fingerprints are more reliable.
 
 (Default: *empty*)
+
+## Feedback
+Please report any problems as issue on github: https://github.com/svengo/docker-tor/issues
