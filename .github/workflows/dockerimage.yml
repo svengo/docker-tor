@@ -1,5 +1,7 @@
 name: Publish Docker
 on:
+  repository_dispatch:
+    types: build-docker-image
   push:
     tags:
       - '*'
@@ -9,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+  
+    - name: Do Something Based On Triggered Event Data
+      run: 'echo "Triggered event text: ${{ github.event.client_payload.text }}"'
 
     - name: Get release version
       id: get_version
