@@ -41,7 +41,7 @@ RUN \
     curl \
     libcap \
     libevent \
-    libressl \
+    openssl \
     su-exec \
     xz-libs \
     zlib \
@@ -53,8 +53,8 @@ RUN \
     gnupg \
     libcap-dev \
     libevent-dev \
-    libressl-dev \
     linux-headers \
+    openssl-dev \
     w3m \
     wget \
     xz-dev \
