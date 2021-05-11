@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-if [ "$1" == 'tor' ]; then
+if [ "$1" = "tor" ]; then
   # generate /etc/tor/torrc-defaults
   confd -onetime -backend env
   
@@ -15,7 +15,7 @@ if [ "$1" == 'tor' ]; then
   fi
   
   # run tor
-  exec su-exec tor "$@"
+  exec /usr/bin/su-exec tor "$@"
 fi
 
 exec "$@"
