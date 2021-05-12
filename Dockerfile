@@ -1,25 +1,8 @@
-# Multi-Stage build - https://goo.gl/qejG4w
-FROM golang:alpine as confd
+FROM ubuntu:focal
 
 ARG CONFD_VERSION=0.16.0
-
-WORKDIR /tmp
-RUN \
-  apk add --no-cache \
-    bzip2 \
-    make \
-    wget && \
-  wget --no-verbose https://github.com/kelseyhightower/confd/archive/v${CONFD_VERSION}.tar.gz && \
-  mkdir -p /go/src/github.com/kelseyhightower/confd && \
-  cd /go/src/github.com/kelseyhightower/confd && \
-  tar --strip-components=1 -zxf /tmp/v${CONFD_VERSION}.tar.gz && \
-  go install github.com/kelseyhightower/confd && \
-  rm -rf /tmp/v${CONFD_VERSION}.tar.gz
-
-
-FROM alpine:latest
-
-ARG TOR_VERSION=0.4.4.8
+ARG TOR_VERSION=0.4.5.8
+ARG TZ=Europe/Berlin
 ARG BUILD_DATE
 ARG VCS_REF
 
@@ -33,65 +16,78 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.version=$TOR_VERSION \
   org.label-schema.schema-version="1.0"
 
-COPY --from=confd /go/bin/confd /usr/bin/confd
-
 WORKDIR /tmp
+
 RUN \
-  apk add --update \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get -qq install \
+    automake \
+    build-essential \
     curl \
-    libcap \
-    libevent \
-    openssl \
-    su-exec \
-    xz-libs \
-    zlib \
-    zstd \
-    zstd-libs && \
-  apk add --virtual build \
-    build-base \
-    ca-certificates \
-    gnupg \
-    libcap-dev \
+    libevent-2.1-7 \
     libevent-dev \
-    linux-headers \
-    openssl-dev \
-    w3m \
-    wget \
-    xz-dev \
-    zlib-dev \
-    zstd-dev && \
+    liblzma-dev \
+    liblzma5 \
+    libssl-dev \
+    libssl1.1 \
+    libzstd-dev \
+    libzstd1 \
+    pkg-config \
+    python3 \
+    zlib1g \
+    zlib1g-dev && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* && \
   \
-  wget --no-verbose https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz && \
-  wget --no-verbose https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc && \
+  curl -o su-exec.c https://raw.githubusercontent.com/ncopa/su-exec/master/su-exec.c && \
+  gcc -Wall su-exec.c -o/usr/bin/su-exec && \
+  \
+  curl -SL -o /usr/bin/confd https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 && \
+  chmod +x /usr/bin/confd && \
+  \
+  curl -SL -o tor-${TOR_VERSION}.tar.gz https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz && \
+  curl -SL -o tor-${TOR_VERSION}.tar.gz.asc https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc && \
   gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys \
-    0x6AFEE6D49E92B601 \
-    0x28988BF5 \
-    0x19F78451 && \
+	0x6AFEE6D49E92B601 \
+	0x28988BF5 \
+	0x19F78451 && \
   gpg --verify tor-${TOR_VERSION}.tar.gz.asc && \
   \
   export "CFLAGS=-Wno-cpp" && \
-  \
   tar -zxf tor-${TOR_VERSION}.tar.gz && \
   cd tor-${TOR_VERSION} && \
-  ./configure \ 
-    --disable-gcc-warnings-advisory \
+  ./configure \
+    --sysconfdir=/etc \
     --localstatedir=/var \
     --prefix=/usr \
-    --silent \
-    --sysconfdir=/etc && \
+    --disable-gcc-warnings-advisory \
+    --disable-asciidoc \
+    --disable-html-manual \
+    --disable-manpage \
+    --enable-lzma \
+    --enable-zstd \
+    --silent && \
   make && \
   make test && \
   make install && \
   \
-  apk del build && \
-  rm -rf /tmp/* && \
-  rm -rf /var/cache/apk/* && \
+  apt-get remove -y \
+    automake \
+    build-essential \
+    libevent-dev \
+    liblzma-dev \
+    libssl-dev \
+    libzstd-dev \
+    pkg-config \
+    python3 \
+    zlib1g-dev && \
+  apt-get autoremove -y && \
   \
-  addgroup -S tor && \
-  adduser -s /bin/false -SDH -G tor tor && \
+  addgroup --system tor && \
+  adduser --system --disabled-login --ingroup tor tor && \
   mkdir -p /etc/confd/conf.d && \
   mkdir -p /etc/confd/templates
-  
+ 
 VOLUME /data
 WORKDIR /data
 
@@ -101,7 +97,6 @@ COPY torrc-defaults.tmpl /etc/confd/templates
 COPY docker-entry-point.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 9001 9030
 CMD ["tor", "-f", "/data/torrc"]
 
 HEALTHCHECK --timeout=5s CMD echo quit | curl -sS telnet://localhost:${ORPORT:-9001} && curl -sSf http://localhost:${DIRPORT:-9030}/tor/server/authority || exit 1
