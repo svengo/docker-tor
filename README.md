@@ -1,8 +1,5 @@
 # docker-tor
 
-[![](https://images.microbadger.com/badges/version/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own version badge on microbadger.com") 
-[![](https://images.microbadger.com/badges/image/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own image badge on microbadger.com") 
-[![](https://images.microbadger.com/badges/commit/svengo/tor.svg)](https://microbadger.com/images/svengo/tor "Get your own commit badge on microbadger.com")
 [![GitHub license](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
 
 Simple docker container for running a tor node.
