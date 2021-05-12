@@ -1,24 +1,6 @@
-# Multi-Stage build - https://goo.gl/qejG4w
-FROM golang:alpine as confd
-
-ARG CONFD_VERSION=0.16.0
-
-WORKDIR /tmp
-RUN \
-  apk add --no-cache \
-    bzip2 \
-    make \
-    wget && \
-  wget --no-verbose https://github.com/kelseyhightower/confd/archive/v${CONFD_VERSION}.tar.gz && \
-  mkdir -p /go/src/github.com/kelseyhightower/confd && \
-  cd /go/src/github.com/kelseyhightower/confd && \
-  tar --strip-components=1 -zxf /tmp/v${CONFD_VERSION}.tar.gz && \
-  go install github.com/kelseyhightower/confd && \
-  rm -rf /tmp/v${CONFD_VERSION}.tar.gz
-
-
 FROM ubuntu:focal
 
+ARG CONFD_VERSION=0.16.0
 ARG TOR_VERSION=0.4.5.8
 ARG TZ=Europe/Berlin
 ARG BUILD_DATE
@@ -33,8 +15,6 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.vendor="Sven Gottwald" \
   org.label-schema.version=$TOR_VERSION \
   org.label-schema.schema-version="1.0"
-
-COPY --from=confd /go/bin/confd /usr/bin/confd
 
 WORKDIR /tmp
 
@@ -61,6 +41,9 @@ RUN \
   \
   curl -o su-exec.c https://raw.githubusercontent.com/ncopa/su-exec/master/su-exec.c && \
   gcc -Wall su-exec.c -o/usr/bin/su-exec && \
+  \
+  curl -SL -o /usr/bin/confd https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 && \
+  chmod +x /usr/bin/confd && \
   \
   curl -SL -o tor-${TOR_VERSION}.tar.gz https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz && \
   curl -SL -o tor-${TOR_VERSION}.tar.gz.asc https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc && \
