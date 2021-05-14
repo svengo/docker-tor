@@ -19,25 +19,27 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 WORKDIR /tmp
 
 RUN \
-  apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get -qq install \
+  BUILD_PACKAGES=" \
     automake \
     build-essential \
     curl \
-    libevent-2.1-7 \
     libevent-dev \
     liblzma-dev \
-    liblzma5 \
     libssl-dev \
-    libssl1.1 \
     libzstd-dev \
-    libzstd1 \
     pkg-config \
     python3 \
-    zlib1g \
-    zlib1g-dev && \
-  apt-get clean && \
-  rm -rf /var/lib/apt/lists/* && \
+    zlib1g-dev" && \
+  RUNTIME_PACKAGES=" \
+    curl \
+    libevent-2.1-7 \
+    liblzma5 \
+    libssl1.1 \
+    libzstd1 \
+    zlib1g" && \
+  \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get -qq install $BUILD_PACKAGES && \
   \
   curl -o su-exec.c https://raw.githubusercontent.com/ncopa/su-exec/master/su-exec.c && \
   gcc -Wall su-exec.c -o/usr/bin/su-exec && \
@@ -71,23 +73,18 @@ RUN \
   make test && \
   make install && \
   \
-  apt-get remove -y \
-    automake \
-    build-essential \
-    libevent-dev \
-    liblzma-dev \
-    libssl-dev \
-    libzstd-dev \
-    pkg-config \
-    python3 \
-    zlib1g-dev && \
-  apt-get autoremove -y && \
+  AUTO_ADDED_PACKAGES=`apt-mark showauto` && \
+  apt-get remove --purge -y $BUILD_PACKAGES $AUTO_ADDED_PACKAGES && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y $RUNTIME_PACKAGES && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* && \
+  rm -rf /tmp/* && \
   \
   addgroup --system tor && \
   adduser --system --disabled-login --ingroup tor tor && \
   mkdir -p /etc/confd/conf.d && \
   mkdir -p /etc/confd/templates
- 
+
 VOLUME /data
 WORKDIR /data
 
