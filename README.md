@@ -23,10 +23,9 @@ Start container:
 
 ### Basic config
 
-Use environment variables for basic configuration:
+Use environment variables for basic configuration. The content of the environment variables are used to build `/etc/tor/torrc-defaults`. For a more advanced configuration you can edit the configuration file `/data/torrc` directly.
 
 ``docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor``
-
 
 ### Environment Variables
 
@@ -87,6 +86,8 @@ Set the server’s nickname to 'name'. Nicknames must be between 1 and 19 charac
 **CONTACTINFO=email_address**
 
 Administrative contact information for this relay or bridge. This line can be used to contact you if your relay or bridge is misconfigured or something else goes wrong. Note that we archive and publish all descriptors containing these lines and that Google indexes them, so spammers might also collect them. You may want to obscure the fact that it’s an email address and/or generate a new address for this purpose.
+
+You can use [Tor ContactInfo Generator](https://torcontactinfogenerator.netlify.app/) to create a contact info following [ContactInfo-Information-Sharing-Specification](https://nusenu.github.io/ContactInfo-Information-Sharing-Specification/).
 
 (Default: ``Random Person <nobody AT example dot com>``)
 
