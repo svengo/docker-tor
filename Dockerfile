@@ -1,7 +1,7 @@
 FROM ubuntu:focal
 
 ARG CONFD_VERSION=0.16.0
-ARG TOR_VERSION=0.4.6.5
+ARG TOR_VERSION=0.4.6.7
 ARG TZ=Europe/Berlin
 ARG BUILD_DATE
 ARG VCS_REF
@@ -49,10 +49,11 @@ RUN \
   \
   curl -SL -o tor-${TOR_VERSION}.tar.gz https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz && \
   curl -SL -o tor-${TOR_VERSION}.tar.gz.asc https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc && \
-  gpg --keyserver ipv4.pool.sks-keyservers.net --recv-keys \
-	0x6AFEE6D49E92B601 \
-	0x28988BF5 \
-	0x19F78451 && \
+  gpg --keyserver keys.openpgp.org --recv-keys \
+	0xEB5A896A28988BF5 \
+	0xC218525819F78451 \
+	0xFE43009C4607B1FB \
+	0x6AFEE6D49E92B601 && \
   gpg --verify tor-${TOR_VERSION}.tar.gz.asc && \
   \
   export "CFLAGS=-Wno-cpp" && \
