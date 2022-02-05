@@ -47,14 +47,18 @@ RUN \
   curl -SL -o /usr/bin/confd https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 && \
   chmod +x /usr/bin/confd && \
   \
-  curl -SL -o tor-${TOR_VERSION}.tar.gz https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz && \
-  curl -SL -o tor-${TOR_VERSION}.tar.gz.asc https://www.torproject.org/dist/tor-${TOR_VERSION}.tar.gz.asc && \
+  curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz && \
+  curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum && \
+  curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum.asc && \
   gpg --keyserver keys.openpgp.org --recv-keys \
-	0xEB5A896A28988BF5 \
-	0xC218525819F78451 \
-	0xFE43009C4607B1FB \
-	0x6AFEE6D49E92B601 && \
-  gpg --verify tor-${TOR_VERSION}.tar.gz.asc && \
+        0xEB5A896A28988BF5 \
+        0xC218525819F78451 \
+        0xFE43009C4607B1FB \
+        0x6AFEE6D49E92B601 \
+        B74417EDDF22AC9F9E90F49142E86A2A11F48D36 \
+        514102454D0A87DB0767A1EBBE6A0531C18A9179 && \
+  echo "$(cat tor-${TOR_VERSION}.tar.gz.sha256sum) tor-${TOR_VERSION}.tar.gz" | sha256sum --check && \
+  gpg --verify tor-${TOR_VERSION}.tar.gz.sha256sum.asc && \
   \
   export "CFLAGS=-Wno-cpp" && \
   tar -zxf tor-${TOR_VERSION}.tar.gz && \
