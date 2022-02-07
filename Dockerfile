@@ -51,12 +51,9 @@ RUN \
   curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum && \
   curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum.asc && \
   gpg --keyserver keys.openpgp.org --recv-keys \
-        0xEB5A896A28988BF5 \
-        0xC218525819F78451 \
-        0xFE43009C4607B1FB \
-        0x6AFEE6D49E92B601 \
-        B74417EDDF22AC9F9E90F49142E86A2A11F48D36 \
-        514102454D0A87DB0767A1EBBE6A0531C18A9179 && \
+    514102454D0A87DB0767A1EBBE6A0531C18A9179 \
+    B74417EDDF22AC9F9E90F49142E86A2A11F48D36 \
+    2133BC600AB133E1D826D173FE43009C4607B1FB && \
   echo "$(cat tor-${TOR_VERSION}.tar.gz.sha256sum) tor-${TOR_VERSION}.tar.gz" | sha256sum --check && \
   gpg --verify tor-${TOR_VERSION}.tar.gz.sha256sum.asc && \
   \
