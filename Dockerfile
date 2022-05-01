@@ -1,7 +1,7 @@
 FROM ubuntu:focal
 
 ARG CONFD_VERSION=0.16.0
-ARG TOR_VERSION=0.4.6.10
+ARG TOR_VERSION=0.4.7.7
 ARG TZ=Europe/Berlin
 ARG BUILD_DATE
 ARG VCS_REF
@@ -54,7 +54,7 @@ RUN \
     514102454D0A87DB0767A1EBBE6A0531C18A9179 \
     B74417EDDF22AC9F9E90F49142E86A2A11F48D36 \
     2133BC600AB133E1D826D173FE43009C4607B1FB && \
-  echo "$(cat tor-${TOR_VERSION}.tar.gz.sha256sum) tor-${TOR_VERSION}.tar.gz" | sha256sum --check && \
+  sha256sum --check tor-${TOR_VERSION}.tar.gz.sha256sum && \
   gpg --verify tor-${TOR_VERSION}.tar.gz.sha256sum.asc && \
   \
   export "CFLAGS=-Wno-cpp" && \
