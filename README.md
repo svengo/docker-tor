@@ -1,6 +1,9 @@
 # docker-tor
 
 [![GitHub license](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
+[![Build Status](https://drone.svengo.net/api/badges/svengo/docker-tor/status.svg)](https://drone.svengo.net/svengo/docker-tor)
+[![Docker Stars](https://img.shields.io/docker/stars/svengo/tor)](https://hub.docker.com/r/svengo/tor)
+[![Docker Pulls](https://img.shields.io/docker/pulls/svengo/tor)](https://hub.docker.com/r/svengo/tor)
 
 Simple docker container for running a tor node.
 
@@ -101,5 +104,14 @@ When listing a node, it’s better to list it by fingerprint than by nickname: f
 
 (Default: *empty*)
 
+#### ADDRESS
+
+**ADDRESS=tor-node01.example.com**
+
+The IPv4 address of this server, or a fully qualified domain name of this server that resolves to an IPv4 address.  You can leave this unset, and Tor will try to guess your IPv4 address.  This IPv4 address is the one used to tell clients and other servers where to find your Tor server; it doesn't affect the address that your server binds to.  It also seems to work with an IPv6 address.
+
 ## Feedback
 Please report any problems as issue on github: https://github.com/svengo/docker-tor/issues
+
+## Thanks
+Thanks to [Natanael Copa](https://github.com/ncopa) for [su-exec](https://github.com/ncopa/su-exec) and the [Tor Project](https://www.torproject.org/).
