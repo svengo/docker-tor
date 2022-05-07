@@ -19,11 +19,11 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 # set configuration defaults as build-tim variables
 ARG DEFAULT_ORPORT=9001
 ARG DEFAULT_DIRPORT=9030
-ARG DEFAULT_EXITPOLICY=reject *:* # no exits allowed
+ARG DEFAULT_EXITPOLICY="reject *:*"
 ARG DEFAULT_CONTROLPORT=9051
 ARG DEFAULT_HASHEDCONTROLPASSWORD=16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C
 ARG DEFAULT_NICKNAME=ididnteditheconfig
-ARG DEFAULT_CONTACTINFO=Random Person <nobody AT example dot com>
+ARG DEFAULT_CONTACTINFO="Random Person <nobody AT example dot com>"
 ARG DEFAULT_MYFAMILY=
 
 # set runtime variables
@@ -52,6 +52,7 @@ RUN \
     zlib1g-dev" && \
   RUNTIME_PACKAGES=" \
     curl \
+    gettext-base \
     libevent-2.1-7 \
     liblzma5 \
     libssl1.1 \
