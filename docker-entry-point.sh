@@ -3,7 +3,7 @@ set -e
 
 if [ "$1" = "tor" ]; then
   # generate /etc/tor/torrc-defaults
-  /usr/bin/confd -onetime -backend env
+  /usr/bin/envsubst < /etc/tor/torrc-defaults-source > /etc/tor/torrc-defaults
   
   # fix permissions
   chown -R tor:tor /data

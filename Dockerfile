@@ -1,6 +1,6 @@
 FROM ubuntu:focal
 
-ARG CONFD_VERSION=0.16.0
+# Build-time variables
 ARG TOR_VERSION=0.4.7.7
 ARG TZ=Europe/Berlin
 ARG BUILD_DATE
@@ -15,6 +15,26 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
   org.label-schema.vendor="Sven Gottwald" \
   org.label-schema.version=$TOR_VERSION \
   org.label-schema.schema-version="1.0"
+
+# set configuration defaults as build-tim variables
+ARG DEFAULT_ORPORT=9001
+ARG DEFAULT_DIRPORT=9030
+ARG DEFAULT_EXITPOLICY=reject *:* # no exits allowed
+ARG DEFAULT_CONTROLPORT=9051
+ARG DEFAULT_HASHEDCONTROLPASSWORD=16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C
+ARG DEFAULT_NICKNAME=ididnteditheconfig
+ARG DEFAULT_CONTACTINFO=Random Person <nobody AT example dot com>
+ARG DEFAULT_MYFAMILY=
+
+# set runtime variables
+ENV ORPORT=$DEFAULT_ORPORT
+ENV DIRPORT=$DEFAULT_DIRPORT
+ENV EXITPOLICY=$DEFAULT_EXITPOLICY
+ENV CONTROLPORT=$DEFAULT_CONTROLPORT
+ENV HASHEDCONTROLPASSWORD=$DEFAULT_HASHEDCONTROLPASSWORD
+ENV NICKNAME=$DEFAULT_NICKNAME
+ENV CONTACTINFO=$DEFAULT_CONTACTINFO
+ENV MYFAMILY=$DEFAULT_MYFAMILY
 
 WORKDIR /tmp
 
@@ -43,9 +63,6 @@ RUN \
   \
   curl -o su-exec.c https://raw.githubusercontent.com/ncopa/su-exec/master/su-exec.c && \
   gcc -Wall su-exec.c -o/usr/bin/su-exec && \
-  \
-  curl -SL -o /usr/bin/confd https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 && \
-  chmod +x /usr/bin/confd && \
   \
   curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz && \
   curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum && \
@@ -84,14 +101,11 @@ RUN \
   \
   addgroup --system tor && \
   adduser --system --disabled-login --ingroup tor tor && \
-  mkdir -p /etc/confd/conf.d && \
-  mkdir -p /etc/confd/templates
 
 VOLUME /data
 WORKDIR /data
 
-COPY torrc-defaults.toml /etc/confd/conf.d
-COPY torrc-defaults.tmpl /etc/confd/templates
+COPY torrc-defaults-source /etc/tor
 
 COPY docker-entry-point.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]

@@ -1,3 +1,0 @@
-[template]
-src = "torrc-defaults.tmpl"
-dest = "/etc/tor/torrc-defaults"
