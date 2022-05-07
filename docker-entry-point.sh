@@ -15,7 +15,7 @@ if [ "$1" = "tor" ]; then
   fi
   
   # run tor
-  exec /usr/bin/su-exec tor "$@"
+  exec /usr/bin/su-exec tor -f "/data/torrc" "$@"
 fi
 
 exec "$@"
