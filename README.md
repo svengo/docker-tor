@@ -103,3 +103,6 @@ When listing a node, it’s better to list it by fingerprint than by nickname: f
 
 ## Feedback
 Please report any problems as issue on github: https://github.com/svengo/docker-tor/issues
+
+## Thanks
+Thanks to Natanael Copa for [su-exec](https://github.com/ncopa/su-exec) and the [Tor Project](https://www.torproject.org/).
