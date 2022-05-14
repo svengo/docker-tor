@@ -2,6 +2,7 @@ FROM ubuntu:focal
 
 # Build-time variables
 ARG TOR_VERSION=0.4.7.7
+ARG SU_EXEC_C=https://raw.githubusercontent.com/ncopa/su-exec/212b75144bbc06722fbd7661f651390dc47a43d1/su-exec.c
 ARG TZ=Europe/Berlin
 ARG BUILD_DATE
 ARG VCS_REF
@@ -62,7 +63,7 @@ RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get -qq install $BUILD_PACKAGES && \
   \
-  curl -o su-exec.c https://raw.githubusercontent.com/ncopa/su-exec/master/su-exec.c && \
+  curl -o su-exec.c ${SU_EXEC_C}&& \
   gcc -Wall su-exec.c -o/usr/bin/su-exec && \
   \
   curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz && \
