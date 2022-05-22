@@ -44,8 +44,8 @@ steps:
     dry_run: false
     force_tag: true
   when:
-    ref:
-      - refs/heads/main
+    branch:
+      - main
 
 - name: publish development image
   image: plugins/docker
@@ -65,10 +65,10 @@ steps:
     dry_run: false
     force_tag: true
   when:
-    ref:
+    branch:
       exclude:
         # https://docs.drone.io/pipeline/docker/syntax/conditions/
-        - refs/heads/main
+        - main
 
 # https://stanislas.blog/2018/08/setup-telegram-bot-for-drone-ci-cd-builds/
 - name: send telegram notification
