@@ -26,11 +26,9 @@ RUN \
     gettext \
     libcap \
     libevent \
-    openssl \
     su-exec \
     xz-libs \
     zlib \
-    zstd \
     zstd-libs && \
   apk add --virtual build \
     build-base \
@@ -38,10 +36,7 @@ RUN \
     gnupg \
     libcap-dev \
     libevent-dev \
-    linux-headers \
     openssl-dev \
-    w3m \
-    wget \
     xz-dev \
     zlib-dev \
     zstd-dev && \
