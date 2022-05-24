@@ -60,7 +60,6 @@ steps:
     repo: *repo
     tags: 
       - ${DRONE_BRANCH/\//-}
-      - ${DRONE_COMMIT_SHA:0:8}
     purge: false
     dry_run: false
     force_tag: true
