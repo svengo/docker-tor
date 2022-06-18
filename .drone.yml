@@ -46,6 +46,8 @@ steps:
   when:
     branch:
       - main
+    event:
+      - push
 
 - name: publish development image
   image: plugins/docker
@@ -68,6 +70,8 @@ steps:
       exclude:
         # https://docs.drone.io/pipeline/docker/syntax/conditions/
         - main
+    event:
+      - push
 
 # https://stanislas.blog/2018/08/setup-telegram-bot-for-drone-ci-cd-builds/
 - name: send telegram notification
