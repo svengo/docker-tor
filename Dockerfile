@@ -21,7 +21,8 @@ WORKDIR /tmp
 RUN \
   if test -z "$TOR_VERSION" ; then echo ERROR: TOR_VERSION not provided && exit 1; fi && \
   \
-  apk add --update \
+  apk update && \
+  apk add \
     curl \
     gettext \
     libcap \
