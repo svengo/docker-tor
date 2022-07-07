@@ -106,29 +106,3 @@ steps:
 trigger:
   event:
     - push
-
-
----
-# https://github.com/cbdq-io/docker-grype#drone-ci-kubernetes-pipeline
-
-kind: pipeline
-name: grype
-
-
-services:
-  - name: docker
-    image: docker:dind
-
-steps:
-  - name: Anchore Grype
-    commands:
-      - /usr/local/bin/docker-grype-cmd.sh
-    environment:
-      DOCKER_HOST: tcp://docker:2375
-      IMAGE_NAME: &repo:latest
-    image: cbdq/docker-grype:latest
-    pull: if-not-exists
-
-trigger:
-  event:
-    - cron
