@@ -43,11 +43,11 @@ steps:
     purge: false
     dry_run: false
     force_tag: true
-  when:
-    branch:
-      - main
+  trigger:
     event:
       - push
+    branch:
+      - main
 
 - name: publish development image
   image: plugins/docker
@@ -65,13 +65,13 @@ steps:
     purge: false
     dry_run: false
     force_tag: true
-  when:
+  trigger:
+    event:
+      - push
     branch:
       exclude:
         # https://docs.drone.io/pipeline/docker/syntax/conditions/
         - main
-    event:
-      - push
 
 # https://stanislas.blog/2018/08/setup-telegram-bot-for-drone-ci-cd-builds/
 - name: send telegram notification
@@ -101,5 +101,9 @@ steps:
 
       🌐 {{ build.link }}
       {{/success}}
-  when:
-    status: [success, failure]
+  trigger:
+    event:
+      - push
+    status:
+      - success
+      - failure
