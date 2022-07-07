@@ -1,3 +1,4 @@
+---
 kind: pipeline
 name: default
 
@@ -70,7 +71,7 @@ steps:
       - push
     branch:
       exclude:
-        # https://docs.drone.io/pipeline/docker/syntax/conditions/
+        # https://docs.drone.io/pipeline/docker/syntax/trigger/#by-branch
         - main
 
 # https://stanislas.blog/2018/08/setup-telegram-bot-for-drone-ci-cd-builds/
@@ -107,3 +108,27 @@ steps:
     status:
       - success
       - failure
+
+---
+# https://github.com/cbdq-io/docker-grype#drone-ci-kubernetes-pipeline
+
+kind: pipeline
+name: grype
+
+
+services:
+  - name: docker
+    image: docker:dind
+
+steps:
+  - name: Anchore Grype
+    commands:
+      - /usr/local/bin/docker-grype-cmd.sh
+    environment:
+      DOCKER_HOST: tcp://docker:2375
+      IMAGE_NAME: &repo:latest
+    image: cbdq/docker-grype:latest
+    pull: if-not-exists
+    trigger:
+      event:
+        - cron
