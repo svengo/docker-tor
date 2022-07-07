@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: default
+name: build
 
 
 # https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
@@ -45,8 +45,6 @@ steps:
     dry_run: false
     force_tag: true
   trigger:
-    event:
-      - push
     branch:
       - main
 
@@ -67,8 +65,6 @@ steps:
     dry_run: false
     force_tag: true
   trigger:
-    event:
-      - push
     branch:
       exclude:
         # https://docs.drone.io/pipeline/docker/syntax/trigger/#by-branch
@@ -103,11 +99,14 @@ steps:
       🌐 {{ build.link }}
       {{/success}}
   trigger:
-    event:
-      - push
     status:
       - success
       - failure
+
+trigger:
+  event:
+    - push
+
 
 ---
 # https://github.com/cbdq-io/docker-grype#drone-ci-kubernetes-pipeline
@@ -129,6 +128,7 @@ steps:
       IMAGE_NAME: &repo:latest
     image: cbdq/docker-grype:latest
     pull: if-not-exists
-    trigger:
-      event:
-        - cron
+
+trigger:
+  event:
+    - cron
