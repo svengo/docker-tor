@@ -7,8 +7,8 @@ name: build
 # https://cogarius.medium.com/1-3-complete-guide-to-ci-cd-pipelines-with-drone-io-a53daaf28cf6
 globals:
   version: 
-    - &tor_version TOR_VERSION=0.4.7.8
-    - &docker_tags 0.4.7.8
+    - &tor_version TOR_VERSION=0.4.7.9
+    - &docker_tags 0.4.7.9
   repo: &repo svengo/tor
 
   settings: &docker_creds
