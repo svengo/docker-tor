@@ -51,7 +51,6 @@ RUN \
   sha256sum -c tor-${TOR_VERSION}.tar.gz.sha256sum && \
   gpg --verify tor-${TOR_VERSION}.tar.gz.sha256sum.asc && \
   \
-  export "CFLAGS=-Wno-cpp" && \
   tar -zxf tor-${TOR_VERSION}.tar.gz && \
   cd tor-${TOR_VERSION} && \
   ./configure \
@@ -65,7 +64,7 @@ RUN \
     --enable-lzma \
     --enable-zstd \
     --silent && \
-  make && \
+  CFLAGS=-Wno-cpp make && \
   make test && \
   make install && \
   \

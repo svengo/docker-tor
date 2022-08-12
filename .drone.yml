@@ -44,7 +44,7 @@ steps:
     purge: false
     dry_run: false
     force_tag: true
-  trigger:
+  when:
     branch:
       - main
 
@@ -64,10 +64,10 @@ steps:
     purge: false
     dry_run: false
     force_tag: true
-  trigger:
+  when:
     branch:
       exclude:
-        # https://docs.drone.io/pipeline/docker/syntax/trigger/#by-branch
+        # https://docs.drone.io/pipeline/macstadium/syntax/conditions/
         - main
 
 # https://stanislas.blog/2018/08/setup-telegram-bot-for-drone-ci-cd-builds/
