@@ -8,7 +8,7 @@ name: build
 globals:
   version: 
     - &tor_version TOR_VERSION=0.4.7.10
-    - &docker_tags 0.4.7.10
+    - &docker_tags 0.4.7.11
   repo: &repo svengo/tor
 
   settings: &docker_creds
