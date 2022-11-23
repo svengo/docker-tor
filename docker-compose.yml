@@ -1,0 +1,29 @@
+version: '2.3'
+services:
+  daemon:
+    image: svengo/tor:latest
+    environment:
+      - ORPORT=9001
+      - DIRPORT=9030
+      - CONTROLPORT=9051
+      - HASHEDCONTROLPASSWORD=16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C
+      - NICKNAME=ididnteditheconfig
+      - CONTACTINFO=Random Person <nobody AT example dot com>
+#     - MYFAMILY=
+#     - ADDRESS=
+    ports:
+      - 9001:9001
+      - 9030:9030
+    volumes:
+      - ./tor:/data
+    restart: unless-stopped
+
+# networks:
+#   default:
+#     driver: bridge
+#     enable_ipv6: true
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: fd4d:1111:2222:3333::/64
+#         - subnet: 172.26.1.0/24
