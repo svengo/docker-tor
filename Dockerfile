@@ -5,6 +5,7 @@ ARG TOR_VERSION
 ARG TZ=Europe/Berlin
 ARG BUILD_DATE
 ARG VCS_REF
+ARG CURL_OPTIONS="--no-progress-meter --fail --location --remote-name"
 
 # Build-time metadata as defined at http://label-schema.org
 LABEL org.label-schema.build-date=$BUILD_DATE \
@@ -19,6 +20,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 WORKDIR /tmp
 
 RUN \
+  set -o xtrace && \
   if test -z "$TOR_VERSION" ; then echo ERROR: TOR_VERSION not provided && exit 1; fi && \
   \
   apk update && \
@@ -42,16 +44,16 @@ RUN \
     zlib-dev \
     zstd-dev && \
   \
-  curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz && \
-  curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum && \
-  curl -SL -O https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum.asc && \
+  curl ${CURL_OPTIONS} "https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz" && \
+  curl ${CURL_OPTIONS} "https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum" && \
+  curl ${CURL_OPTIONS} "https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum.asc" && \
   gpg --auto-key-locate nodefault,wkd --locate-keys ahf@torproject.org \
     dgoulet@torproject.org \
     nickm@torproject.org && \
-  sha256sum -c tor-${TOR_VERSION}.tar.gz.sha256sum && \
-  gpg --verify tor-${TOR_VERSION}.tar.gz.sha256sum.asc && \
+  sha256sum -c "tor-${TOR_VERSION}.tar.gz.sha256sum" && \
+  gpg --verify "tor-${TOR_VERSION}.tar.gz.sha256sum.asc" && \
   \
-  tar -zxf tor-${TOR_VERSION}.tar.gz && \
+  tar -zxf "tor-${TOR_VERSION}.tar.gz" && \
   cd tor-${TOR_VERSION} && \
   ./configure \
     --sysconfdir=/etc \
