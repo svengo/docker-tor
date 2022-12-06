@@ -19,6 +19,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 WORKDIR /tmp
 
 RUN \
+  set -o xtrace && \
   if test -z "$TOR_VERSION" ; then echo ERROR: TOR_VERSION not provided && exit 1; fi && \
   \
   apk update && \
