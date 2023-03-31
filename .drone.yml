@@ -41,6 +41,8 @@ steps:
       - latest
       - ${DRONE_COMMIT_SHA:0:8}
       - *docker_tags
+    cache_from: 
+      - "svengo/tor:latest"
     purge: false
     dry_run: false
     force_tag: true
@@ -61,6 +63,9 @@ steps:
     repo: *repo
     tags: 
       - ${DRONE_BRANCH/\//-}
+    cache_from: 
+      - "svengo/tor:latest"
+      - "svengo/tor:${DRONE_BRANCH}"
     purge: false
     dry_run: false
     force_tag: true
