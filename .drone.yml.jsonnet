@@ -32,7 +32,7 @@ local repo = "svengo/tor";
              ]
         ),
         "cache_from": [
-          "%(repo)s:latest" % {repo: repo}
+          "%(repo)s:latest" % {repo: repo},
           "%(repo)s:staging" % {repo: repo}
         ],
         "purge": false,
