@@ -32,9 +32,8 @@ local repo = "svengo/tor";
              ]
         ),
         "cache_from": [
-          "svengo/tor:latest",
-          "svengo/tor:%(tor_version)s" % {tor_version: tor_version},
-          "svengo/tor:${DRONE_BRANCH}"
+          "%(repo)s:latest" % {repo: repo}
+          "%(repo)s:staging" % {repo: repo}
         ],
         "purge": false,
         "dry_run": true,
