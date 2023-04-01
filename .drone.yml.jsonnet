@@ -36,7 +36,7 @@ local repo = "svengo/tor";
           "%(repo)s:staging" % {repo: repo}
         ],
         "purge": false,
-        "dry_run": true,
+        "dry_run": false,
         "force_tag": true
       }
     },
