@@ -29,10 +29,12 @@ local docker(name, branch) = {
            "${DRONE_BRANCH/\\//-}"
          ]
     ),
-    "cache_from": [
-      "%(repo)s:latest" % {repo: repo},
-      "%(repo)s:staging" % {repo: repo}
-    ],
+    "cache_from":
+      (
+        if branch == "main" then [
+          "%(repo)s:staging" % {repo: repo}
+        ]
+      ),
     "purge": false,
     "dry_run": false,
     "force_tag": true,
