@@ -37,6 +37,7 @@ RUN \
     build-base \
     ca-certificates \
     gnupg \
+    gnupg-keyboxd \
     libcap-dev \
     libevent-dev \
     openssl-dev \
