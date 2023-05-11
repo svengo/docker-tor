@@ -1,4 +1,4 @@
-FROM alpine:3.17.3
+FROM alpine:3.18.0
 
 # Build-time variables
 ARG TOR_VERSION
@@ -37,6 +37,7 @@ RUN \
     build-base \
     ca-certificates \
     gnupg \
+    gnupg-keyboxd \
     libcap-dev \
     libevent-dev \
     openssl-dev \

@@ -38,6 +38,7 @@ local docker(name, branch) = {
     "purge": false,
     "dry_run": false,
     "force_tag": true,
+    "failure": "ignore",
   },
   "when": {
     "branch": 
