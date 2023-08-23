@@ -1,5 +1,5 @@
 // variables
-local tor_version = "0.4.7.14";
+local tor_version = "0.4.8.4";
 local repo = "svengo/tor";
 
 // https://community.harness.io/t/how-to-reduce-yaml-boilerplate/10534
