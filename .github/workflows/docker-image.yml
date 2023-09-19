@@ -33,9 +33,6 @@ jobs:
         flavor: | 
           latest=${{ github.event.release.prerelease == false }}
         tags: |
-          type=ref,event=branch
-          type=ref,event=tag
-          type=ref,event=pr
           type=match,pattern=v(.*),group=1
           type=sha
     -
@@ -44,6 +41,8 @@ jobs:
       with:
         context: .
         file: ./Dockerfile
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         push: ${{ github.event_name == 'release' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
