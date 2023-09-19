@@ -1,10 +1,9 @@
 name: ci
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   docker:
@@ -13,12 +12,6 @@ jobs:
     - 
       name: Checkout
       uses: actions/checkout@v3
-    - 
-      name: Docker meta
-      id: meta
-      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-      with:
-        images: svengo/tor
     -       
       name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -31,10 +24,20 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - 
+      name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: svengo/tor-test
     -
-        name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: svengo/tor:latest
+      name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile
+        push: false
+        # tags: svengo/tor-text:latest
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        
