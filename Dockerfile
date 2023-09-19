@@ -10,7 +10,7 @@ ARG CURL_OPTIONS="--no-progress-meter --fail --location --remote-name"
 WORKDIR /tmp
 
 RUN \
-  exit 1 && \
+  exit 0 && \
   set -o xtrace && \
   if test -z "$TOR_VERSION" ; then echo ERROR: TOR_VERSION not provided && exit 1; fi && \
   \
