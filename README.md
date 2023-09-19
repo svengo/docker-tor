@@ -1,7 +1,6 @@
 # docker-tor
 
 [![GitHub license](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
-[![Build Status](https://drone.developly.de/api/badges/svengo/docker-tor/status.svg?ref=refs/heads/main)](https://drone.developly.de/svengo/docker-tor)
 [![Docker Stars](https://img.shields.io/docker/stars/svengo/tor)](https://hub.docker.com/r/svengo/tor)
 [![Docker Pulls](https://img.shields.io/docker/pulls/svengo/tor)](https://hub.docker.com/r/svengo/tor)
 
@@ -9,6 +8,12 @@ Simple docker container for running a tor node.
 
 
 ## How to use this image
+
+### Supported Tags
+
+* ``latest`` 
+
+Currently only the ``latest`` tag is supported.
 
 ### Start a simple tor node
 
