@@ -7,16 +7,6 @@ ARG BUILD_DATE
 ARG VCS_REF
 ARG CURL_OPTIONS="--no-progress-meter --fail --location --remote-name"
 
-# Build-time metadata as defined at http://label-schema.org
-LABEL org.label-schema.build-date=$BUILD_DATE \
-  org.label-schema.name="docker-tor" \
-  org.label-schema.description="Simple docker container for a tor node" \
-  org.label-schema.vcs-ref=$VCS_REF \
-  org.label-schema.vcs-url="https://github.com/svengo/docker-tor" \
-  org.label-schema.vendor="Sven Gottwald" \
-  org.label-schema.version=$TOR_VERSION \
-  org.label-schema.schema-version="1.0"
-
 WORKDIR /tmp
 
 RUN \
