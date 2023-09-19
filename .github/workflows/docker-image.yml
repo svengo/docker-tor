@@ -33,7 +33,7 @@ jobs:
         flavor: | 
           latest=${{ github.event.release.prerelease == false }}
         tags: |
-          type=ref,event=release
+          type=ref,event=push
           type=sha
     -
       name: Build and push Docker image
