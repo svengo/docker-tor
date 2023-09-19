@@ -33,8 +33,9 @@ jobs:
         flavor: | 
           latest=${{ github.event.release.prerelease == false }}
         tags: |
-          type=ref,event=push
+          type=ref,event=branch
           type=ref,event=tag
+          type=ref,event=pr
           type=match,pattern=v(.*),group=1
           type=sha
     -
