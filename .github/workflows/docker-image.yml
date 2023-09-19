@@ -34,6 +34,8 @@ jobs:
           latest=${{ github.event.release.prerelease == false }}
         tags: |
           type=ref,event=push
+          type=ref,event=tag
+          type=match,pattern=v(.*),group=1
           type=sha
     -
       name: Build and push Docker image
