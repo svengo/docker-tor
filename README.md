@@ -11,9 +11,9 @@ Simple docker container for running a tor node.
 
 ### Supported Tags
 
-* ``latest`` 
+* ``0.4.8.6``, ``latest`` 
 
-Currently only the ``latest`` tag is supported.
+Currently only the ``latest`` and the current tor version tags are supported.
 
 ### Start a simple tor node
 
