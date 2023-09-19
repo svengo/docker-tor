@@ -33,18 +33,15 @@ jobs:
         flavor: | 
           latest=${{ github.event.release.prerelease == false }}
         tags: |
-          type=schedule
-          type=ref,event=branch
-          type=ref,event=pr
-          type=sha           
+          type=ref
+          type=sha
     -
       name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         file: ./Dockerfile
-        push: true
-        # tags: svengo/tor-text:latest
+        push: ${{ github.event_name == 'release' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         
