@@ -9,8 +9,6 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
-      time: "09:00"
-      timezone: "Europe/Berlin"
       
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
