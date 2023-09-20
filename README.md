@@ -9,11 +9,15 @@ Simple docker container for running a tor node.
 
 # Quick reference
 
--	**Maintained by**:  
-	[Sven Gottwald](https://github.com/svengo/)
+- **Maintained by**:  
+  [Sven Gottwald](https://github.com/svengo/)
 
--	**Where to get help**:  
+- **Where to get help**:  
   [svengo/docker-tor Issues](https://github.com/svengo/docker-tor/issues)
+
+- **Docker Hub**:  
+  [svengo/tor](https://hub.docker.com/r/svengo/tor)
+
 
 # Supported tags and respective `Dockerfile` links
 * [`0.4.8.6`, `latest`](https://github.com/svengo/docker-tor/blob/8fadf81a5c70b5ad49054714c7d27a90938b2953/Dockerfile)
