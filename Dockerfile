@@ -9,7 +9,6 @@ WORKDIR /tmp
 RUN \
   echo "::group::Install required packages" && \
   set -o xtrace && \
-  \
   apk update && \
   apk add \
     curl \
@@ -60,11 +59,15 @@ RUN \
     --enable-zstd \
     --silent && \
   echo "::endgroup::" && \
+  \
   echo "::group::Build" && \
   CFLAGS=-Wno-cpp make && \
   echo "::endgroup::" && \
+  \
   echo "::group::Test" && \
   make test && \
+  echo "::endgroup::" && \
+  \
   echo "::group::Install" && \
   make install && \
   echo "::endgroup::" && \
