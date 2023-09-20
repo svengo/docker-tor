@@ -7,7 +7,6 @@ ARG TZ=Europe/Berlin
 WORKDIR /tmp
 
 RUN \
-  echo "::group::Install required packages" && \
   set -o xtrace && \
   apk update && \
   apk add \
@@ -30,9 +29,7 @@ RUN \
     xz-dev \
     zlib-dev \
     zstd-dev && \
-  echo "::endgroup::" && \
   \
-  echo "::group::Download Tor" && \
   CURL_OPTIONS="--no-progress-meter --fail --location --remote-name" && \
   curl ${CURL_OPTIONS} "https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz" && \
   curl ${CURL_OPTIONS} "https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum" && \
@@ -43,9 +40,7 @@ RUN \
   sha256sum -c "tor-${TOR_VERSION}.tar.gz.sha256sum" && \
   gpg --verify "tor-${TOR_VERSION}.tar.gz.sha256sum.asc" && \
   tar -zxf "tor-${TOR_VERSION}.tar.gz" && \
-  echo "::endgroup::" && \
   \
-  echo "::group::Configure" && \
   cd tor-${TOR_VERSION} && \
   ./configure \
     --sysconfdir=/etc \
@@ -58,30 +53,19 @@ RUN \
     --enable-lzma \
     --enable-zstd \
     --silent && \
-  echo "::endgroup::" && \
   \
-  echo "::group::Build" && \
   CFLAGS=-Wno-cpp make && \
-  echo "::endgroup::" && \
   \
-  echo "::group::Test" && \
   make test && \
-  echo "::endgroup::" && \
   \
-  echo "::group::Install" && \
   make install && \
-  echo "::endgroup::" && \
   \
-  echo "::group::Cleanup" && \
   apk del build && \
   rm -rf /tmp/* && \
   rm -rf /var/cache/apk/* && \
-  echo "::endgroup::" && \
   \
-  echo "::group::Add tor user and group" && \
   addgroup -S tor && \
-  adduser -s /bin/false -SDH -G tor tor && \
-  echo "::endgroup::"
+  adduser -s /bin/false -SDH -G tor tor
 
 VOLUME /data
 WORKDIR /data
