@@ -1,7 +1,10 @@
 # docker-tor
 
 [![CI](https://github.com/svengo/docker-tor/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/svengo/docker-tor/actions/workflows/docker-image.yml)
-[![GitHub license](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
+![GitHub Workflow Status (Release)](https://img.shields.io/github/actions/workflow/status/svengo/docker-tor/docker-image.yml?event=release&label=release)
+![GitHub Repo stars](https://img.shields.io/github/stars/svengo/docker-tor?label=repo%20stars)
+[![GitHub License](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/svengo/tor/latest)
 [![Docker Stars](https://img.shields.io/docker/stars/svengo/tor)](https://hub.docker.com/r/svengo/tor)
 [![Docker Pulls](https://img.shields.io/docker/pulls/svengo/tor)](https://hub.docker.com/r/svengo/tor)
 
