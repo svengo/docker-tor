@@ -1,7 +1,11 @@
 # docker-tor
 
 [![CI](https://github.com/svengo/docker-tor/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/svengo/docker-tor/actions/workflows/docker-image.yml)
-[![GitHub license](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/svengo/docker-tor)
+![GitHub Workflow Status (Release)](https://img.shields.io/github/actions/workflow/status/svengo/docker-tor/docker-image.yml?event=release&label=release)
+![GitHub Repo stars](https://img.shields.io/github/stars/svengo/docker-tor?label=repo%20stars)
+[![GitHub License](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/svengo/tor/latest)
 [![Docker Stars](https://img.shields.io/docker/stars/svengo/tor)](https://hub.docker.com/r/svengo/tor)
 [![Docker Pulls](https://img.shields.io/docker/pulls/svengo/tor)](https://hub.docker.com/r/svengo/tor)
 
@@ -20,7 +24,7 @@ Simple docker container for running a tor node.
 
 
 # Supported tags and respective `Dockerfile` links
-* [`0.4.8.6`, `latest`](https://github.com/svengo/docker-tor/blob/cdad61a8cedec7178e38a262c9e24c03d35ef197/Dockerfile)
+* [`0.4.8.6-01`, `latest`](https://github.com/svengo/docker-tor/blob/77d772d900492e16eaaf33d0228e6cadc7d99a6c/Dockerfile)
 
 Currently only the ``latest`` and the current tor version tags are supported.
 
