@@ -24,7 +24,7 @@ Simple docker container for running a tor node.
 
 
 # Supported tags and respective `Dockerfile` links
-* [`0.4.8.6`, `latest`](https://github.com/svengo/docker-tor/blob/cdad61a8cedec7178e38a262c9e24c03d35ef197/Dockerfile)
+* [`0.4.8.6-01`, `latest`](https://github.com/svengo/docker-tor/blob/77d772d900492e16eaaf33d0228e6cadc7d99a6c/Dockerfile)
 
 Currently only the ``latest`` and the current tor version tags are supported.
 
