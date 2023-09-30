@@ -32,14 +32,14 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-        repository: ${{ vars.IMAGE_NAMESPACE }}/${{ vars.IMAGE_NAME }}
+        repository: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
         short-description: ${{ github.event.repository.description }}
     - 
       name: Build Docker meta data
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ vars.IMAGE_NAMESPACE }}/${{ vars.IMAGE_NAME }}
+        images: ${{ vars.secrets.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
         flavor: | 
           latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
         tags: |
