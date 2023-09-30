@@ -39,7 +39,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ vars.secrets.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
         flavor: | 
           latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
         tags: |
