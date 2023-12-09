@@ -43,6 +43,7 @@ jobs:
         flavor: | 
           latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
         tags: |
+          type=match,pattern=v(\d+\.\d+\.\d+),group=1
           type=match,pattern=v(.*),group=1
           type=sha
     -
