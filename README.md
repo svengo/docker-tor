@@ -23,7 +23,7 @@ Simple docker container for running a tor node.
 
 
 # Supported tags and respective `Dockerfile` links
-* [`latest`, `0.4.8.10`](https://raw.githubusercontent.com/svengo/docker-tor/7b7134975c12f5561e76c757fe9f8840d3cd53e1/Dockerfile)
+* [`latest`, `0.4.8.11`](https://github.com/svengo/docker-tor/raw/663a1916ff88e7e29d075c67ca95d5a94f203eb4/Dockerfile)
 
 I will be rebuilding the image on a regular basis to include updated alpine packages with important security fixes.
 
