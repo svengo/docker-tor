@@ -8,7 +8,7 @@ Only the current release, the `latest` tag, and the current stable Tor version (
 
 ### Reporting Tor vulnerabilities
 
-If you've found a vulnerability in Tor, please send an email to `security at torproject.org`. See [How to report a bug or give feedback] (https://support.torproject.org/misc/bug-or-feedback/) for details.
+If you've found a vulnerability in Tor, please send an email to `security at torproject.org`. See [How to report a bug or give feedback](https://support.torproject.org/misc/bug-or-feedback/) for details.
 
 ### Docker image vulnerability
 
