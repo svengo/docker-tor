@@ -1,4 +1,3 @@
-version: '2.3'
 services:
   daemon:
     image: svengo/tor:latest
