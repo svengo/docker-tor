@@ -86,7 +86,7 @@ If this option is nonzero, advertise the directory service on this port. Set it 
 
 `EXITPOLICY=policy,policy,…`
 
-Set an exit policy for this server. Each policy is of the form "accept[6]|reject[6] ADDR[/MASK][:PORT]". If /MASK is omitted, then this policy just applies to the host given. Instead of giving a host or network you can also use "*" to denote the universe (0.0.0.0/0 and ::/128), or *4 to denote all IPv4 addresses, and *6 to denote all IPv6 addresses. PORT can be a single port number, an interval of ports "FROM_PORT-TO_PORT", or "*". If PORT is omitted, that means "*".
+Set an exit policy for this server. Each policy is of the form `accept[6]|reject[6] ADDR[/MASK][:PORT]`. If `/MASK` is omitted, then this policy just applies to the host given. Instead of giving a host or network you can also use `*` to denote the universe (0.0.0.0/0 and ::/128), or `*4` to denote all IPv4 addresses, and `*6` to denote all IPv6 addresses. `PORT` can be a single port number, an interval of ports `FROM_PORT-TO_PORT`, or `*` . If PORT is omitted, that means `*`.
 
 (Default: ``reject *:* # no exits allowed``)
 
