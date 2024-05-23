@@ -27,7 +27,7 @@ Simple Docker container to run a Tor node.
 
 
 # Supported tags and corresponding `Dockerfile` links
-* [`latest`, `0.4.8.11`](https://github.com/svengo/docker-tor/blob/025abed5929d69e35e646dac81d32795ab2c6dce/Dockerfile)
+- [`latest`, `0.4.8.11`](https://github.com/svengo/docker-tor/blob/025abed5929d69e35e646dac81d32795ab2c6dce/Dockerfile)
 
 I will regularly rebuild the image to include updated Alpine packages with important security fixes.
 
@@ -54,7 +54,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data svengo/tor
 
 ## Basic configuration
 
-Use environment variables for basic configuration. The contents of the environment variables are used to build `/etc/tor/torrc-defaults'. For more advanced configuration you can edit the `/data/torrc` configuration file directly.
+Use environment variables for basic configuration. The contents of the environment variables are used to build `/etc/tor/torrc-defaults`. For more advanced configuration you can edit the `/data/torrc` configuration file directly.
 
 ``` console
 docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor``
