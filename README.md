@@ -21,6 +21,9 @@ Simple Docker container to run a Tor node.
 - **Docker Hub**:  
   [svengo/tor](https://hub.docker.com/r/svengo/tor)
 
+- **Tor project**:
+  [Tor Project](https://www.torproject.org/)
+
 
 # Supported tags and corresponding `Dockerfile` links
 * [`latest`, `0.4.8.11`](https://github.com/svengo/docker-tor/blob/025abed5929d69e35e646dac81d32795ab2c6dce/Dockerfile)
@@ -141,6 +144,3 @@ The IPv4 address of this server, or a fully qualified domain name of this server
 
 # Feedback
 Please report any problems as issues on github: https://github.com/svengo/docker-tor/issues
-
-# Thanks
-Thanks to [Natanael Copa](https://github.com/ncopa) for [su-exec](https://github.com/ncopa/su-exec) and the [Tor Project](https://www.torproject.org/).
