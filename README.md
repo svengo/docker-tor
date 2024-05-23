@@ -10,6 +10,7 @@
 
 Simple Docker container to run a Tor node.
 
+
 # Quick reference
 
 - **Maintained by**:  
@@ -28,7 +29,8 @@ Simple Docker container to run a Tor node.
 # Supported tags and corresponding `Dockerfile` links
 * [`latest`, `0.4.8.11`](https://github.com/svengo/docker-tor/blob/025abed5929d69e35e646dac81d32795ab2c6dce/Dockerfile)
 
-I will be rebuilding this image on a regular basis to include updated alpine packages with important security fixes.
+I will regularly rebuild the image to include updated Alpine packages with important security fixes.
+
 
 # How to use this image
 
@@ -141,6 +143,7 @@ When listing a node, it’s better to list it by fingerprint than by nickname: f
 `ADDRESS=tor-node01.example.com`
 
 The IPv4 address of this server, or a fully qualified domain name of this server that resolves to an IPv4 address.  You can leave this unset, and Tor will try to guess your IPv4 address.  This IPv4 address is the one used to tell clients and other servers where to find your Tor server; it doesn't affect the address that your server binds to.  It also seems to work with an IPv6 address.
+
 
 # Feedback
 Please report any problems as issues on github: https://github.com/svengo/docker-tor/issues
