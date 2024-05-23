@@ -1,93 +1,96 @@
 # docker-tor
 
-[![Build and Publish Docker Image](https://github.com/svengo/docker-tor/actions/workflows/publish-docker.yml/badge.svg)](https://github.com/svengo/docker-tor/actions/workflows/publish-docker.yml)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/svengo/docker-tor)
-![GitHub Repo stars](https://img.shields.io/github/stars/svengo/docker-tor?label=repo%20stars)
-[![GitHub License](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
+[![Build and publish a Docker image](https://github.com/svengo/docker-tor/actions/workflows/publish-docker.yml/badge.svg)](https://github.com/svengo/docker-tor/actions/workflows/publish-docker.yml)
+![GitHub publish (with filter)](https://img.shields.io/github/v/release/svengo/docker-tor)
+![GitHub repo stars](https://img.shields.io/github/stars/svengo/docker-tor?label=repo%20stars)
+[![GitHub licence](https://img.shields.io/github/license/svengo/docker-tor.svg)](https://github.com/svengo/docker-tor/blob/master/LICENSE)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/svengo/tor/latest)
 [![Docker Stars](https://img.shields.io/docker/stars/svengo/tor)](https://hub.docker.com/r/svengo/tor)
 [![Docker Pulls](https://img.shields.io/docker/pulls/svengo/tor)](https://hub.docker.com/r/svengo/tor)
 
-Simple docker container for running a tor node.
+Simple Docker container to run a Tor node.
 
-# Quick reference
+## Quick reference
 
 - **Maintained by**:  
   [Sven Gottwald](https://github.com/svengo/)
 
 - **Where to get help**:  
-  [svengo/docker-tor Issues](https://github.com/svengo/docker-tor/issues)
+  [svengo/docker-tor issues](https://github.com/svengo/docker-tor/issues)
 
 - **Docker Hub**:  
   [svengo/tor](https://hub.docker.com/r/svengo/tor)
 
+- **Tor project**:  
+  [Tor Project](https://www.torproject.org/)
 
-# Supported tags and respective `Dockerfile` links
-* [`latest`, `0.4.8.11`](https://github.com/svengo/docker-tor/raw/663a1916ff88e7e29d075c67ca95d5a94f203eb4/Dockerfile)
+## Supported tags and corresponding `Dockerfile` links
 
-I will be rebuilding the image on a regular basis to include updated alpine packages with important security fixes.
+- [`latest`, `0.4.8.11`](https://github.com/svengo/docker-tor/blob/fb8ba174ecb08419babdf58c06a9cab295c58a3d/Dockerfile)
 
-# How to use this image
+I will regularly rebuild the image to include updated Alpine packages with important security fixes.
 
-## Start a simple tor node
+## How to use this image
 
-The command starts a tor node and open ports 9001 and 9030:
+### Start a simple Tor node
+
+This command will start a Tor node and open ports 9001 and 9030:
 
 ``` console
 docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 ```
 
-## Data storage
+### Data storage
 
 Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. The directory could exist, the permissions are handled by the container.
 
-Start container:
+Start the container:
 
 ``` console
 docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data svengo/tor
 ```
 
-## Basic config
+### Basic configuration
 
-Use environment variables for basic configuration. The content of the environment variables are used to build `/etc/tor/torrc-defaults`. For a more advanced configuration you can edit the configuration file `/data/torrc` directly.
+Use environment variables for basic configuration. The contents of the environment variables are used to build `/etc/tor/torrc-defaults`, for more advanced configuration you can edit the `/data/torrc` configuration file directly.
 
 ``` console
 docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor``
 ```
 
-### Docker Compose
+#### Docker Compose
 
 You can use [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml). Don't forget to edit the file to suit your needs.
 
-### Environment Variables
+#### Environment Variables
 
 svengo/tor uses several environment variables to generate the ``torrc-defaults``-file, the variables are set to reasonable defaults (see below). You can edit ``/data/torrc`` to your needs after the first run.
 
-#### ORPORT
+##### ORPORT
 
 `ORPORT=[address:]PORT|auto [flags]`
 
-Advertise this port to listen for connections from Tor clients and servers. This option is required to be a Tor server. Set it to "auto" to have Tor pick a port for you. Set it to 0 to not run an ORPORT at all. 
+Advertise this port to listen for connections from Tor clients and servers. This option is required to be a Tor server. Set it to "auto" to have Tor pick a port for you. Set it to 0 to not run an ORPORT at all.
 
 (Default: ``9001``)
 
-#### DIRPORT
+##### DIRPORT
 
 `DIRPORT=[address:]PORT|auto [flags]`
 
-If this option is nonzero, advertise the directory service on this port. Set it to "auto" to have Tor pick a port for you. 
+If this option is nonzero, advertise the directory service on this port. Set it to "auto" to have Tor pick a port for you.
 
 (Default: ``9030``)
 
-#### EXITPOLICY
+##### EXITPOLICY
 
 `EXITPOLICY=policy,policy,…`
 
-Set an exit policy for this server. Each policy is of the form "accept[6]|reject[6] ADDR[/MASK][:PORT]". If /MASK is omitted then this policy just applies to the host given. Instead of giving a host or network you can also use "*" to denote the universe (0.0.0.0/0 and ::/128), or *4 to denote all IPv4 addresses, and *6 to denote all IPv6 addresses. PORT can be a single port number, an interval of ports "FROM_PORT-TO_PORT", or "*". If PORT is omitted, that means "*".
+Set an exit policy for this server. Each policy is of the form `accept[6]|reject[6] ADDR[/MASK][:PORT]`. If `/MASK` is omitted, then this policy just applies to the host given. Instead of giving a host or network you can also use `*` to denote the universe (0.0.0.0/0 and ::/128), or `*4` to denote all IPv4 addresses, and `*6` to denote all IPv6 addresses. `PORT` can be a single port number, an interval of ports `FROM_PORT-TO_PORT`, or `*` . If PORT is omitted, that means `*`.
 
 (Default: ``reject *:* # no exits allowed``)
 
-#### CONTROLPORT
+##### CONTROLPORT
 
 `CONTROLPORT=PORT|unix:path|auto [flags]`
 
@@ -97,7 +100,7 @@ se Tor to allow any process on the local host to control it.
 
 (Default: ``9051``)
 
-#### HASHEDCONTROLPASSWORD
+##### HASHEDCONTROLPASSWORD
 
 `HASHEDCONTROLPASSWORD=hashed_password`
 
@@ -105,7 +108,7 @@ Allow connections on the control port if they present the password whose one-way
 
 (Default: ``16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C``)
 
-#### NICKNAME
+##### NICKNAME
 
 `NICKNAME=name`
 
@@ -113,7 +116,7 @@ Set the server’s nickname to 'name'. Nicknames must be between 1 and 19 charac
 
 (Default: ``ididnteditheconfig``)
 
-#### CONTACTINFO
+##### CONTACTINFO
 
 `CONTACTINFO=email_address`
 
@@ -123,7 +126,7 @@ You can use [Tor ContactInfo Generator](https://torcontactinfogenerator.netlify.
 
 (Default: ``Random Person <nobody AT example dot com>``)
 
-#### MYFAMILY
+##### MYFAMILY
 
 `MYFAMILY=node,node,...`
 
@@ -133,14 +136,12 @@ When listing a node, it’s better to list it by fingerprint than by nickname: f
 
 (Default: *empty*)
 
-#### ADDRESS
+##### ADDRESS
 
 `ADDRESS=tor-node01.example.com`
 
 The IPv4 address of this server, or a fully qualified domain name of this server that resolves to an IPv4 address.  You can leave this unset, and Tor will try to guess your IPv4 address.  This IPv4 address is the one used to tell clients and other servers where to find your Tor server; it doesn't affect the address that your server binds to.  It also seems to work with an IPv6 address.
 
-# Feedback
-Please report any problems as issue on github: https://github.com/svengo/docker-tor/issues
+## Feedback
 
-# Thanks
-Thanks to [Natanael Copa](https://github.com/ncopa) for [su-exec](https://github.com/ncopa/su-exec) and the [Tor Project](https://www.torproject.org/).
+Please report any problems as issues on [github](https://github.com/svengo/docker-tor/issues).
