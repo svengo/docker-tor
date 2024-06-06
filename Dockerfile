@@ -1,7 +1,7 @@
 FROM alpine:3.20.0
 
 # Build-time variables
-ARG TOR_VERSION=0.4.8.11
+ARG TOR_VERSION=0.4.8.12
 ARG TZ=Europe/Berlin
 
 WORKDIR /tmp
