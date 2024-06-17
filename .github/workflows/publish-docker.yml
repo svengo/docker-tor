@@ -64,13 +64,13 @@ jobs:
       run: |
         {
           IFS=$'\n'
-          echo "### Docker metadata"
-          echo "#### Docker Labels"
+          echo "# Docker metadata"
+          echo "## Docker Labels"
           echo '```'
           for LINE in ${DOCKER_METADATA_OUTPUT_LABELS}; do echo "${LINE}"; done
           echo '```'
           echo ""
-          echo "#### Docker tags"
+          echo "## Docker tags"
           echo '```'
           for LINE in ${DOCKER_METADATA_OUTPUT_TAGS}; do echo "${LINE}"; done
           echo '```'
