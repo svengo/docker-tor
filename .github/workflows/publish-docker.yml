@@ -58,14 +58,3 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
-    - 
-      name: Generate job summary
-      id: job-summary
-      run: |
-        {
-          IFS=$'\n'
-          echo "## Docker tags"
-          echo '```'
-          for LINE in ${DOCKER_METADATA_OUTPUT_TAGS}; do echo "${LINE}"; done
-          echo '```'
-        } >> $GITHUB_STEP_SUMMARY
