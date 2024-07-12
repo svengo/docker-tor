@@ -76,5 +76,6 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["tor", "-f", "/data/torrc"]
 
-HEALTHCHECK --timeout=5s CMD echo quit | curl -sS telnet://localhost:${ORPORT} && \
-  curl -sSf http://localhost:${DIRPORT}/tor/server/authority || exit 1
+HEALTHCHECK --timeout=5s CMD \
+  /sbin/su-exec tor echo quit | curl -sS telnet://localhost:${ORPORT} && \
+  /sbin/su-exec tor curl -sSf http://localhost:${DIRPORT}/tor/server/authority || exit 1
