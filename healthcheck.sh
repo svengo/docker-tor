@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
 set -e
 
 # default configuration
 source /config.sh
 
 # check health
-su-exec tor echo quit | curl -sS telnet://localhost:${ORPORT} || exit 1
+su-exec tor echo quit | curl -sS "telnet://localhost:${ORPORT}" || exit 1
