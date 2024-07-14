@@ -79,4 +79,5 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["tor", "-f", "/data/torrc"]
 
+USER tor:tor
 HEALTHCHECK --timeout=5s CMD /healthcheck.sh
