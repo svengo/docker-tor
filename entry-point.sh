@@ -3,7 +3,7 @@
 set -e
 
 # default configuration
-source /config.sh
+. /config.sh
 
 # generate /etc/tor/torrc-defaults
 /usr/bin/envsubst < /etc/tor/torrc-defaults-source > /etc/tor/torrc-defaults
