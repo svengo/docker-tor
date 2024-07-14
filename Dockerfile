@@ -71,11 +71,12 @@ VOLUME /data
 WORKDIR /data
 
 COPY torrc-defaults-source /etc/tor/
-COPY docker-entry-point.sh /entrypoint.sh
+COPY config.sh /config.sh
+COPY entry-point.sh /entrypoint.sh
+COPY healthcheck.sh /healthcheck.sh
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 CMD ["tor", "-f", "/data/torrc"]
 
-HEALTHCHECK --timeout=5s CMD \
-  /sbin/su-exec tor echo quit | curl -sS telnet://localhost:${ORPORT} && \
-  /sbin/su-exec tor curl -sSf http://localhost:${DIRPORT}/tor/server/authority || exit 1
+HEALTHCHECK --timeout=5s CMD /healthcheck.sh

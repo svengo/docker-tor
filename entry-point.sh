@@ -2,13 +2,7 @@
 set -e
 
 # default configuration
-export ORPORT="${ORPORT:-9001}"
-export DIRPORT="${DIRPORT:-9030}"
-export EXITPOLICY="${EXITPOLICY:-reject *:*}"
-export CONTROLPORT="${CONTROLPORT:-9051}"
-export HASHEDCONTROLPASSWORD="${HASHEDCONTROLPASSWORD:-16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C}"
-export NICKNAME="${NICKNAME:-ididnteditheconfig}"
-export CONTACTINFO="${CONTACTINFO:-Random Person <nobody AT example dot com>}"
+source /config.sh
 
 # generate /etc/tor/torrc-defaults
 /usr/bin/envsubst < /etc/tor/torrc-defaults-source > /etc/tor/torrc-defaults
