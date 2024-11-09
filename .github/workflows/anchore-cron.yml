@@ -34,7 +34,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build the Docker image
+    - name: Pull the Docker image
       run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:latest
     - name: Run the Anchore Grype scan action
       uses: anchore/scan-action@f2ba85e044c8f5e5014c9a539328a9c78d3bfa49
