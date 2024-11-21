@@ -10,6 +10,9 @@ on:
 
 jobs:
   docker:
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     steps:
     - 
@@ -50,6 +53,7 @@ jobs:
         images: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
         flavor: | 
           latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
+          prefix=ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}|latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
         tags: |
           type=match,pattern=v([\d.]+),group=1
           type=match,pattern=v(.*),group=1
