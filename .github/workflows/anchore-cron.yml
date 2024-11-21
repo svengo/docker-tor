@@ -9,17 +9,17 @@
 # and parameters, see https://github.com/anchore/scan-action. For more
 # information on Anchore's container image scanning tool Grype, see
 # https://github.com/anchore/grype
-name: Anchore Grype vulnerability scan (cron)
+name: Anchore Grype daily vulnerability scan
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+    - cron: '0 6 * * *'  # Daily at 6 AM UTC
 
 permissions:
   contents: read
 
 jobs:
-  Anchore-Build-Scan:
+  Anchore-Daily-Scan:
     permissions:
       contents: read # for actions/checkout to fetch code
       security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
