@@ -32,15 +32,15 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        username: ${{ vars.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Pull the Docker image
-      run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:latest
+      run: docker pull ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:latest
     - name: Run the Anchore Grype scan action
       uses: anchore/scan-action@f2ba85e044c8f5e5014c9a539328a9c78d3bfa49
       id: scan
       with:
-        image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:latest
+        image: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:latest
         fail-build: true
         severity-cutoff: high
     - name: Upload vulnerability report
