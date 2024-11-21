@@ -28,6 +28,13 @@ jobs:
         username: ${{ vars.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - 
+      name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - 
       name: Update Docker Hub description
       uses: peter-evans/dockerhub-description@e98e4d1628a5f3be2be7c231e50981aee98723ae
       with:
@@ -47,6 +54,9 @@ jobs:
           type=match,pattern=v([\d.]+),group=1
           type=match,pattern=v(.*),group=1
           type=sha
+          type=match,pattern=v([\d.]+),group=1,prefix=ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:
+          type=match,pattern=v(.*),group=1,prefix=ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:
+          type=sha,prefix=ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:
     -
       name: Build and push Docker image
       uses: docker/build-push-action@v6
