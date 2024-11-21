@@ -56,8 +56,9 @@ jobs:
         flavor: |
           latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
         tags: |
-          type=match,pattern=v([\d.]+),group=1
-          type=match,pattern=v(.*),group=1
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
           type=sha
     -
       name: Build and push Docker image
