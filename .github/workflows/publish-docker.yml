@@ -50,17 +50,15 @@ jobs:
       id: meta
       uses: docker/metadata-action@v5
       with:
-        images: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
-        flavor: | 
+        images: |
+          ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
+          ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}
+        flavor: |
           latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
-          prefix=ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}|latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
         tags: |
           type=match,pattern=v([\d.]+),group=1
           type=match,pattern=v(.*),group=1
           type=sha
-          type=match,pattern=v([\d.]+),group=1,prefix=ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:
-          type=match,pattern=v(.*),group=1,prefix=ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:
-          type=sha,prefix=ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:
     -
       name: Build and push Docker image
       uses: docker/build-push-action@v6
