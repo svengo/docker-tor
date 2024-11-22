@@ -21,6 +21,9 @@ Simple Docker container to run a Tor node.
 - **Docker Hub**:  
   [svengo/tor](https://hub.docker.com/r/svengo/tor)
 
+- **GitHub Container registry**:  
+  [svengo/docker-tor](https://github.com/svengo/docker-tor/pkgs/container/tor)
+
 - **Tor project**:  
   [Tor Project](https://www.torproject.org/)
 
