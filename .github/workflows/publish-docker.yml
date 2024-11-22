@@ -56,10 +56,9 @@ jobs:
         flavor: |
           latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
         tags: |
-          type=semver,pattern={{version}}
-          type=semver,pattern={{major}}.{{minor}}
-          type=semver,pattern={{major}}
-          type=sha
+          type=match,pattern=^v?((?:\d+\.){3}\d+),group=1  # 0.4.8.13
+          type=match,pattern=^v?(.*),group=1               # 0.4.8.13-docker.1
+          type=sha                                         # sha-4e91d87
     -
       name: Build and push Docker image
       uses: docker/build-push-action@v6
