@@ -1,4 +1,4 @@
-FROM alpine:3.20.3
+FROM alpine:3.21.0
 
 # Build-time variables
 ARG TOR_VERSION=0.4.8.13
