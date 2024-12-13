@@ -9,7 +9,7 @@
 # and parameters, see https://github.com/anchore/scan-action. For more
 # information on Anchore's container image scanning tool Grype, see
 # https://github.com/anchore/grype
-name: Anchore Grype daily vulnerability scan
+name: Anchore Grype docker image vulnerability scan
 
 on:
   workflow_dispatch:
@@ -27,23 +27,28 @@ jobs:
       actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
     runs-on: ubuntu-latest
     steps:
-    - name: Check out the code
+    - 
+      name: Check out the code
       uses: actions/checkout@v4
-
-    - name: Login to Docker Hub
+    -
+      name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
-        username: ${{ vars.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Pull the Docker image
-      run: docker pull ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:latest
-    - name: Run the Anchore Grype scan action
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - 
+      name: Pull the Docker image
+      run: docker pull ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
+    - 
+      name: Run the Anchore Grype scan action
       uses: anchore/scan-action@869c549e657a088dc0441b08ce4fc0ecdac2bb65
       id: scan
       with:
-        image: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:latest
+        image: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
         fail-build: false
-    - name: Upload vulnerability report
+    - 
+      name: Upload vulnerability report
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: ${{ steps.scan.outputs.sarif }}
