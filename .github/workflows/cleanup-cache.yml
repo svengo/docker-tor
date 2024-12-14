@@ -3,7 +3,7 @@ name: Cleanup build cache
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'  # Daily at 0 AM UTC
+    - cron: '0 0 * * *' # Daily at 0 AM UTC
     
 jobs:
   cleanup:
