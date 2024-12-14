@@ -44,7 +44,6 @@ jobs:
       with:
         context: .
         file: ./Dockerfile
-        tags: localbuild/testimage:latest
         outputs: type=docker,dest=/tmp/testimage.tar
         cache-from: type=gha
         cache-to: type=gha,mode=max
