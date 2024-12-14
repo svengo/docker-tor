@@ -56,6 +56,7 @@ jobs:
       with:
         image: /tmp/testimage.tar
         fail-build: true
+        # Fail the build for high and critical vulnerabilities
         severity-cutoff: high
     -
       name: Upload vulnerability report
