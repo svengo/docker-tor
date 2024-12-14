@@ -54,6 +54,7 @@ jobs:
         # push: true
         # tags: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:dev
         tags: localbuild/testimage:latest
+        outputs: type=docker,dest=/tmp/testimage.tar
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/amd64
@@ -63,7 +64,8 @@ jobs:
       id: scan
       with:
         # image: "ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:dev"
-        image: localbuild/testimage:latest
+        # image: localbuild/testimage:latest
+        image: /tmp/testimage.tar
         fail-build: true
         severity-cutoff: high
     -
