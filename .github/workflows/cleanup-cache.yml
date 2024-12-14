@@ -2,7 +2,9 @@ name: Cleanup build cache
 
 on:
   workflow_dispatch:
-  
+  schedule:
+    - cron: '0 0 * * *' # Daily at 0 AM UTC
+    
 jobs:
   cleanup:
     runs-on: ubuntu-latest
@@ -27,4 +29,3 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           BRANCH: refs/pull/${{ github.event.pull_request.number }}/merge
-          
