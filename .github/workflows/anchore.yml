@@ -33,12 +33,20 @@ jobs:
       name: Check out the code
       uses: actions/checkout@v4
     -
+      name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    -
       name: Build Docker image
       uses: docker/build-push-action@v6
       with:
         context: .
         file: ./Dockerfile
-        tags: "localbuild/testimage:latest"
+        push: true
+        tags: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:dev
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/amd64
@@ -47,7 +55,7 @@ jobs:
       uses: anchore/scan-action@v6.0.0
       id: scan
       with:
-        image: "localbuild/testimage:latest"
+        image: "ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:dev"
         fail-build: true
         severity-cutoff: high
     -
