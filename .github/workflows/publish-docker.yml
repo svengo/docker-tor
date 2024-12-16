@@ -75,10 +75,16 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/amd64
-    - 
-      name: Attest
+    -
+      name: Attest DockerHub
       uses: actions/attest-build-provenance@v2
-      id: attest
+      with:
+        subject-name: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
+        subject-digest: ${{ steps.push.outputs.digest }}
+        push-to-registry: true
+    -
+      name: Attest ghcr
+      uses: actions/attest-build-provenance@v2
       with:
         subject-name: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}
         subject-digest: ${{ steps.push.outputs.digest }}
