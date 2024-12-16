@@ -79,7 +79,7 @@ jobs:
       name: Attest DockerHub
       uses: actions/attest-build-provenance@v2
       with:
-        subject-name: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
+        subject-name: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
     -
