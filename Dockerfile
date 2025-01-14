@@ -4,6 +4,16 @@ FROM alpine:3.21.2
 ARG TOR_VERSION=0.4.8.13
 ARG TZ=Europe/Berlin
 
+# Environment variables
+ENV RELAY_PORT=9001
+ENV METRICS_PORT=9052
+ENV DIR_PORT=9030
+ENV RELAY_BANDWIDTH_RATE=81920
+ENV RELAY_BANDWIDTH_BURST=102400
+ENV TOR_SOCKS_PORT=0.0.0.0:9050
+ENV EXTERNAL_ADDRESS=auto
+ENV CONTROL_PORT=127.0.0.1:9051
+
 WORKDIR /tmp
 
 RUN \
@@ -17,7 +27,8 @@ RUN \
     su-exec \
     xz-libs \
     zlib \
-    zstd-libs && \
+    zstd-libs \
+    nyx && \
   apk add --virtual build \
     build-base \
     ca-certificates \
@@ -65,7 +76,8 @@ RUN \
   rm -rf /var/cache/apk/* && \
   \
   addgroup -S tor && \
-  adduser -s /bin/false -SDH -G tor tor
+  adduser -s /bin/false -SDH -G tor tor && \
+  echo "HashedControlPassword 16:2565CFA67C16BE1C60ADB80B439895789609914A901BD3231B02F9DB86" >> /etc/tor/torrc-defaults-source
 
 VOLUME /data
 WORKDIR /data

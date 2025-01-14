@@ -1,0 +1,14 @@
+# Docker override files
+docker-compose.override.yml
+
+# Local data directory
+/tor
+
+# Common ignore patterns
+*.log
+*.tmp
+*.swp
+.DS_Store
+.idea/
+.vscode/
+node_modules/

@@ -56,6 +56,50 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data svengo/tor
 
 ### Basic configuration
 
+### Configuration Best Practices
+
+- **Personal Configuration**: All personal settings (nickname, contact info, etc.) should be configured through environment variables in `docker-compose.override.yml`
+- **Security**: Never commit personal information to the repository
+- **Version Control**: Use `.gitignore` to exclude personal configuration files
+
+### Modifications from Original Repository
+
+This fork includes several modifications to enhance functionality and security:
+
+1. **NYX Configuration**:
+   - NYX (formerly arm) is pre-configured for monitoring Tor
+   - Access NYX by connecting to the control port (default: 9051)
+   - Requires a hashed control password (see below)
+
+2. **Control Password Generation**:
+   To generate a hashed password for NYX and control port access:
+   ```bash
+   docker compose exec daemon tor --hash-password "your_password"
+   ```
+   Add the output to your `docker-compose.override.yml`:
+   ```yaml
+   environment:
+     - HASHEDCONTROLPASSWORD=16:your_hashed_password
+   ```
+
+3. **SOCKS Proxy Configuration**:
+   - Added SOCKS proxy on port 9050 by default
+   - Configured to listen on all interfaces for better container integration
+   - Test with: `curl --socks5 127.0.0.1:9050 https://check.torproject.org`
+
+4. **Personal Configuration Management**:
+   - Added `docker-compose.override.yml` for personal settings
+   - Added `.gitignore` to exclude personal configurations from version control
+
+5. **Network Configuration**:
+   - Modified default subnets to prevent conflicts
+   - Added IPv6 support
+
+To apply these changes, restart the container:
+```bash
+docker compose up -d
+```
+
 Use environment variables for basic configuration. The contents of the environment variables are used to build `/etc/tor/torrc-defaults`, for more advanced configuration you can edit the `/data/torrc` configuration file directly.
 
 ``` console
