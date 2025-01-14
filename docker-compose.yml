@@ -1,15 +1,16 @@
 services:
   daemon:
     image: bpawnzz/tor:v2
+    env_file:
+      - .env
     environment:
-      - ORPORT=9001
-      - DIRPORT=9030
-      - CONTROLPORT=9051
-      - HASHEDCONTROLPASSWORD=16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C
-      - NICKNAME=debianTorNode
-      - CONTACTINFO=bpawnz@yandex.com
-#     - MYFAMILY=
-#     - ADDRESS=
+      - ORPORT=${ORPORT}
+      - DIRPORT=${DIRPORT}
+      - CONTROLPORT=${CONTROLPORT}
+      - HASHEDCONTROLPASSWORD=${HASHEDCONTROLPASSWORD}
+      - NICKNAME=${TOR_NICKNAME}
+      - CONTACTINFO=${CONTACT_INFO}
+      - EXITPOLICY=${EXITPOLICY}
     ports:
       - 9001:9001
       - 9030:9030

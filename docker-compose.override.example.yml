@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  daemon:
+    environment:
+      - NICKNAME=${TOR_NICKNAME}
+      - CONTACTINFO=${CONTACT_INFO}
+      - HASHEDCONTROLPASSWORD=${HASHEDCONTROLPASSWORD}
+      - ORPORT=${ORPORT}
+      - DIRPORT=${DIRPORT}
+      - CONTROLPORT=${CONTROLPORT}
+      - SOCKS_PORT=${SOCKS_PORT}
+      - EXITPOLICY=${EXITPOLICY}
+    volumes:
+      - ./tor:/data

@@ -54,13 +54,26 @@ Start the container:
 docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data svengo/tor
 ```
 
-### Basic configuration
+### Configuration
 
-### Configuration Best Practices
+#### Best Practices
+- Use the `.env` file for all configuration values
+- Copy `docker-compose.override.example.yml` to `docker-compose.override.yml` and customize
+- Never commit personal information to the repository
+- Use `.gitignore` to exclude `.env` and `docker-compose.override.yml`
 
-- **Personal Configuration**: All personal settings (nickname, contact info, etc.) should be configured through environment variables in `docker-compose.override.yml`
-- **Security**: Never commit personal information to the repository
-- **Version Control**: Use `.gitignore` to exclude personal configuration files
+#### Setup Instructions
+1. Copy `.env.example` to `.env` and fill in your values
+2. Copy `docker-compose.override.example.yml` to `docker-compose.override.yml`
+3. Generate a hashed control password:
+   ```bash
+   docker compose exec daemon tor --hash-password "your_password"
+   ```
+4. Add the hashed password to your `.env` file
+5. Start the container:
+   ```bash
+   docker compose up -d
+   ```
 
 ### Modifications from Original Repository
 

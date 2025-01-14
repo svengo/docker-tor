@@ -1,8 +1,13 @@
-# Docker override files
+# Sensitive configuration files
+.env
 docker-compose.override.yml
 
 # Local data directory
 /tor
+
+# Example files (should be tracked)
+!.env.example
+!docker-compose.override.example.yml
 
 # Common ignore patterns
 *.log
