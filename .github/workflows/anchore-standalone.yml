@@ -42,7 +42,7 @@ jobs:
         run: docker pull ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
       -
         name: Run the Anchore Grype scan action
-        uses: anchore/scan-action@v6.0.0
+        uses: anchore/scan-action@7c05671ae9be166aeb155bad2d7df9121823df32
         id: scan
         with:
           image: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
