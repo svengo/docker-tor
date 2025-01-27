@@ -75,9 +75,9 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data svengo/tor
    docker compose up -d
    ```
 
-### Modifications from Original Repository
+### Configuration Improvements
 
-This fork includes several modifications to enhance functionality and security:
+This project includes several enhancements to improve functionality and security:
 
 1. **NYX Configuration**:
    - NYX (formerly arm) is pre-configured for monitoring Tor
