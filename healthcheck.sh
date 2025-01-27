@@ -2,8 +2,8 @@
 
 set -e
 
-# default configuration
+# Load default configuration
 . /config.sh
 
-# check health
+# Check health by testing ORPort
 su-exec tor echo quit | curl -sS "telnet://localhost:${ORPORT}" || exit 1

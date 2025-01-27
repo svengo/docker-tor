@@ -2,23 +2,23 @@
 
 set -e
 
-# default configuration
+# Load default configuration
 . /config.sh
 
-# generate /etc/tor/torrc-defaults
+# Generate /etc/tor/torrc-defaults from template
 /usr/bin/envsubst < /etc/tor/torrc-defaults-source > /etc/tor/torrc-defaults
 
-# fix permissions
+# Fix permissions
 chown -R tor:tor /data
 chmod 0700 /data
 
-# if /data/torrc doesn't exist, use sample
+# If /data/torrc doesn't exist, use sample
 if [ ! -s /data/torrc ]; then
   cp /etc/tor/torrc.sample /data/torrc
 fi
   
 if [ "$1" = "tor" ]; then
-  # run tor
+  # Run tor as tor user
   exec /sbin/su-exec tor "$@"
 fi
 
