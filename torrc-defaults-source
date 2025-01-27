@@ -9,6 +9,11 @@ DataDirectory /data
 # Ports
 ORPort $ORPORT
 DirPort $DIRPORT
+SocksPort $TOR_SOCKS_PORT
+
+# Bandwidth limits
+RelayBandwidthRate $RELAY_BANDWIDTH_RATE
+RelayBandwidthBurst $RELAY_BANDWIDTH_BURST
 
 # ExitPolicy
 ExitPolicy $EXITPOLICY
@@ -22,3 +27,6 @@ Nickname  $NICKNAME
 ContactInfo $CONTACTINFO
 MyFamily $MYFAMILY
 Address $ADDRESS
+
+# SOCKS policy
+SocksPolicy accept *
