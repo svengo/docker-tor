@@ -1,6 +1,6 @@
 services:
   daemon:
-    image: bpawnzz/tor:v2
+    image: bpawnzz/tor:v4
     env_file:
       - .env
     environment:
@@ -14,7 +14,7 @@ services:
     ports:
       - 9001:9001
       - 9030:9030
-      - 9050:9050
+      - 0.0.0.0:9050:9050
     volumes:
       - ./tor:/data
     restart: unless-stopped

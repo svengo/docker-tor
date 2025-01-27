@@ -2,7 +2,7 @@ FROM alpine:3.21.2
 
 # Build-time variables
 ARG TOR_VERSION=0.4.8.13
-ARG TZ=Europe/Berlin
+ARG TZ=America/Los_Angeles
 
 # Environment variables
 ENV RELAY_PORT=9001
