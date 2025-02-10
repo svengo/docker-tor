@@ -28,7 +28,7 @@ I will update the supported tags as soon as a new Tor or Alpine release is avail
 
 ## Tools
 
-I use the following automated tools to keep track of updated packages and known security problems:
+The following automated tools are used to keep track of updated packages and known security problems:
 
 - [Dependabot](https://docs.github.com/en/code-security/dependabot): Automated dependency updates built into GitHub.
 - [Grype](https://github.com/anchore/grype): A vulnerability scanner for container images and filesystems.
