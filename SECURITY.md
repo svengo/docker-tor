@@ -25,3 +25,11 @@ The issue will be published as a [security advisory](https://github.com/svengo/d
 ## Update policy
 
 I will update the supported tags as soon as a new Tor or Alpine release is available. Please give me three days to perform and test the update. I will also periodically rebuild the image to include updated Alpine packages with important security fixes.
+
+## Tools
+
+I use the following autommated tools to keep track of updated packages and known security vularibilities:
+
+- [Dependabot](https://docs.github.com/en/code-security/dependabot): Automated dependency updates built into GitHub.
+- [Grype](https://github.com/anchore/grype): A vulnerability scanner for container images and filesystems.
+- [Codacy Security Scan](https://github.com/marketplace/actions/codacy-analysis-cli): Codacy helps to build effortless code quality and security for developers.
