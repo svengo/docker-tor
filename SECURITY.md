@@ -8,7 +8,7 @@ Only the current release, the `latest` tag, and the current stable Tor version (
 
 ### Reporting Tor vulnerabilities
 
-If you've found a vulnerability in Tor, please email to `security at torproject.org`. See [How to report a bug or give feedback](https://support.torproject.org/misc/bug-or-feedback/) for details.
+If you've found a vulnerability in Tor, please send an email to `security at torproject.org`. See [How to report a bug or give feedback](https://support.torproject.org/misc/bug-or-feedback/) for details.
 
 ### Docker image vulnerability
 
@@ -18,10 +18,18 @@ If you've found a vulnerability in this docker image, please mail `svengo at sve
 
 Report vulnerabilities in third-party modules to the person or team maintaining the module.
 
-## Disclosure policy
+## Disclosure Policy
 
 The issue will be published as a [security advisory](https://github.com/svengo/docker-tor/security/advisories).
 
-## Update policy
+## Update Policy
 
 I will update the supported tags as soon as a new Tor or Alpine release is available. Please give me three days to perform and test the update. I will also periodically rebuild the image to include updated Alpine packages with important security fixes.
+
+## Tools
+
+The following automated tools are used to keep track of updated packages and known security problems:
+
+- [Dependabot](https://docs.github.com/en/code-security/dependabot): Automated dependency updates built into GitHub.
+- [Grype](https://github.com/anchore/grype): A vulnerability scanner for container images and filesystems.
+- [Codacy Security Scan](https://github.com/marketplace/actions/codacy-analysis-cli): Code quality scanner.
