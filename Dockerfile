@@ -35,7 +35,7 @@ RUN \
   curl ${CURL_OPTIONS} "https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz" && \
   curl ${CURL_OPTIONS} "https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum" && \
   curl ${CURL_OPTIONS} "https://dist.torproject.org/tor-${TOR_VERSION}.tar.gz.sha256sum.asc" && \
-  gpg --auto-key-locate nodefault,wkd --locate-keys 514102454D0A87DB0767A1EBBE6A0531C18A9179 \
+  gpg --recv-keys 514102454D0A87DB0767A1EBBE6A0531C18A9179 \
     B74417EDDF22AC9F9E90F49142E86A2A11F48D36 \
     2133BC600AB133E1D826D173FE43009C4607B1FB && \
   sha256sum -c "tor-${TOR_VERSION}.tar.gz.sha256sum" && \
