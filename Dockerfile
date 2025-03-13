@@ -1,5 +1,12 @@
 FROM alpine:3.21.3
 
+# OpenContainers annotations
+LABEL org.opencontainers.image.description="Simple Docker container to run a Tor node."
+LABEL org.opencontainers.image.licenses="Unlicense"
+LABEL org.opencontainers.image.source="https://github.com/svengo/docker-tor"
+LABEL org.opencontainers.image.title="docker-tor"
+LABEL org.opencontainers.image.url="https://github.com/svengo/docker-tor"
+  
 # Build-time variables
 ARG TOR_VERSION=0.4.8.14
 ARG TZ=Europe/Berlin
