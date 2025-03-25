@@ -57,6 +57,8 @@ jobs:
         fail-build: true
         # Fail the build for high and critical vulnerabilities
         severity-cutoff: high
+        # (temporary) fix for https://github.com/anchore/scan-action/issues/451#issue-2941660915
+        grype-version: "v0.90.0"
     -
       name: Upload vulnerability report
       uses: github/codeql-action/upload-sarif@v3
