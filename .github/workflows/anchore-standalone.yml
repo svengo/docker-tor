@@ -47,7 +47,7 @@ jobs:
         with:
           image: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
           fail-build: false
-          grype-version: "v0.90.0"
+          grype-version: "v0.91.0"
       -
         name: Upload vulnerability report
         uses: github/codeql-action/upload-sarif@v3
