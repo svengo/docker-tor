@@ -59,8 +59,8 @@ jobs:
         severity-cutoff: high
         # (temporary) fix for https://github.com/anchore/scan-action/issues/451#issue-2941660915
         grype-version: ${{ vars.GRYPE_VERSION }}
-    -
-      name: Upload vulnerability report
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: ${{ steps.scan.outputs.sarif }}
+#    -
+#      name: Upload vulnerability report
+#      uses: github/codeql-action/upload-sarif@v3
+#      with:
+#        sarif_file: ${{ steps.scan.outputs.sarif }}
