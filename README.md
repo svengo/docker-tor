@@ -1,5 +1,6 @@
 # docker-tor
 
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/512b3288012c4c10b50ea7112eaa3deb)](https://app.codacy.com/gh/svengo/docker-tor/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Build and publish a Docker image](https://github.com/svengo/docker-tor/actions/workflows/publish-docker.yml/badge.svg)](https://github.com/svengo/docker-tor/actions/workflows/publish-docker.yml)
 ![GitHub publish (with filter)](https://img.shields.io/github/v/release/svengo/docker-tor)
 ![GitHub repo stars](https://img.shields.io/github/stars/svengo/docker-tor?label=repo%20stars)
@@ -29,7 +30,7 @@ Simple Docker container to run a Tor node.
 
 ## Supported tags and corresponding `Dockerfile` links
 
-- [`latest`, `0.4.8.17`](https://github.com/svengo/docker-tor/blob/445e9ee8087bd617027c80cb7b79d5650a82d93a/Dockerfile)
+- [`latest`, `0.4.8.17`](https://github.com/svengo/docker-tor/raw/f23d7ecf799c286f0421e972f080786622a878da/Dockerfile)
 
 The Docker images are tagged with the full Tor version number. Other versions are not supported.
 I will regularly rebuild the image to include updated Alpine packages with security fixes.
