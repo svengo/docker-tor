@@ -56,5 +56,3 @@ jobs:
         fail-build: true
         # Fail the build for high and critical vulnerabilities
         severity-cutoff: high
-        # (temporary) fix for https://github.com/anchore/scan-action/issues/451#issue-2941660915
-        grype-version: ${{ vars.GRYPE_VERSION }}
