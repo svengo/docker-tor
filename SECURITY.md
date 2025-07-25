@@ -8,11 +8,11 @@ Only the current release, the `latest` tag, and the current stable Tor version (
 
 ### Reporting Tor vulnerabilities
 
-If you've found a vulnerability in Tor, please send an email to `security at torproject.org`. See [How to report a bug or give feedback](https://support.torproject.org/misc/bug-or-feedback/) for details.
+If you've found a vulnerability in Tor, please send an email to `security at torproject.org`. See tor's [how to report a bug or give feedback](https://support.torproject.org/misc/bug-or-feedback/) for details.
 
 ### Docker image vulnerability
 
-If you've found a vulnerability in this docker image, please mail `svengo at svengo.de`.
+If you have found a potential vulnerability in this Docker image, please use the [security report form](https://github.com/svengo/docker-tor/security/advisories/new) to report it privately. More detailed documentation is available on [GitHub docs](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability#privately-reporting-a-security-vulnerability).
 
 ### Other
 
