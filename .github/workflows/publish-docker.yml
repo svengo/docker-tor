@@ -77,14 +77,14 @@ jobs:
         platforms: linux/amd64
     -
       name: Attest DockerHub
-      uses: actions/attest-build-provenance@v2
+      uses: actions/attest-build-provenance@v3
       with:
         subject-name: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
     -
       name: Attest ghcr
-      uses: actions/attest-build-provenance@v2
+      uses: actions/attest-build-provenance@v3
       with:
         subject-name: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}
         subject-digest: ${{ steps.push.outputs.digest }}
