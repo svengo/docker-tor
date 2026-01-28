@@ -30,7 +30,7 @@ Simple Docker container to run a Tor node.
 
 ## Supported tags and corresponding `Dockerfile` links
 
-- [`latest`, `0.4.8.21`](https://github.com/svengo/docker-tor/blob/07248fbbd6e7b50748698930cbb6ed4ffc444857/Dockerfile)
+- [`latest`, `0.4.8.21`](https://github.com/svengo/docker-tor/blob/4773c85b4fd7c8429bae06479cad1e65ebaeb9a3/Dockerfile)
 
 The Docker images are tagged with the full Tor version number. Other versions are not supported.
 I will regularly rebuild the image to include updated Alpine packages with security fixes.
