@@ -66,7 +66,8 @@ RUN \
   \
   addgroup -S tor && \
   adduser -s /bin/false -SDH -G tor tor && \
-  chown tor:tor /etc/tor
+  mkdir -p /data && \
+  chown -R tor:tor /etc/tor /data
 
 USER tor
 VOLUME /data
