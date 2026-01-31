@@ -30,7 +30,7 @@ Simple Docker container to run a Tor node.
 
 ## Supported tags and corresponding `Dockerfile` links
 
-- [`latest`, `0.4.8.22`](https://github.com/svengo/docker-tor/blob/2c486393c87c3ef7cb67b79874f70d04d05b9522/Dockerfile)
+- [`latest`, `0.4.8.22`](https://github.com/svengo/docker-tor/blob/799ba360507342c9d97c6c70f5a179584e89598b/Dockerfile)
 
 The Docker images are tagged with the full Tor version number. Other versions are not supported.
 I will regularly rebuild the image to include updated Alpine packages with security fixes.
@@ -47,7 +47,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 
 ### Data storage
 
-Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. The directory could exist, the permissions are handled by the container.
+Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. Make sure that the ``tor:tor`` user (default uid 100 / gid 101) has r/w permissions.
 
 Start the container:
 

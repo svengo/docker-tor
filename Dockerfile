@@ -15,7 +15,6 @@ RUN \
     gettext \
     libcap \
     libevent \
-    su-exec \
     xz-libs \
     zlib \
     zstd-libs && \
@@ -42,7 +41,7 @@ RUN \
   gpg --verify "tor-${TOR_VERSION}.tar.gz.sha256sum.asc" && \
   tar -zxf "tor-${TOR_VERSION}.tar.gz" && \
   \
-  cd tor-${TOR_VERSION} && \
+  cd "tor-${TOR_VERSION}" && \
   ./configure \
     --sysconfdir=/etc \
     --localstatedir=/var \
@@ -55,7 +54,7 @@ RUN \
     --enable-zstd \
     --silent && \
   \
-  CFLAGS=-Wno-cpp make && \
+  CFLAGS="-Wno-cpp" make && \
   \
   make test && \
   \
@@ -66,8 +65,11 @@ RUN \
   rm -rf /var/cache/apk/* && \
   \
   addgroup -S tor && \
-  adduser -s /bin/false -SDH -G tor tor
+  adduser -s /bin/false -SDH -G tor tor && \
+  mkdir -p /data && \
+  chown -R tor:tor /etc/tor /data
 
+USER tor
 VOLUME /data
 WORKDIR /data
 
