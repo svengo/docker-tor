@@ -41,7 +41,7 @@ RUN \
   gpg --verify "tor-${TOR_VERSION}.tar.gz.sha256sum.asc" && \
   tar -zxf "tor-${TOR_VERSION}.tar.gz" && \
   \
-  cd tor-${TOR_VERSION} && \
+  cd "tor-${TOR_VERSION}" && \
   ./configure \
     --sysconfdir=/etc \
     --localstatedir=/var \
@@ -54,7 +54,7 @@ RUN \
     --enable-zstd \
     --silent && \
   \
-  CFLAGS=-Wno-cpp make && \
+  CFLAGS="-Wno-cpp make" && \
   \
   make test && \
   \
