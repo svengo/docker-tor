@@ -15,7 +15,6 @@ RUN \
     gettext \
     libcap \
     libevent \
-    su-exec \
     xz-libs \
     zlib \
     zstd-libs && \
@@ -66,8 +65,10 @@ RUN \
   rm -rf /var/cache/apk/* && \
   \
   addgroup -S tor && \
-  adduser -s /bin/false -SDH -G tor tor
+  adduser -s /bin/false -SDH -G tor tor && \
+  chown tor:tor /etc/tor
 
+USER tor
 VOLUME /data
 WORKDIR /data
 

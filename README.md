@@ -47,7 +47,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 
 ### Data storage
 
-Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. The directory could exist, the permissions are handled by the container.
+Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. Make shure that the ``tor:tor`` user (default uid 100 / gid 101) have r/w permissions.
 
 Start the container:
 
