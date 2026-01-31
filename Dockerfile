@@ -54,7 +54,7 @@ RUN \
     --enable-zstd \
     --silent && \
   \
-  CFLAGS="-Wno-cpp make" && \
+  CFLAGS="-Wno-cpp" make && \
   \
   make test && \
   \
