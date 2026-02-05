@@ -49,7 +49,7 @@ jobs:
         platforms: linux/amd64
     -
       name: Run the Anchore Grype scan action
-      uses: anchore/scan-action@8d2fce09422cd6037e577f4130e9b925e9a37175
+      uses: anchore/scan-action@7037fa011853d5a11690026fb85feee79f4c946c
       id: scan
       with:
         image: /tmp/testimage.tar
