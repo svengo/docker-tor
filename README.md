@@ -67,6 +67,9 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNA
 
 You can use [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml). Don't forget to edit the file to suit your needs.
 
+**TODO!**
+
+
 #### Environment Variables
 
 svengo/tor uses several environment variables to generate the ``torrc-defaults``-file, the variables are set to reasonable defaults (see below). You can edit ``/data/torrc`` to your needs after the first run.
