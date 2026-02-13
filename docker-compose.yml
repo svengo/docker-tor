@@ -5,7 +5,7 @@ services:
     environment:
       - NICKNAME=${NICKNAME:-ididnteditheconfig}
       - CONTACTINFO=${CONTACTINFO:-Random Person <nobody AT example dot com>}
-      - HASHEDCONTROLPASSWORD=${HASHEDCONTROLPASSWORD:-16:your_hashed_password}
+      - HASHEDCONTROLPASSWORD=${HASHEDCONTROLPASSWORD:-}
       - ORPORT=${ORPORT:-9001}
       - DIRPORT=${DIRPORT:-9030}
       - CONTROLPORT=${CONTROLPORT:-9051}

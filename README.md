@@ -45,6 +45,13 @@ This command will start a Tor node and open ports 9001 and 9030:
 docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 ```
 
+
+### Docker Compose
+
+It ist recommenend to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `env.example` to `.env`. You can edit `.env` to your needs. Use the following command to create the hashed password `docker compose run daemon tor --hash-password "your_password"` and add it to yout `.env` file.
+
+
+
 ### Data storage
 
 Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. Make sure that the ``tor:tor`` user (default uid 100 / gid 101) has r/w permissions.
@@ -62,13 +69,6 @@ Use environment variables for basic configuration. The contents of the environme
 ``` console
 docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor``
 ```
-
-#### Docker Compose
-
-You can use [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml). Don't forget to edit the file to suit your needs.
-
-**TODO!**
-
 
 #### Environment Variables
 
