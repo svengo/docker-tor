@@ -165,6 +165,7 @@ This is a potential security risk.
 (Default: *empty*)
 
 ##### RELAY_BANDWIDTH_RATE (optional)
+
 `RELAY_BANDWIDTH_RATE=value`
 
 Average bandwidth limit for the relay (e.g., 100 KBytes). This allows the relay to use up to the specified rate, but averages the usage over time.
