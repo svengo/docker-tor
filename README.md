@@ -45,12 +45,9 @@ This command will start a Tor node and open ports 9001 and 9030:
 docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 ```
 
-
 ### Docker Compose
 
-It ist recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `env.example` to `.env`. You can edit `.env` to your needs. Use the following command to create the hashed password `docker compose run daemon tor --hash-password "your_password"` and add it to yout `.env` file.
-
-
+It is recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `env.example` to `.env`. You can edit `.env` to your needs. Use the following command to create the hashed password `docker compose run daemon tor --hash-password "your_password"` and add it to your `.env` file.
 
 ### Data storage
 
@@ -158,14 +155,12 @@ Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connect
 
 (Default: 9050)
 
-
 ##### RELAY_BANDWIDTH_RATE (optional)
 `RELAY_BANDWIDTH_RATE=value`
 
 Average bandwidth limit for the relay (e.g., 100 KBytes). This allows the relay to use up to the specified rate, but averages the usage over time.
 
 (Default: *empty*)
-
 
 ##### RELAY_BANDWIDTH_BURST (optional)
 
@@ -174,7 +169,6 @@ Average bandwidth limit for the relay (e.g., 100 KBytes). This allows the relay 
 Maximum bandwidth burst for the relay (e.g., 200 KBytes). This allows short bursts above the average rate, but still limits the maximum rate.
 
 (Default: *empty*)
-
 
 ## Feedback
 
