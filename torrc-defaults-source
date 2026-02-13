@@ -29,4 +29,4 @@ RelayBandwidthBurst $RELAY_BANDWIDTH_BURST
 
 # SOCKS
 SocksPort $SOCKS_PORT
-SocksPolicy accept *
+SocksPolicy $SOCKS_POLICY
