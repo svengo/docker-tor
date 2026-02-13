@@ -48,7 +48,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 
 ### Docker Compose
 
-It ist recommenend to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `env.example` to `.env`. You can edit `.env` to your needs. Use the following command to create the hashed password `docker compose run daemon tor --hash-password "your_password"` and add it to yout `.env` file.
+It ist recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `env.example` to `.env`. You can edit `.env` to your needs. Use the following command to create the hashed password `docker compose run daemon tor --hash-password "your_password"` and add it to yout `.env` file.
 
 
 
@@ -67,7 +67,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data svengo/tor
 Use environment variables for basic configuration. The contents of the environment variables are used to build `/etc/tor/torrc-defaults`, for more advanced configuration you can edit the `/data/torrc` configuration file directly.
 
 ``` console
-docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor``
+docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor
 ```
 
 #### Environment Variables
@@ -98,7 +98,7 @@ Set an exit policy for this server. Each policy is of the form `accept[6]|reject
 
 (Default: ``reject *:* # no exits allowed``)
 
-##### CONTROLPORT
+##### CONTROLPORT (optional)
 
 `CONTROLPORT=PORT|unix:path|auto [flags]`
 
@@ -108,13 +108,13 @@ se Tor to allow any process on the local host to control it.
 
 (Default: ``9051``)
 
-##### HASHEDCONTROLPASSWORD
+##### HASHEDCONTROLPASSWORD (optional)
 
 `HASHEDCONTROLPASSWORD=hashed_password`
 
 Allow connections on the control port if they present the password whose one-way hash is hashed_password. You can compute the hash of a password by running ``docker run svengo/tor tor --hash-password password``
 
-(Default: ``16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C``)
+(Default: *empty*)
 
 ##### NICKNAME
 
@@ -134,7 +134,7 @@ You can use [Tor ContactInfo Generator](https://torcontactinfogenerator.netlify.
 
 (Default: ``Random Person <nobody AT example dot com>``)
 
-##### MYFAMILY
+##### MYFAMILY (optional)
 
 `MYFAMILY=node,node,...`
 
@@ -144,11 +144,37 @@ When listing a node, it’s better to list it by fingerprint than by nickname: f
 
 (Default: *empty*)
 
-##### ADDRESS
+##### ADDRESS (optional)
 
 `ADDRESS=tor-node01.example.com`
 
 The IPv4 address of this server, or a fully qualified domain name of this server that resolves to an IPv4 address.  You can leave this unset, and Tor will try to guess your IPv4 address.  This IPv4 address is the one used to tell clients and other servers where to find your Tor server; it doesn't affect the address that your server binds to.  It also seems to work with an IPv6 address.
+
+##### SOCKS_PORT (optional)
+
+`SOCKS_PORT=9050`
+
+Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connections.
+
+(Default: 9050)
+
+
+##### RELAY_BANDWIDTH_RATE (optional)
+`RELAY_BANDWIDTH_RATE=value`
+
+Average bandwidth limit for the relay (e.g., 100 KBytes). This allows the relay to use up to the specified rate, but averages the usage over time.
+
+(Default: *empty*)
+
+
+##### RELAY_BANDWIDTH_BURST (optional)
+
+`RELAY_BANDWIDTH_BURST=value`
+
+Maximum bandwidth burst for the relay (e.g., 200 KBytes). This allows short bursts above the average rate, but still limits the maximum rate.
+
+(Default: *empty*)
+
 
 ## Feedback
 

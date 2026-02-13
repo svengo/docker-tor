@@ -22,3 +22,11 @@ Nickname  $NICKNAME
 ContactInfo $CONTACTINFO
 MyFamily $MYFAMILY
 Address $ADDRESS
+
+# Bandwith
+RelayBandwidthRate $RELAY_BANDWIDTH_RATE
+RelayBandwidthBurst $RELAY_BANDWIDTH_BURST
+
+# SOCKS
+SocksPort $SOCKS_PORT
+SocksPolicy accept *
