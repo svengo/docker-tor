@@ -151,7 +151,7 @@ The IPv4 address of this server, or a fully qualified domain name of this server
 
 `SOCKS_PORT=9050`
 
-Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connections.
+Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connections. If you use `docker compose`, you must also uncomment the corresponding port mapping in `docker-compose.yml` to make it reachable from the host.
 
 (Default: *empty*)
 
@@ -159,7 +159,7 @@ Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connect
 
 `SOCKS_POLICY=accept *`
 
-Set the SocksPolicy for the SOCKS proxy. If no SocksPolicy is specified, all connections that reach the SocksPort are accepted, which is a potential security risk.
+SOCKS_POLICY: access-control policy for the SOCKS proxy — if unset, all connections to SocksPort are accepted (potential security risk).
 
 (Default: *empty*)
 
