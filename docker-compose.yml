@@ -9,7 +9,7 @@ services:
       - ORPORT=${ORPORT:-9001}
       - DIRPORT=${DIRPORT:-9030}
       - CONTROLPORT=${CONTROLPORT:-9051}
-      - SOCKS_PORT=${SOCKS_PORT:-9050}
+      - SOCKS_PORT=${SOCKS_PORT:-}
       - SOCKS_POLICY=${SOCKS_POLICY:-}
       - EXITPOLICY=${EXITPOLICY:-reject *:*}
       - MYFAMILY=${MYFAMILY:-}
