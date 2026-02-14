@@ -159,7 +159,7 @@ Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connect
 
 `SOCKS_POLICY=accept *`
 
-SOCKS_POLICY: access-control policy for the SOCKS proxy — if unset, all connections to SocksPort are accepted (potential security risk).
+Access-control policy for the SOCKS proxy. If unset, all connections to SocksPort are accepted (potential security risk).
 
 (Default: *empty*)
 
