@@ -9,8 +9,7 @@ WORKDIR /tmp
 RUN \
   set -o xtrace && \
   apk update && \
-  apk upgrade && \
-  apk add \
+  apk add --no-cache \
     curl \
     gettext \
     libcap \
@@ -18,7 +17,7 @@ RUN \
     xz-libs \
     zlib \
     zstd-libs && \
-  apk add --virtual build \
+  apk add --no-cache --virtual build \
     build-base \
     ca-certificates \
     gnupg \
