@@ -7,7 +7,6 @@ WORKDIR /tmp
 
 RUN \
   set -o xtrace && \
-  apk update && \
   apk add --no-cache \
     curl \
     gettext \
@@ -60,7 +59,6 @@ RUN \
   \
   apk del build && \
   rm -rf /tmp/* && \
-  rm -rf /var/cache/apk/* && \
   \
   addgroup -S tor && \
   adduser -s /bin/false -SDH -G tor tor && \
