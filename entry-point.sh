@@ -12,6 +12,10 @@ envsubst < /etc/tor/torrc-defaults-source | sed -E '/^[a-zA-Z]+[[:space:]]*$/d' 
 # if /data/torrc doesn't exist, use sample
 if [ ! -s /data/torrc ]; then
   cp /etc/tor/torrc.sample /data/torrc
+  chown tor:tor /data/torrc
 fi
-  
+
+# verify config
+tor -f /data/torrc --defaults-torrc /etc/tor/torrc-defaults --verify-config
+
 exec "$@"

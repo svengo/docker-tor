@@ -23,7 +23,7 @@ ContactInfo $CONTACTINFO
 MyFamily $MYFAMILY
 Address $ADDRESS
 
-# Bandwith
+# Bandwidth
 RelayBandwidthRate $RELAY_BANDWIDTH_RATE
 RelayBandwidthBurst $RELAY_BANDWIDTH_BURST
 
