@@ -1,6 +1,7 @@
 # Sensitive configuration files
 .env
 docker-compose.override.yml
+docker-compose.env
 
 # Local data directory
 /tor

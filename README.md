@@ -47,7 +47,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 
 ### Docker Compose
 
-It is recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `env.example` to `.env`. You can edit `.env` to your needs. Use the following command to create the hashed password `docker compose run daemon tor --hash-password "your_password"` and add it to your `.env` file.
+It is recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `docker-compose.env.dist` to `docker-compose.env`. You can edit `docker-compose.env` to your needs.
 
 ### Data storage
 
