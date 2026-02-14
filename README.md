@@ -45,6 +45,10 @@ This command will start a Tor node and open ports 9001 and 9030:
 docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 ```
 
+### Docker Compose
+
+It is recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `docker-compose.env.dist` to `docker-compose.env`. You can edit `docker-compose.env` to your needs.
+
 ### Data storage
 
 Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. Make sure that the ``tor:tor`` user (default uid 100 / gid 101) has r/w permissions.
@@ -60,12 +64,8 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data svengo/tor
 Use environment variables for basic configuration. The contents of the environment variables are used to build `/etc/tor/torrc-defaults`, for more advanced configuration you can edit the `/data/torrc` configuration file directly.
 
 ``` console
-docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor``
+docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor
 ```
-
-#### Docker Compose
-
-You can use [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml). Don't forget to edit the file to suit your needs.
 
 #### Environment Variables
 
@@ -95,23 +95,23 @@ Set an exit policy for this server. Each policy is of the form `accept[6]|reject
 
 (Default: ``reject *:* # no exits allowed``)
 
-##### CONTROLPORT
+##### CONTROLPORT (optional)
 
 `CONTROLPORT=PORT|unix:path|auto [flags]`
 
 If set, Tor will accept connections on this port and allow those connections to control the Tor process using the Tor Control Prot
 ocol (described in control-spec.txt in torspec). Note: unless you also specify HASHEDCONTROLPASSWORD, setting this option will cau
-se Tor to allow any process on the local host to control it.
+se Tor to allow any process on the local host to control it. If you use `docker compose`, you must also uncomment the corresponding port mapping in `docker-compose.yml` to make it reachable from the host.
 
-(Default: ``9051``)
+(Default: *empty*)
 
-##### HASHEDCONTROLPASSWORD
+##### HASHEDCONTROLPASSWORD (optional)
 
-`HASHEDCONTROLPASSWORD=hashed_password`
+`HASHEDCONTROLPASSWORD=16:ACDB834CF7DA60F360D2C932BA2B12E545EE7C4BC4BA33AC492B8E3C12`
 
-Allow connections on the control port if they present the password whose one-way hash is hashed_password. You can compute the hash of a password by running ``docker run svengo/tor tor --hash-password password``
+Allow connections on the control port if they present the password whose one-way hash is hashed_password. You can compute the hash of a password by running ``docker run -it --rm svengo/tor:latest tor --hash-password "your_password"``
 
-(Default: ``16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C``)
+(Default: *empty*)
 
 ##### NICKNAME
 
@@ -131,7 +131,7 @@ You can use [Tor ContactInfo Generator](https://torcontactinfogenerator.netlify.
 
 (Default: ``Random Person <nobody AT example dot com>``)
 
-##### MYFAMILY
+##### MYFAMILY (optional)
 
 `MYFAMILY=node,node,...`
 
@@ -141,11 +141,43 @@ When listing a node, it’s better to list it by fingerprint than by nickname: f
 
 (Default: *empty*)
 
-##### ADDRESS
+##### ADDRESS (optional)
 
 `ADDRESS=tor-node01.example.com`
 
 The IPv4 address of this server, or a fully qualified domain name of this server that resolves to an IPv4 address.  You can leave this unset, and Tor will try to guess your IPv4 address.  This IPv4 address is the one used to tell clients and other servers where to find your Tor server; it doesn't affect the address that your server binds to.  It also seems to work with an IPv6 address.
+
+##### SOCKS_PORT (optional)
+
+`SOCKS_PORT=9050`
+
+Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connections. If you use `docker compose`, you must also uncomment the corresponding port mapping in `docker-compose.yml` to make it reachable from the host.
+
+(Default: *empty*)
+
+##### SOCKS_POLICY (optional)
+
+`SOCKS_POLICY=accept *`
+
+Access-control policy for the SOCKS proxy. If unset, all connections to SocksPort are accepted (potential security risk).
+
+(Default: *empty*)
+
+##### RELAY_BANDWIDTH_RATE (optional)
+
+`RELAY_BANDWIDTH_RATE=value`
+
+Average bandwidth limit for the relay (e.g., 100 KBytes). This allows the relay to use up to the specified rate, but averages the usage over time.
+
+(Default: *empty*)
+
+##### RELAY_BANDWIDTH_BURST (optional)
+
+`RELAY_BANDWIDTH_BURST=value`
+
+Maximum bandwidth burst for the relay (e.g., 200 KBytes). This allows short bursts above the average rate, but still limits the maximum rate.
+
+(Default: *empty*)
 
 ## Feedback
 

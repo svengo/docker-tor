@@ -1,22 +1,18 @@
 services:
-  tor:
+  daemon:
     image: svengo/tor:latest
     build: .
-    environment:
-      - ORPORT=9001
-      - DIRPORT=9030
-      - CONTROLPORT=9051
-      - HASHEDCONTROLPASSWORD=16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C
-      - NICKNAME=ididnteditheconfig
-      - CONTACTINFO=Random Person <nobody AT example dot com>
-      # - MYFAMILY=
-      # - ADDRESS=
+    env_file: docker-compose.env
     ports:
-      - 9001:9001
-      - 9030:9030
+      - ${ORPORT:-9001}:${ORPORT:-9001}
+      - ${DIRPORT:-9030}:${DIRPORT:-9030}
+      # Uncomment the following line to expose the control port (localhost only by default for security)
+      # - 127.0.0.1:${CONTROLPORT:-9051}:${CONTROLPORT:-9051}
+      # Uncomment the following line to expose the SOCKS proxy (localhost only by default for security)
+      # - 127.0.0.1:${SOCKS_PORT:-9050}:${SOCKS_PORT:-9050}
     volumes:
       - data:/data
-    restart: unless-stopped
+    restart: no
 
 volumes:
   data:

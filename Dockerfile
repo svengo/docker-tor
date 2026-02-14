@@ -2,15 +2,12 @@ FROM alpine:3.23.3
 
 # Build-time variables
 ARG TOR_VERSION=0.4.8.22
-ARG TZ=Europe/Berlin
 
 WORKDIR /tmp
 
 RUN \
   set -o xtrace && \
-  apk update && \
-  apk upgrade && \
-  apk add \
+  apk add --no-cache \
     curl \
     gettext \
     libcap \
@@ -18,7 +15,7 @@ RUN \
     xz-libs \
     zlib \
     zstd-libs && \
-  apk add --virtual build \
+  apk add --no-cache --virtual build \
     build-base \
     ca-certificates \
     gnupg \
@@ -62,7 +59,6 @@ RUN \
   \
   apk del build && \
   rm -rf /tmp/* && \
-  rm -rf /var/cache/apk/* && \
   \
   addgroup -S tor && \
   adduser -s /bin/false -SDH -G tor tor && \
