@@ -109,7 +109,7 @@ se Tor to allow any process on the local host to control it.
 
 `HASHEDCONTROLPASSWORD=16:ACDB834CF7DA60F360D2C932BA2B12E545EE7C4BC4BA33AC492B8E3C12`
 
-Allow connections on the control port if they present the password whose one-way hash is hashed_password. You can compute the hash of a password by running ``docker run svengo/tor tor --hash-password password``
+Allow connections on the control port if they present the password whose one-way hash is hashed_password. You can compute the hash of a password by running ``docker run svengo/tor:latest tor --hash-password "your_password"``
 
 (Default: *empty*)
 
