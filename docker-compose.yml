@@ -12,7 +12,7 @@ services:
       # - 127.0.0.1:${SOCKS_PORT:-9050}:${SOCKS_PORT:-9050}
     volumes:
       - data:/data
-    restart: unless-stopped
+    restart: no
 
 volumes:
   data:
