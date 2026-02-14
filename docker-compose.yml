@@ -5,13 +5,13 @@ services:
     environment:
       - NICKNAME=${NICKNAME:-ididnteditheconfig}
       - CONTACTINFO=${CONTACTINFO:-Random Person <nobody AT example dot com>}
-      - HASHEDCONTROLPASSWORD=${HASHEDCONTROLPASSWORD:-}
+      - EXITPOLICY=${EXITPOLICY:-reject *:*}
       - ORPORT=${ORPORT:-9001}
       - DIRPORT=${DIRPORT:-9030}
-      - CONTROLPORT=${CONTROLPORT:-9051}
+      - HASHEDCONTROLPASSWORD=${HASHEDCONTROLPASSWORD:-}
+      - CONTROLPORT=${CONTROLPORT:-}
       - SOCKS_PORT=${SOCKS_PORT:-}
       - SOCKS_POLICY=${SOCKS_POLICY:-}
-      - EXITPOLICY=${EXITPOLICY:-reject *:*}
       - MYFAMILY=${MYFAMILY:-}
       - ADDRESS=${ADDRESS:-}
       - RELAY_BANDWIDTH_RATE=${RELAY_BANDWIDTH_RATE:-}
@@ -19,7 +19,8 @@ services:
     ports:
       - ${ORPORT:-9001}:${ORPORT:-9001}
       - ${DIRPORT:-9030}:${DIRPORT:-9030}
-      - 127.0.0.1:${CONTROLPORT:-9051}:${CONTROLPORT:-9051}
+      # Uncomment the following line to expose the control port (localhost only by default for security)
+      # - 127.0.0.1:${CONTROLPORT:-9051}:${CONTROLPORT:-9051}
       # Uncomment the following line to expose the SOCKS proxy (localhost only by default for security)
       # - 127.0.0.1:${SOCKS_PORT:-9050}:${SOCKS_PORT:-9050}
     volumes:
