@@ -73,17 +73,17 @@ svengo/tor uses several environment variables to generate the ``torrc-defaults``
 
 ##### ORPORT
 
-`ORPORT=[address:]PORT|auto [flags]`
+`ORPORT=[address:]PORT [flags]`
 
-Advertise this port to listen for connections from Tor clients and servers. This option is required to be a Tor server. Set it to "auto" to have Tor pick a port for you. Set it to 0 to not run an ORPORT at all.
+Advertise this port to listen for connections from Tor clients and servers. This option is required to be a Tor server.
 
 (Default: ``9001``)
 
 ##### DIRPORT
 
-`DIRPORT=[address:]PORT|auto [flags]`
+`DIRPORT=[address:]PORT [flags]`
 
-If this option is nonzero, advertise the directory service on this port. Set it to "auto" to have Tor pick a port for you.
+If this option is nonzero, advertise the directory service on this port.
 
 (Default: ``9030``)
 
@@ -160,6 +160,14 @@ Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connect
 `SOCKS_POLICY=accept *`
 
 Access-control policy for the SOCKS proxy. If unset, all connections to SocksPort are accepted (potential security risk).
+
+(Default: *empty*)
+
+##### TZ (optional)
+
+`TZ=Europe/Berlin`
+
+Configure the system timezone for the container. If unset, the container uses UTC.
 
 (Default: *empty*)
 
