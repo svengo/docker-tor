@@ -1,5 +1,5 @@
 # Stage 1: Builder
-FROM alpine:3.20.1 AS builder
+FROM alpine:3.23.3 AS builder
 
 ARG TOR_VERSION=0.4.8.22
 
@@ -47,10 +47,7 @@ RUN \
   make install
 
 # Stage 2: Final
-FROM alpine:3.20.1
-
-ARG TZ=Europe/Berlin
-ENV TZ=${TZ}
+FROM alpine:3.23.3
 
 RUN apk add --no-cache \
   ca-certificates \
