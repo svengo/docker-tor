@@ -30,7 +30,7 @@ Simple Docker container to run a Tor node.
 
 ## Supported tags and corresponding `Dockerfile` links
 
-- [`latest`, `0.4.8.22`](https://github.com/svengo/docker-tor/blob/799ba360507342c9d97c6c70f5a179584e89598b/Dockerfile)
+- [`latest`, `0.4.9.5`](https://github.com/svengo/docker-tor/blob/e80caca7d675e6528bd4df0f8526ea9027cb7bb4/Dockerfile)
 
 The Docker images are tagged with the full Tor version number. Other versions are not supported.
 I will regularly rebuild the image to include updated Alpine packages with security fixes.
@@ -47,7 +47,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 
 ### Docker Compose
 
-It is recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `docker-compose.env.dist` to `docker-compose.env`. You can edit `docker-compose.env` to your needs.
+It is recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/raw/refs/heads/main/docker-compose.yml) and copy [docker-compose.env.dist](https://github.com/svengo/docker-tor/raw/refs/heads/main/docker-compose.env.dist) to `docker-compose.env`. You can edit `docker-compose.env` to your needs.
 
 ### Data storage
 
@@ -73,17 +73,17 @@ svengo/tor uses several environment variables to generate the ``torrc-defaults``
 
 ##### ORPORT
 
-`ORPORT=[address:]PORT|auto [flags]`
+`ORPORT=[address:]PORT [flags]`
 
-Advertise this port to listen for connections from Tor clients and servers. This option is required to be a Tor server. Set it to "auto" to have Tor pick a port for you. Set it to 0 to not run an ORPORT at all.
+Advertise this port to listen for connections from Tor clients and servers. This option is required to be a Tor server.
 
 (Default: ``9001``)
 
 ##### DIRPORT
 
-`DIRPORT=[address:]PORT|auto [flags]`
+`DIRPORT=[address:]PORT [flags]`
 
-If this option is nonzero, advertise the directory service on this port. Set it to "auto" to have Tor pick a port for you.
+If this option is nonzero, advertise the directory service on this port.
 
 (Default: ``9030``)
 
@@ -160,6 +160,14 @@ Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connect
 `SOCKS_POLICY=accept *`
 
 Access-control policy for the SOCKS proxy. If unset, all connections to SocksPort are accepted (potential security risk).
+
+(Default: *empty*)
+
+##### TZ (optional)
+
+`TZ=Europe/Berlin`
+
+Configure the system timezone for the container. If unset, the container uses UTC.
 
 (Default: *empty*)
 
