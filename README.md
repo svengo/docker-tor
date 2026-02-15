@@ -47,7 +47,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor svengo/tor
 
 ### Docker Compose
 
-It is recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/blob/main/docker-compose.yml) and copy `docker-compose.env.dist` to `docker-compose.env`. You can edit `docker-compose.env` to your needs.
+It is recommended to use `docker compose` for running the container. Use the supplied [docker-compose.yml](https://github.com/svengo/docker-tor/raw/refs/heads/main/docker-compose.yml) and copy [docker-compose.env.dist](https://github.com/svengo/docker-tor/raw/refs/heads/main/docker-compose.env.dist)` to `docker-compose.env`. You can edit `docker-compose.env` to your needs.
 
 ### Data storage
 
