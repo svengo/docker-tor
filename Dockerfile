@@ -71,7 +71,7 @@ USER tor
 VOLUME /data
 WORKDIR /data
 
-COPY torrc-defaults-source /etc/tor/
+COPY --chown=tor:tor torrc-defaults-source /etc/tor/
 COPY config.sh /config.sh
 COPY entry-point.sh /entrypoint.sh
 COPY healthcheck.sh /healthcheck.sh
