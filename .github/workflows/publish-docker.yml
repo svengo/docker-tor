@@ -64,7 +64,7 @@ jobs:
           type=sha                                         # sha-4e91d87
     -
       name: Build and push Docker image
-      uses: docker/build-push-action@v7
+      uses: docker/build-push-action@v6
       id: push
       with:
         context: .
