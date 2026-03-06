@@ -51,7 +51,7 @@ jobs:
     -
       name: Build Docker meta data
       id: meta
-      uses: docker/metadata-action@v6
+      uses: docker/metadata-action@v5
       with:
         images: |
           ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
