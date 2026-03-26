@@ -7,7 +7,7 @@ WORKDIR /tmp
 
 RUN \
   set -o xtrace && \
-  apk update && \
+  apk -U upgrade && \
   apk add \
     curl \
     gettext \
