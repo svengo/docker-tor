@@ -1,7 +1,7 @@
 FROM alpine:3.23.3
 
 # Build-time variables
-ARG TOR_VERSION=0.4.9.5
+ARG TOR_VERSION=0.4.9.6
 
 WORKDIR /tmp
 
