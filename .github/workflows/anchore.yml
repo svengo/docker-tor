@@ -65,6 +65,6 @@ jobs:
           IFS=$'\n'
           echo "## Docker tags"
           echo '```'
-          ${{ steps.scan.outputs.table }}
+          cat ${{ steps.scan.outputs.table }}
           echo '```'
         } >> $GITHUB_STEP_SUMMARY
