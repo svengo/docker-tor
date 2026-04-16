@@ -60,6 +60,7 @@ jobs:
     -
       name: Generate job summary
       id: job-summary
+      if: always()
       run: |
         {
           IFS=$'\n'
