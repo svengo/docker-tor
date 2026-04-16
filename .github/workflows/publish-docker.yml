@@ -52,7 +52,6 @@ jobs:
       name: Build Docker meta data
       id: meta
       uses: docker/metadata-action@v6
-      continue-on-error: true
       with:
         images: |
           ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
@@ -60,8 +59,8 @@ jobs:
         flavor: |
           latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
         tags: |
-          type=match,pattern=^v?((?:\d+\.){3}\d+),group=1  # 0.4.8.13
-          type=match,pattern=^v?(.*),group=1               # 0.4.8.13-docker.1
+          type=match,pattern=^v?((?:\d+\.){3}\d+),group=1,enable=${{ github.event_name == 'release' }}
+          type=match,pattern=^v?(.*),group=1,enable=${{ github.event_name == 'release' }}
           type=sha                                         # sha-4e91d87
     -
       name: Build and push Docker image
@@ -71,8 +70,8 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ steps.meta.outputs.tags || github.sha }}
-        labels: ${{ steps.meta.outputs.labels || '' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/amd64
