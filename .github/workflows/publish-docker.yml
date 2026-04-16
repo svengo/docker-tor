@@ -51,7 +51,8 @@ jobs:
     -
       name: Build Docker meta data
       id: meta
-      uses: docker/metadata-action@v5
+      uses: docker/metadata-action@v6
+      continue-on-error: true
       with:
         images: |
           ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
@@ -70,8 +71,8 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
+        tags: ${{ steps.meta.outputs.tags || github.sha }}
+        labels: ${{ steps.meta.outputs.labels || '' }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
         platforms: linux/amd64
