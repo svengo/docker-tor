@@ -63,7 +63,7 @@ jobs:
       run: |
         {
           IFS=$'\n'
-          echo "## Docker tags"
+          echo "## Vulnerability Report Summary"
           echo '```'
           cat ${{ steps.scan.outputs.table }}
           echo '```'
