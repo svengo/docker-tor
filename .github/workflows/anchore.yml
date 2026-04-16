@@ -57,9 +57,14 @@ jobs:
         fail-build: true
         # Fail the build for critical vulnerabilities
         severity-cutoff: critical
-      env:
-        GRYPE_FILE: vuln-report.out
-    - 
+    -
+      name: Generate job summary
+      id: job-summary
       run: |
-          VULN_REPORT="$(cat vuln-report.out)"
-          printf "# Vulnerability Report Summary\n<pre>$VULN_REPORT</pre>" > $GITHUB_STEP_SUMMARY
+        {
+          IFS=$'\n'
+          echo "## Docker tags"
+          echo '```'
+          ${{ steps.scan.outputs.table }}
+          echo '```'
+        } >> $GITHUB_STEP_SUMMARY
