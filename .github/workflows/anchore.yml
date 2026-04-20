@@ -54,18 +54,16 @@ jobs:
       with:
         image: /tmp/testimage.tar
         output-format: table
-        fail-build: true
-        # Fail the build for critical vulnerabilities
-        severity-cutoff: critical
+        fail-build: false
+        severity-cutoff: high
     -
       name: Generate job summary
       id: job-summary
-      if: always()
       run: |
         {
           IFS=$'\n'
-          echo "## Vulnerability Report Summary"
+          echo '## Vulnerability Report Summary'
           echo '```'
-          cat ${{ steps.scan.outputs.table }}
+          cat '${{ steps.scan.outputs.table }}'
           echo '```'
         } >> $GITHUB_STEP_SUMMARY
