@@ -14,7 +14,9 @@ if [ ! -s /data/torrc ]; then
   cp /etc/tor/torrc.sample /data/torrc
 fi
 
-# verify config
-tor -f /data/torrc --defaults-torrc /etc/tor/torrc-defaults --verify-config
+if [ "$1" = "tor" ]; then
+  # verify config
+  "$@" --verify-config
+fi
 
 exec "$@"
