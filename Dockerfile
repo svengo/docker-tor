@@ -72,9 +72,9 @@ VOLUME /data
 WORKDIR /data
 
 COPY --chown=tor:tor torrc-defaults-source /etc/tor/
-COPY config.sh /config.sh
-COPY entry-point.sh /entrypoint.sh
-COPY healthcheck.sh /healthcheck.sh
+COPY --chmod=+x config.sh /config.sh
+COPY --chmod=+x entry-point.sh /entrypoint.sh
+COPY --chmod=+x healthcheck.sh /healthcheck.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 
