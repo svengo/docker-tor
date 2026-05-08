@@ -16,7 +16,7 @@ fi
 
 if [ "$1" = "tor" ]; then
   # verify config
-  tor -f /data/torrc --verify-config
+  exec "$@" --verify-config
 fi
 
 exec "$@"
