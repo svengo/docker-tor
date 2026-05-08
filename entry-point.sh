@@ -16,7 +16,7 @@ fi
 
 if [ "$1" = "tor" ]; then
   # verify config
-  exec "$@" --verify-config
+  "$@" --verify-config
 fi
 
 exec "$@"
