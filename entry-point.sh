@@ -16,7 +16,7 @@ fi
 
 if [ "$1" = "tor" ]; then
   # verify config
-  tor -f /data/torrc --defaults-torrc /etc/tor/torrc-defaults --verify-config
+  tor -f /data/torrc --verify-config
 fi
 
 exec "$@"
