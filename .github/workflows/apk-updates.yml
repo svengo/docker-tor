@@ -13,6 +13,10 @@ permissions:
 jobs:
   check-updates:
     runs-on: ubuntu-latest
+    env:
+      CONTAINER_IMAGE: ghcr.io/svengo/tor:latest
+      ISSUE_LABEL: apk-update
+      APK_CHECK_CMD: apk --quiet update; apk --quiet version -l '<'
 
     steps:
       - name: Login to GitHub Container Registry	
@@ -21,7 +25,7 @@ jobs:
           registry: ghcr.io	
           username: ${{ github.repository_owner }}	
           password: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Ensure label exists
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,7 +33,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          gh label create apk-update \
+          gh label create "$ISSUE_LABEL" \
             --repo "$REPO" \
             --color "1d76db" \
             --description "APK package updates available in container image" \
@@ -39,10 +43,9 @@ jobs:
         id: check
         run: |
           set -euo pipefail
-
+          echo "$APK_CHECK_CMD"
           OUTPUT="$(
-            docker run --rm --user root ghcr.io/svengo/tor:latest \
-              ash -c "apk update; apk version -l '<'"
+            docker run --rm --user root "$CONTAINER_IMAGE" ash -c "$APK_CHECK_CMD"
           )"
 
           {
@@ -64,13 +67,13 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           OWNER: ${{ github.repository_owner }}
-          ISSUE_TITLE: "APK updates available in ghcr.io/svengo/tor:latest"
+          ISSUE_TITLE: APK updates available in ${{ env.CONTAINER_IMAGE }}
           ISSUE_BODY: |
-            Package updates were found in the container image `ghcr.io/svengo/tor:latest`.
+            Package updates were found in the container image `${{ env.CONTAINER_IMAGE }}`.
 
             Command used:
             ```sh
-            ash -c "apk update; apk version -l '<'"
+            ${{ env.APK_CHECK_CMD }}
             ```
 
             Output:
@@ -97,16 +100,17 @@ jobs:
             echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
             echo "created=false" >> "$GITHUB_OUTPUT"
           else
-            ISSUE_NUMBER="$(
+            ISSUE_URL="$(
               gh issue create \
                 --repo "$REPO" \
                 --title "$ISSUE_TITLE" \
                 --body "$ISSUE_BODY" \
-                --label "apk-update" \
-                --assignee "$OWNER" \
-                --json number \
-                --jq '.number'
+                --label "$ISSUE_LABEL" \
+                --assignee "$OWNER"
             )"
+
+            ISSUE_NUMBER="${ISSUE_URL##*/}"
+
             echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
             echo "created=true" >> "$GITHUB_OUTPUT"
           fi
@@ -118,13 +122,13 @@ jobs:
           REPO: ${{ github.repository }}
           OWNER: ${{ github.repository_owner }}
           ISSUE_NUMBER: ${{ steps.create_issue.outputs.issue_number }}
-          ISSUE_TITLE: "APK updates available in ghcr.io/svengo/tor:latest"
+          ISSUE_TITLE: APK updates available in ${{ env.CONTAINER_IMAGE }}
           ISSUE_BODY: |
-            Package updates were found in the container image `ghcr.io/svengo/tor:latest`.
+            Package updates were found in the container image `${{ env.CONTAINER_IMAGE }}`.
 
             Command used:
             ```sh
-            ash -c "apk update; apk version -l '<'"
+            ${{ env.APK_CHECK_CMD }}
             ```
 
             Output:
@@ -141,7 +145,7 @@ jobs:
             --repo "$REPO" \
             --title "$ISSUE_TITLE" \
             --body "$ISSUE_BODY" \
-            --add-label "apk-update" \
+            --add-label "$ISSUE_LABEL" \
             --add-assignee "$OWNER"
 
       - name: Close existing issue when no updates are available
@@ -149,13 +153,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-          ISSUE_TITLE: "APK updates available in ghcr.io/svengo/tor:latest"
+          ISSUE_TITLE: APK updates available in ${{ env.CONTAINER_IMAGE }}
           CLOSE_COMMENT: |
             No pending APK updates were found.
 
             Command used:
             ```sh
-            ash -c "apk update; apk version -l '<'"
+            ${{ env.APK_CHECK_CMD }}
             ```
 
             The current check returned no available updates.
