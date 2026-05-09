@@ -16,7 +16,7 @@ jobs:
     env:
       CONTAINER_IMAGE: ghcr.io/svengo/tor:latest
       ISSUE_LABEL: apk-update
-      APK_CHECK_CMD: ash -c "apk --quiet update; apk --quiet version -l '<'"
+      APK_CHECK_CMD: ash -c \"apk --quiet update; apk --quiet version -l '<'\"
 
     steps:
       - name: Login to GitHub Container Registry	
