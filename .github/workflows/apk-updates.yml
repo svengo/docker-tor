@@ -97,16 +97,17 @@ jobs:
             echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
             echo "created=false" >> "$GITHUB_OUTPUT"
           else
-            ISSUE_NUMBER="$(
+            ISSUE_URL="$(
               gh issue create \
                 --repo "$REPO" \
                 --title "$ISSUE_TITLE" \
                 --body "$ISSUE_BODY" \
                 --label "apk-update" \
-                --assignee "$OWNER" \
-                --json number \
-                --jq '.number'
+                --assignee "$OWNER"
             )"
+
+            ISSUE_NUMBER="${ISSUE_URL##*/}"
+
             echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
             echo "created=true" >> "$GITHUB_OUTPUT"
           fi
