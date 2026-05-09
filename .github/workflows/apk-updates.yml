@@ -15,6 +15,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Login to GitHub Container Registry	
+        uses: docker/login-action@v4	
+        with:	
+          registry: ghcr.io	
+          username: ${{ github.repository_owner }}	
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Ensure label exists
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -28,29 +35,6 @@ jobs:
             --description "APK package updates available in container image" \
             --force
 
-      - name: Detect repository owner type
-        id: owner
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          REPO_OWNER: ${{ github.repository_owner }}
-        run: |
-          set -euo pipefail
-
-          OWNER_TYPE="$(
-            gh api "/repos/$REPO" --jq '.owner.type'
-          )"
-
-          echo "owner_type=$OWNER_TYPE" >> "$GITHUB_OUTPUT"
-
-          if [ "$OWNER_TYPE" = "User" ]; then
-            echo "assign_issue=true" >> "$GITHUB_OUTPUT"
-            echo "assignee=$REPO_OWNER" >> "$GITHUB_OUTPUT"
-          else
-            echo "assign_issue=false" >> "$GITHUB_OUTPUT"
-            echo "assignee=" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Check apk updates in container
         id: check
         run: |
@@ -58,7 +42,7 @@ jobs:
 
           OUTPUT="$(
             docker run --rm --user root ghcr.io/svengo/tor:latest \
-              ash -c "apk update; apk version -l '<'" || true
+              ash -c "apk update; apk version -l '<'"
           )"
 
           {
@@ -79,6 +63,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
           ISSUE_TITLE: "APK updates available in ghcr.io/svengo/tor:latest"
           ISSUE_BODY: |
             Package updates were found in the container image `ghcr.io/svengo/tor:latest`.
@@ -118,6 +103,7 @@ jobs:
                 --title "$ISSUE_TITLE" \
                 --body "$ISSUE_BODY" \
                 --label "apk-update" \
+                --assignee "$OWNER" \
                 --json number \
                 --jq '.number'
             )"
@@ -130,6 +116,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
           ISSUE_NUMBER: ${{ steps.create_issue.outputs.issue_number }}
           ISSUE_TITLE: "APK updates available in ghcr.io/svengo/tor:latest"
           ISSUE_BODY: |
@@ -154,21 +141,8 @@ jobs:
             --repo "$REPO" \
             --title "$ISSUE_TITLE" \
             --body "$ISSUE_BODY" \
-            --add-label "apk-update"
-
-      - name: Assign issue for user-owned repositories
-        if: steps.check.outputs.has_updates == 'true' && steps.owner.outputs.assign_issue == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          ISSUE_NUMBER: ${{ steps.create_issue.outputs.issue_number }}
-          ASSIGNEE: ${{ steps.owner.outputs.assignee }}
-        run: |
-          set -euo pipefail
-
-          gh issue edit "$ISSUE_NUMBER" \
-            --repo "$REPO" \
-            --add-assignee "$ASSIGNEE"
+            --add-label "apk-update" \
+            --add-assignee "$OWNER"
 
       - name: Close existing issue when no updates are available
         if: steps.check.outputs.has_updates == 'false'
