@@ -46,7 +46,7 @@ jobs:
 
           OUTPUT="$(
             docker run --rm --user root "$CONTAINER_IMAGE" \
-              $APK_CHECK_CMD
+              "$APK_CHECK_CMD"
           )"
 
           {
