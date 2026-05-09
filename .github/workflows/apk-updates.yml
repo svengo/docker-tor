@@ -42,7 +42,7 @@ jobs:
 
           OUTPUT="$(
             docker run --rm --user root ghcr.io/svengo/tor:latest \
-              ash -c "apk update; apk version -l '<'"
+              ash -c "apk --quiet update; apk --quiet version -l '<'"
           )"
 
           {
