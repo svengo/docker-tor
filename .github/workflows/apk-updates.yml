@@ -16,7 +16,7 @@ jobs:
     env:
       CONTAINER_IMAGE: ghcr.io/svengo/tor:latest
       ISSUE_LABEL: apk-update
-      APK_CHECK_CMD: apk --quiet update; apk --quiet version -l '<'
+      APK_CHECK_CMD: ash -c "apk --quiet update; apk --quiet version -l '<'"
 
     steps:
       - name: Login to GitHub Container Registry	
@@ -46,7 +46,7 @@ jobs:
 
           OUTPUT="$(
             docker run --rm --user root "$CONTAINER_IMAGE" \
-              ash -c "$APK_CHECK_CMD" || true
+              $APK_CHECK_CMD
           )"
 
           {
@@ -74,7 +74,7 @@ jobs:
 
             Command used:
             ```sh
-            ash -c "$APK_CHECK_CMD"
+            ${{ env.APK_CHECK_CMD }}
             ```
 
             Output:
@@ -129,7 +129,7 @@ jobs:
 
             Command used:
             ```sh
-            ash -c "$APK_CHECK_CMD"
+            ${{ env.APK_CHECK_CMD }}
             ```
 
             Output:
@@ -160,7 +160,7 @@ jobs:
 
             Command used:
             ```sh
-            ash -c "$APK_CHECK_CMD"
+            ${{ env.APK_CHECK_CMD }}
             ```
 
             The current check returned no available updates.
