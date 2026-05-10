@@ -11,7 +11,8 @@ on:
 jobs:
   docker:
     permissions:
-      contents: read
+      # permission needed for editing releases
+      contents: write
       packages: write
       # permissions needed for attestations
       id-token: write
@@ -99,4 +100,11 @@ jobs:
           echo '```'
           for LINE in ${DOCKER_METADATA_OUTPUT_TAGS}; do echo "${LINE}"; done
           echo '```'
-        } >> $GITHUB_STEP_SUMMARY
+        } | tee --append "$GITHUB_STEP_SUMMARY" "$GITHUB_OUTPUT"
+    -
+       name: Append summary to release notes
+       if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+       uses: djn24/add-comment-to-release@017594e54d35acb691ef9a5a9c77d200eb6ea21e
+       with:
+         token: ${{ secrets.GITHUB_TOKEN }}
+         comment: ${{ steps.job-summary.outputs }}
