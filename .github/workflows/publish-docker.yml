@@ -103,12 +103,8 @@ jobs:
             echo '```'
           }
         )"
+        echo "SUMMARY=$SUMMARY" >> $GITHUB_ENV
         printf '%s\n' "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
-        {
-          echo "summary<<EOF"
-          printf '%s\n' "$SUMMARY"
-          echo "EOF"
-        } >> "$GITHUB_OUTPUT"
     - 
       name: Append job summary to release notes
       if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
