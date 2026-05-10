@@ -103,10 +103,12 @@ jobs:
       name: Append job summary to release notes
       if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
       uses: actions/github-script@v7
+      env:
+        SUMMARY: ${{ steps.job-summary.outputs.summary }}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const summary = `${{ steps.job-summary.outputs.summary }}`;
+          const summary = process.env.SUMMARY;
           const currentBody = context.payload.release.body || '';
     
           const body = [currentBody.trim(), summary]
