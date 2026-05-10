@@ -103,16 +103,27 @@ jobs:
             echo '```'
           }
         )"
+        echo "SUMMARY=$SUMMARY" >> $GITHUB_ENV
         printf '%s\n' "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
-        {
-          echo "summary<<EOF"
-          printf '%s\n' "$SUMMARY"
-          echo "EOF"
-        } >> "$GITHUB_OUTPUT"
-    -
-       name: Append summary to release notes
-       if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
-       uses: djn24/add-comment-to-release@017594e54d35acb691ef9a5a9c77d200eb6ea21e
-       with:
-         token: ${{ secrets.GITHUB_TOKEN }}
-         comment: ${{ steps.job-summary.outputs.summary }}
+    - 
+      name: Append job summary to release notes
+      if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+      uses: actions/github-script@v7
+      env:
+        SUMMARY: ${{ steps.job-summary.outputs.summary }}
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const summary = process.env.SUMMARY.trim();
+          const currentBody = context.payload.release.body || '';
+    
+          const body = [currentBody.trim(), summary]
+            .filter(Boolean)
+            .join('\n\n');
+    
+          await github.rest.repos.updateRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: context.payload.release.id,
+            body
+          });
