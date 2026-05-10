@@ -60,8 +60,8 @@ jobs:
         flavor: |
           latest=${{ github.event_name == 'release' && github.event.release.prerelease == false }}
         tags: |
-          type=match,pattern=^v?((?:\d+\.){3}\d+),group=1,enable=${{ github.event_name == 'release' }}
-          type=match,pattern=^v?(.*),group=1,enable=${{ github.event_name == 'release' }}
+          type=match,pattern=^v?((?:\d+\.){3}\d+),group=1,enable=${{ github.event_name == 'release'  && github.event.release.prerelease == false }}
+          type=match,pattern=^v?(.*),group=1,enable=${{ github.event_name == 'release'  && github.event.release.prerelease == false }}
           type=sha
     -
       name: Build and push Docker image
