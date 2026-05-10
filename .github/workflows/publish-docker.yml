@@ -94,27 +94,19 @@ jobs:
       name: Generate job summary
       id: job-summary
       run: |
-        SUMMARY="$(
-          {
-            IFS=$'\n'
-            echo "## Docker tags"
-            echo '```'
-            for LINE in ${DOCKER_METADATA_OUTPUT_TAGS}; do echo "${LINE}"; done
-            echo '```'
-          }
-        )"
-        echo "SUMMARY=$SUMMARY" >> $GITHUB_ENV
+        SUMMARY=$(printf '%s\n' "## Docker tags" '```' ${DOCKER_METADATA_OUTPUT_TAGS} '```')
+        echo "summary<<EOF" >> $GITHUB_OUTPUT
+        echo "$SUMMARY" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
         printf '%s\n' "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
     - 
       name: Append job summary to release notes
       if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
       uses: actions/github-script@v7
-      env:
-        SUMMARY: ${{ steps.job-summary.outputs.summary }}
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
-          const summary = process.env.SUMMARY.trim();
+          const summary = `${{ steps.job-summary.outputs.summary }}`;
           const currentBody = context.payload.release.body || '';
     
           const body = [currentBody.trim(), summary]
