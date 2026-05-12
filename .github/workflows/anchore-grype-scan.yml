@@ -50,7 +50,7 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/amd64
       - name: Run Anchore Grype scan
-        uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2
+        uses: anchore/scan-action@v7
         id: scan
         with:
           image: /tmp/testimage.tar
@@ -87,7 +87,7 @@ jobs:
       - name: Pull the Docker image
         run: docker pull ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
       - name: Run Anchore Grype scan
-        uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2
+        uses: anchore/scan-action@v7
         id: scan
         with:
           image: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
