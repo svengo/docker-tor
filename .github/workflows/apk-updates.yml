@@ -10,6 +10,10 @@ permissions:
   issues: write
   packages: read
 
+concurrency:
+  group: apk-updates-${{ github.repository }}
+  cancel-in-progress: false
+
 jobs:
   check-updates:
     runs-on: ubuntu-latest
