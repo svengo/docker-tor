@@ -93,12 +93,3 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
-      - name: Generate job summary
-        run: |
-          {
-            IFS=$'\n'
-            echo '## Anchore Vulnerability Report (Published Image)'
-            echo '```'
-            cat '${{ steps.scan.outputs.sarif }}'
-            echo '```'
-          } >> $GITHUB_STEP_SUMMARY
