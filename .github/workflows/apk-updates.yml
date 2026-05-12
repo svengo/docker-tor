@@ -27,23 +27,26 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Ensure label exists
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-
-          gh label create "$ISSUE_LABEL" \
-            --repo "$REPO" \
-            --color "1d76db" \
-            --description "APK package updates available in container image" \
-            --force
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'apk-update',
+                color: '1d76db',
+                description: 'APK package updates available in container image',
+              });
+            } catch (error) {
+              // Label already exists, ignore error
+              if (error.status !== 422) throw error;
+            }
 
       - name: Check apk updates in container
         id: check
         run: |
           set -euo pipefail
-          echo "$APK_CHECK_CMD"
           OUTPUT="$(
             docker run --rm --user root "$CONTAINER_IMAGE" ash -c "$APK_CHECK_CMD"
           )"
@@ -62,134 +65,132 @@ jobs:
 
       - name: Find or create issue
         id: issue
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          OWNER: ${{ github.repository_owner }}
-          ISSUE_TITLE: APK updates available in ${{ env.CONTAINER_IMAGE }}
-          ISSUE_BODY: |
-            Package updates were found in the container image `${{ env.CONTAINER_IMAGE }}`.
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueTitle = `APK updates available in ${{ env.CONTAINER_IMAGE }}`;
+            
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['apk-update'],
+            });
 
-            Command used:
-            ```sh
-            ${{ env.APK_CHECK_CMD }}
-            ```
+            const existingIssue = issues.data.find(issue => issue.title === issueTitle);
 
-            Output:
-            ```text
-            ${{ steps.check.outputs.result }}
-            ```
+            if (existingIssue) {
+              core.setOutput('issue_number', existingIssue.number);
+              core.setOutput('exists', 'true');
+            } else {
+              core.setOutput('exists', 'false');
+            }
 
-            Workflow: `${{ github.workflow }}`
-            Run: `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
-        run: |
-          set -euo pipefail
-
-          # Query once and store result
-          ISSUE_NUMBER="$(
-            gh issue list \
-              --repo "$REPO" \
-              --state open \
-              --search "in:title \"$ISSUE_TITLE\"" \
-              --json number,title \
-              --jq '.[] | select(.title == "'"$ISSUE_TITLE"'") | .number' \
-              | head -n 1
-          )"
-
-          if [ -n "$ISSUE_NUMBER" ]; then
-            echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Create new issue if updates found and no issue exists
+      - name: Create new issue if updates found
         if: steps.check.outputs.has_updates == 'true' && steps.issue.outputs.exists == 'false'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          OWNER: ${{ github.repository_owner }}
-          ISSUE_TITLE: APK updates available in ${{ env.CONTAINER_IMAGE }}
-          ISSUE_BODY: |
-            Package updates were found in the container image `${{ env.CONTAINER_IMAGE }}`.
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueTitle = `APK updates available in ${{ env.CONTAINER_IMAGE }}`;
+            const issueBody = `Package updates were found in the container image \`${{ env.CONTAINER_IMAGE }}\`.
 
             Command used:
-            ```sh
+            \`\`\`sh
             ${{ env.APK_CHECK_CMD }}
-            ```
+            \`\`\`
 
             Output:
-            ```text
+            \`\`\`text
             ${{ steps.check.outputs.result }}
-            ```
+            \`\`\`
 
-            Workflow: `${{ github.workflow }}`
-            Run: `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
-        run: |
-          set -euo pipefail
+            Workflow: \`${{ github.workflow }}\`
+            Run: \`${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\``;
 
-          ISSUE_URL="$(
-            gh issue create \
-              --repo "$REPO" \
-              --title "$ISSUE_TITLE" \
-              --body "$ISSUE_BODY" \
-              --label "$ISSUE_LABEL" \
-              --assignee "$OWNER"
-          )"
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: issueTitle,
+              body: issueBody,
+              labels: ['apk-update'],
+              assignees: [context.repo.owner],
+            });
 
-          echo "Issue created: $ISSUE_URL"
+            console.log(`Issue created: ${issue.data.html_url}`);
 
       - name: Update existing issue if updates found
         if: steps.check.outputs.has_updates == 'true' && steps.issue.outputs.exists == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          OWNER: ${{ github.repository_owner }}
-          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
-          ISSUE_TITLE: APK updates available in ${{ env.CONTAINER_IMAGE }}
-          ISSUE_BODY: |
-            Package updates were found in the container image `${{ env.CONTAINER_IMAGE }}`.
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueTitle = `APK updates available in ${{ env.CONTAINER_IMAGE }}`;
+            const issueBody = `Package updates were found in the container image \`${{ env.CONTAINER_IMAGE }}\`.
 
             Command used:
-            ```sh
+            \`\`\`sh
             ${{ env.APK_CHECK_CMD }}
-            ```
+            \`\`\`
 
             Output:
-            ```text
+            \`\`\`text
             ${{ steps.check.outputs.result }}
-            ```
+            \`\`\`
 
-            Workflow: `${{ github.workflow }}`
-            Run: `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
-        run: |
-          set -euo pipefail
+            Workflow: \`${{ github.workflow }}\`
+            Run: \`${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\``;
 
-          gh issue edit "$ISSUE_NUMBER" \
-            --repo "$REPO" \
-            --title "$ISSUE_TITLE" \
-            --body "$ISSUE_BODY" \
-            --add-label "$ISSUE_LABEL" \
-            --add-assignee "$OWNER"
+            const issueNumber = ${{ steps.issue.outputs.issue_number }};
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              title: issueTitle,
+              body: issueBody,
+            });
+
+            // Add label if not already present
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              labels: ['apk-update'],
+            });
+
+            // Add assignee if not already assigned
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              assignees: [context.repo.owner],
+            });
 
       - name: Close issue if no updates available
         if: steps.check.outputs.has_updates == 'false' && steps.issue.outputs.exists == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
-          CLOSE_COMMENT: |
-            No pending APK updates were found.
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const closeComment = `No pending APK updates were found.
 
             Command used:
-            ```sh
+            \`\`\`sh
             ${{ env.APK_CHECK_CMD }}
-            ```
+            \`\`\`
 
-            The current check returned no available updates.
-        run: |
-          set -euo pipefail
+            The current check returned no available updates.`;
 
-          gh issue close "$ISSUE_NUMBER" \
-            --repo "$REPO" \
-            --comment "$CLOSE_COMMENT"
+            const issueNumber = ${{ steps.issue.outputs.issue_number }};
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: closeComment,
+            });
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              state: 'closed',
+            });
