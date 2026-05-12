@@ -60,9 +60,8 @@ jobs:
             echo "has_updates=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Create issue
-        if: steps.check.outputs.has_updates == 'true'
-        id: create_issue
+      - name: Find or create issue
+        id: issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -86,6 +85,7 @@ jobs:
         run: |
           set -euo pipefail
 
+          # Query once and store result
           ISSUE_NUMBER="$(
             gh issue list \
               --repo "$REPO" \
@@ -98,30 +98,54 @@ jobs:
 
           if [ -n "$ISSUE_NUMBER" ]; then
             echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
-            echo "created=false" >> "$GITHUB_OUTPUT"
+            echo "exists=true" >> "$GITHUB_OUTPUT"
           else
-            ISSUE_URL="$(
-              gh issue create \
-                --repo "$REPO" \
-                --title "$ISSUE_TITLE" \
-                --body "$ISSUE_BODY" \
-                --label "$ISSUE_LABEL" \
-                --assignee "$OWNER"
-            )"
-
-            ISSUE_NUMBER="${ISSUE_URL##*/}"
-
-            echo "issue_number=$ISSUE_NUMBER" >> "$GITHUB_OUTPUT"
-            echo "created=true" >> "$GITHUB_OUTPUT"
+            echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Update existing issue
-        if: steps.check.outputs.has_updates == 'true' && steps.create_issue.outputs.created == 'false'
+      - name: Create new issue if updates found and no issue exists
+        if: steps.check.outputs.has_updates == 'true' && steps.issue.outputs.exists == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
           OWNER: ${{ github.repository_owner }}
-          ISSUE_NUMBER: ${{ steps.create_issue.outputs.issue_number }}
+          ISSUE_TITLE: APK updates available in ${{ env.CONTAINER_IMAGE }}
+          ISSUE_BODY: |
+            Package updates were found in the container image `${{ env.CONTAINER_IMAGE }}`.
+
+            Command used:
+            ```sh
+            ${{ env.APK_CHECK_CMD }}
+            ```
+
+            Output:
+            ```text
+            ${{ steps.check.outputs.result }}
+            ```
+
+            Workflow: `${{ github.workflow }}`
+            Run: `${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}`
+        run: |
+          set -euo pipefail
+
+          ISSUE_URL="$(
+            gh issue create \
+              --repo "$REPO" \
+              --title "$ISSUE_TITLE" \
+              --body "$ISSUE_BODY" \
+              --label "$ISSUE_LABEL" \
+              --assignee "$OWNER"
+          )"
+
+          echo "Issue created: $ISSUE_URL"
+
+      - name: Update existing issue if updates found
+        if: steps.check.outputs.has_updates == 'true' && steps.issue.outputs.exists == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
           ISSUE_TITLE: APK updates available in ${{ env.CONTAINER_IMAGE }}
           ISSUE_BODY: |
             Package updates were found in the container image `${{ env.CONTAINER_IMAGE }}`.
@@ -148,12 +172,12 @@ jobs:
             --add-label "$ISSUE_LABEL" \
             --add-assignee "$OWNER"
 
-      - name: Close existing issue when no updates are available
-        if: steps.check.outputs.has_updates == 'false'
+      - name: Close issue if no updates available
+        if: steps.check.outputs.has_updates == 'false' && steps.issue.outputs.exists == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
-          ISSUE_TITLE: APK updates available in ${{ env.CONTAINER_IMAGE }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
           CLOSE_COMMENT: |
             No pending APK updates were found.
 
@@ -166,20 +190,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          ISSUE_NUMBER="$(
-            gh issue list \
-              --repo "$REPO" \
-              --state open \
-              --search "in:title \"$ISSUE_TITLE\"" \
-              --json number,title \
-              --jq '.[] | select(.title == "'"$ISSUE_TITLE"'") | .number' \
-              | head -n 1
-          )"
-
-          if [ -n "$ISSUE_NUMBER" ]; then
-            gh issue close "$ISSUE_NUMBER" \
-              --repo "$REPO" \
-              --comment "$CLOSE_COMMENT"
-          else
-            echo "No open issue found to close."
-          fi
+          gh issue close "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --comment "$CLOSE_COMMENT"
