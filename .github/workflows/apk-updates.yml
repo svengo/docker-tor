@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Ensure label exists
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             try {
@@ -65,7 +65,7 @@ jobs:
 
       - name: Find or create issue
         id: issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const issueTitle = `APK updates available in ${{ env.CONTAINER_IMAGE }}`;
@@ -88,7 +88,7 @@ jobs:
 
       - name: Create new issue if updates found
         if: steps.check.outputs.has_updates == 'true' && steps.issue.outputs.exists == 'false'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const issueTitle = `APK updates available in ${{ env.CONTAINER_IMAGE }}`;
@@ -120,7 +120,7 @@ jobs:
 
       - name: Update existing issue if updates found
         if: steps.check.outputs.has_updates == 'true' && steps.issue.outputs.exists == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const issueTitle = `APK updates available in ${{ env.CONTAINER_IMAGE }}`;
@@ -167,7 +167,7 @@ jobs:
 
       - name: Close issue if no updates available
         if: steps.check.outputs.has_updates == 'false' && steps.issue.outputs.exists == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const closeComment = `No pending APK updates were found.
