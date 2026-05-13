@@ -87,6 +87,8 @@ jobs:
         id: scan
         with:
           image: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
+          output-format: sarif
+          output-file: sarif-${{ github.run_id }}-${{ job.check_run_id }}.json
           fail-build: false
           severity-cutoff: critical
       - name: Upload vulnerability report
@@ -96,6 +98,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: sarif-${{ github.run_id }}-${{ github.run_attempt }}.json
+          name: sarif file
           path: ${{ steps.scan.outputs.sarif }}
           archive: false
