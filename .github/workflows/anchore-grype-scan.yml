@@ -57,7 +57,7 @@ jobs:
         run: |
           {
             IFS=$'\n'
-            echo '## Anchore Vulnerability Report'
+            echo '## Anchore Grype Vulnerability Report'
             echo '```'
             cat '${{ steps.scan.outputs.table }}'
             echo '```'
@@ -96,5 +96,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
+          name: sarif-${{ github.run_id }}-${{ github.run_attempt }}.json
           path: ${{ steps.scan.outputs.sarif }}
           archive: false
