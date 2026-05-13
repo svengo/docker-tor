@@ -45,7 +45,7 @@ jobs:
           # Check https://github.com/codacy/codacy-analysis-cli#project-token to get your project token from your Codacy repository
           # You can also omit the token and run the tools that support default configurations
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          verbose: true
+          verbose: false
           output: results.sarif
           format: sarif
           # Adjust severity of non-security issues

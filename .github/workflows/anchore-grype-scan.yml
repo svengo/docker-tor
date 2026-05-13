@@ -38,10 +38,6 @@ jobs:
         uses: docker/setup-buildx-action@v4
       - name: Build Docker image
         uses: docker/build-push-action@v7
-        env:
-          DOCKER_BUILD_CHECKS_ANNOTATIONS: false
-          DOCKER_BUILD_SUMMARY: false
-          DOCKER_BUILD_RECORD_UPLOAD: false
         with:
           context: .
           file: ./Dockerfile
@@ -61,7 +57,7 @@ jobs:
         run: |
           {
             IFS=$'\n'
-            echo '## Anchore Vulnerability Report'
+            echo '## Anchore Grype Vulnerability Report'
             echo '```'
             cat '${{ steps.scan.outputs.table }}'
             echo '```'
@@ -91,19 +87,17 @@ jobs:
         id: scan
         with:
           image: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
+          output-format: sarif
+          output-file: sarif-${{ github.run_id }}-${{ job.check_run_id }}.json
           fail-build: false
+          severity-cutoff: critical
       - name: Upload vulnerability report
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
-      - name: Inspect action SARIF report
-        run: cat ${{ steps.scan.outputs.sarif }}
-      - name: Generate job summary
-        run: |
-          {
-            IFS=$'\n'
-            echo '## Anchore Vulnerability Report (Published Image)'
-            echo '```'
-            cat '${{ steps.scan.outputs.sarif }}'
-            echo '```'
-          } >> $GITHUB_STEP_SUMMARY
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: sarif file
+          path: ${{ steps.scan.outputs.sarif }}
+          archive: false
