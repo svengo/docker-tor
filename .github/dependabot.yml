@@ -10,7 +10,7 @@ updates:
     schedule:
       interval: "daily"
     assignees:
-      - "svengo"
+      - ${{ github.repository_owner }}
 
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -18,4 +18,4 @@ updates:
     schedule:
       interval: "daily"
     assignees:
-      - "svengo"
+      - ${{ github.repository_owner }}
