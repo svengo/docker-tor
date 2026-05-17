@@ -32,15 +32,15 @@ Simple Docker container to run a Tor node.
 
 The Docker images are tagged with the precise Tor version number. Only the current Tor release (aliased as `latest`) is supported. No other versions are guaranteed to be stable or secure.
 
-*   [`latest`, `0.4.9.8`](https://github.com/svengo/docker-tor/blob/8b2549d51f0aa1f81cf9a5c020ac6fdfbad5135a/Dockerfile)
+- [`latest`, `0.4.9.8`](https://github.com/svengo/docker-tor/blob/8b2549d51f0aa1f81cf9a5c020ac6fdfbad5135a/Dockerfile)
 
 Security is a priority. I regularly rebuild this image with the latest Alpine packages, ensuring you have the most recent security fixes. To maintain this, several automated systems are in place:
 
-*   **Dependabot:** Configured to automatically update dependencies ([dependabot.yml](.github/dependabot.yml)).
-*   **GitHub Actions:** A suite of workflows monitors for updates and performs checks:
-    *   [Anchore Grype Scanning](.github/workflows/anchore-grype-scan.yml) for vulnerability detection.
-    *   [APK Update Checks](.github/workflows/apk-updates.yml) to ensure package repositories are up-to-date.
-    *   [Codacy Integration](.github/workflows/codacy.yml) for code quality analysis.
+- **Dependabot:** Configured to automatically update dependencies ([dependabot.yml](.github/dependabot.yml)).
+- **GitHub Actions:** A suite of workflows monitors for updates and performs checks:
+  -  [Anchore Grype Scanning](.github/workflows/anchore-grype-scan.yml) for vulnerability detection.
+  -  [APK Update Checks](.github/workflows/apk-updates.yml) to ensure package repositories are up-to-date.
+  -  [Codacy Integration](.github/workflows/codacy.yml) for code quality analysis.
  
 ## How to use this image
 
