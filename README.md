@@ -13,19 +13,19 @@ Simple Docker container to run a Tor node.
 
 ## Quick reference
 
-- **Maintained by**:  
+- **Maintained by:**
   [Sven Gottwald](https://github.com/svengo/)
 
-- **Where to get help**:  
+- **Where to get help:**
   [svengo/docker-tor issues](https://github.com/svengo/docker-tor/issues)
 
-- **Docker Hub**:  
+- **Docker Hub:**
   [svengo/tor](https://hub.docker.com/r/svengo/tor)
 
-- **GitHub Container registry**:  
+- **GitHub Container registry:**
   [svengo/docker-tor](https://github.com/svengo/docker-tor/pkgs/container/tor)
 
-- **Tor project**:  
+- **Tor project:**
   [Tor Project](https://www.torproject.org/)
 
 ## Supported Tor Versions and Dockerfile
