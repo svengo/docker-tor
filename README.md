@@ -38,9 +38,9 @@ Security is a priority. I regularly rebuild this image with the latest Alpine pa
 
 - **Dependabot:** Configured to automatically update dependencies ([dependabot.yml](.github/dependabot.yml)).
 - **GitHub Actions:** A suite of workflows monitors for updates and performs checks:
-  -  [Anchore Grype Scanning](.github/workflows/anchore-grype-scan.yml) for vulnerability detection.
-  -  [APK Update Checks](.github/workflows/apk-updates.yml) to ensure package repositories are up-to-date.
-  -  [Codacy Integration](.github/workflows/codacy.yml) for code quality analysis.
+  - [Anchore Grype Scanning](.github/workflows/anchore-grype-scan.yml) for vulnerability detection.
+  - [APK Update Checks](.github/workflows/apk-updates.yml) to ensure package repositories are up-to-date.
+  - [Codacy Integration](.github/workflows/codacy.yml) for code quality analysis.
  
 ## How to use this image
 
