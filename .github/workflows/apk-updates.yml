@@ -18,7 +18,7 @@ jobs:
   check-updates:
     runs-on: ubuntu-latest
     env:
-      CONTAINER_IMAGE: ghcr.io/svengo/tor:latest
+      CONTAINER_IMAGE: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
       ISSUE_LABEL: apk-update
       APK_CHECK_CMD: apk --quiet update; apk --quiet version -l '<'
 
