@@ -41,6 +41,7 @@ Security is a priority. I regularly rebuild this image with the latest Alpine pa
   - [Anchore Grype Scanning](.github/workflows/anchore-grype-scan.yml) for vulnerability detection.
   - [APK Update Checks](.github/workflows/apk-updates.yml) to ensure package repositories are up-to-date.
   - [Codacy Integration](.github/workflows/codacy.yml) for code quality analysis.
+  - [CodeQL](.github/workflows/codeql.yml) to identify vulnerabilities and errors in GitHub actions workflows.
  
 ## How to use this image
 
