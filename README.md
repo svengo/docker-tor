@@ -32,7 +32,7 @@ Simple Docker container to run a Tor node.
 
 The Docker images are tagged with the precise Tor version number. Only the current Tor release (aliased as `latest`) is supported. No other versions are guaranteed to be stable or secure.
 
-- [`latest`, `0.4.9.8`](https://github.com/svengo/docker-tor/blob/8b2549d51f0aa1f81cf9a5c020ac6fdfbad5135a/Dockerfile)
+- [`latest`, `0.4.9.9`](https://github.com/svengo/docker-tor/blob/adeb01a34a58dcbc884b44a7ae7737c77123a3bc/Dockerfile) 
 
 Security is a priority. I regularly rebuild this image with the latest Alpine packages, ensuring you have the most recent security fixes. To maintain this, several automated systems are in place:
 
