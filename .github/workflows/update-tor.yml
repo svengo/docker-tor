@@ -66,7 +66,7 @@ jobs:
           commit-message: "chore: update Tor to ${{ steps.tor.outputs.version }}"
           title: "chore: update Tor to ${{ steps.tor.outputs.version }}"
           body: |
-            Automated update from [Tor GitLab release](https://gitlab.torproject.org/tpo/core/tor/-/releases/tor-${{ steps.tor.outputs.version }})
+            Automated update from [Tor GitLab tag](https://gitlab.torproject.org/tpo/core/tor/-/tags/tor-${{ steps.tor.outputs.version }})
             
             **Changes:**
             - Updated `TOR_VERSION` to `${{ steps.tor.outputs.version }}` in Dockerfile
