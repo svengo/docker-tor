@@ -16,21 +16,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get latest Tor release
+      - name: Get latest Tor release from Atom feed
         id: tor
         run: |
-          # Fetch latest release from GitLab Tor project
-          RELEASE=$(curl -s "https://gitlab.torproject.org/api/v4/projects/7483/releases" \
-            | jq -r '.[0]')
+          # Fetch Atom feed from GitLab Tor tags
+          FEED=$(curl -s "https://gitlab.torproject.org/tpo/core/tor/-/tags?format=atom")
           
-          VERSION=$(echo "$RELEASE" | jq -r '.tag_name' | sed 's/^tor-//')
-          RELEASE_URL=$(echo "$RELEASE" | jq -r '.web_url')
+          # Extract latest version from first entry in Atom feed
+          # The title format is "tor-X.Y.Z.W"
+          VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          
+          if [ -z "$VERSION" ]; then
+            echo "Failed to parse Atom feed"
+            echo "Feed content:"
+            echo "$FEED"
+            exit 1
+          fi
           
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "release_url=$RELEASE_URL" >> $GITHUB_OUTPUT
           
           # Get current version from Dockerfile
-          CURRENT=$(grep 'ARG TOR_VERSION' Dockerfile | grep -oP '\d+\.\d+\.\d+\.\d+')
+          CURRENT=$(grep 'ARG TOR_VERSION' Dockerfile | grep -oP '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
           echo "current_version=$CURRENT" >> $GITHUB_OUTPUT
           
           echo "Latest Tor version: $VERSION"
@@ -41,22 +47,27 @@ jobs:
         run: |
           if [ "${{ steps.tor.outputs.version }}" != "${{ steps.tor.outputs.current_version }}" ]; then
             echo "update_needed=true" >> $GITHUB_OUTPUT
+            echo "Update needed: ${{ steps.tor.outputs.current_version }} → ${{ steps.tor.outputs.version }}"
           else
             echo "update_needed=false" >> $GITHUB_OUTPUT
+            echo "Already up to date: ${{ steps.tor.outputs.version }}"
           fi
 
       - name: Update Dockerfile
         if: steps.check.outputs.update_needed == 'true'
         run: |
           sed -i "s/ARG TOR_VERSION=.*/ARG TOR_VERSION=${{ steps.tor.outputs.version }}/" Dockerfile
+          echo "Updated Dockerfile:"
+          grep "ARG TOR_VERSION" Dockerfile
 
       - name: Update README.md
         if: steps.check.outputs.update_needed == 'true'
         run: |
           # Update version in README's supported versions section
-          sed -i "s/\`0\.[0-9]\+\.[0-9]\+\.[0-9]\+\`/\`${{ steps.tor.outputs.version }}\`/" README.md
-          # Update the version tag in the example Dockerfile link if needed
+          # Line 35: [`latest`, `0.4.9.8`](...) → [`latest`, `X.Y.Z.W`](...)
           sed -i "s/\`latest\`, \`[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\`/\`latest\`, \`${{ steps.tor.outputs.version }}\`/" README.md
+          echo "Updated README.md:"
+          grep -A 1 "Supported Tor Versions" README.md | head -3
 
       - name: Create Pull Request
         if: steps.check.outputs.update_needed == 'true'
