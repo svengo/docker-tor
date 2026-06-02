@@ -24,7 +24,7 @@ jobs:
           
           # Extract latest version from first entry in Atom feed
           # The title format is "tor-X.Y.Z.W"
-          VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(?=</title>)' | head -1)
           
           if [ -z "$VERSION" ]; then
             echo "Failed to parse Atom feed"
