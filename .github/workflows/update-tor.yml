@@ -1,0 +1,77 @@
+name: Update Tor Version
+
+on:
+  schedule:
+    # Check for new releases every day at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-tor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get latest Tor release
+        id: tor
+        run: |
+          # Fetch latest release from GitLab Tor project
+          RELEASE=$(curl -s "https://gitlab.torproject.org/api/v4/projects/7483/releases" \
+            | jq -r '.[0]')
+          
+          VERSION=$(echo "$RELEASE" | jq -r '.tag_name' | sed 's/^tor-//')
+          RELEASE_URL=$(echo "$RELEASE" | jq -r '.web_url')
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_url=$RELEASE_URL" >> $GITHUB_OUTPUT
+          
+          # Get current version from Dockerfile
+          CURRENT=$(grep 'ARG TOR_VERSION' Dockerfile | grep -oP '\d+\.\d+\.\d+\.\d+')
+          echo "current_version=$CURRENT" >> $GITHUB_OUTPUT
+          
+          echo "Latest Tor version: $VERSION"
+          echo "Current version: $CURRENT"
+
+      - name: Check if update needed
+        id: check
+        run: |
+          if [ "${{ steps.tor.outputs.version }}" != "${{ steps.tor.outputs.current_version }}" ]; then
+            echo "update_needed=true" >> $GITHUB_OUTPUT
+          else
+            echo "update_needed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update Dockerfile
+        if: steps.check.outputs.update_needed == 'true'
+        run: |
+          sed -i "s/ARG TOR_VERSION=.*/ARG TOR_VERSION=${{ steps.tor.outputs.version }}/" Dockerfile
+
+      - name: Update README.md
+        if: steps.check.outputs.update_needed == 'true'
+        run: |
+          # Update version in README's supported versions section
+          sed -i "s/\`0\.[0-9]\+\.[0-9]\+\.[0-9]\+\`/\`${{ steps.tor.outputs.version }}\`/" README.md
+          # Update the version tag in the example Dockerfile link if needed
+          sed -i "s/\`latest\`, \`[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\`/\`latest\`, \`${{ steps.tor.outputs.version }}\`/" README.md
+
+      - name: Create Pull Request
+        if: steps.check.outputs.update_needed == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update Tor to ${{ steps.tor.outputs.version }}"
+          title: "chore: update Tor to ${{ steps.tor.outputs.version }}"
+          body: |
+            Automated update from [Tor GitLab release](https://gitlab.torproject.org/tpo/core/tor/-/releases/tor-${{ steps.tor.outputs.version }})
+            
+            **Changes:**
+            - Updated `TOR_VERSION` to `${{ steps.tor.outputs.version }}` in Dockerfile
+            - Updated version references in README.md
+            
+            Please verify the release and test the build before merging.
+          branch: update/tor-${{ steps.tor.outputs.version }}
+          delete-branch: true
