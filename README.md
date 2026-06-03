@@ -69,7 +69,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data svengo/tor
 
 ### Basic configuration
 
-Use environment variables for basic configuration. The contents of the environment variables are used to build `/etc/tor/torrc-defaults`, for more advanced configuration you can edit the `/data/torrc` file directly.
+Most environment variables are used to populate `/etc/tor/torrc-defaults`, for more advanced configuration you can edit `/data/torrc` directly. Note that `TZ` is not a torrc directive; instead, it configures the container timezone.
 
 ``` console
 docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor
