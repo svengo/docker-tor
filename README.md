@@ -59,7 +59,7 @@ It is recommended to use `docker compose` for running the container. Use the sup
 
 ### Data storage
 
-Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. Make sure that the ``tor:tor`` user (default uid 100 / gid 101) has r/w permissions.
+Data is stored in an anonymous volume that is mounted on ``/data`` (see docker inspect for more information). You can use a host volume to store the data in a specific directory on the host. Make sure you set the permissions correctly, or Tor will not be able to write to the directory (default uid 100 / gid 101).
 
 Start the container:
 
@@ -69,7 +69,7 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data svengo/tor
 
 ### Basic configuration
 
-Use environment variables for basic configuration. The contents of the environment variables are used to build `/etc/tor/torrc-defaults`, for more advanced configuration you can edit the `/data/torrc` configuration file directly.
+Most environment variables are used to populate `/etc/tor/torrc-defaults`, for more advanced configuration you can edit `/data/torrc` directly. Note that `TZ` is not a torrc directive; instead, it configures the container timezone.
 
 ``` console
 docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNAME=MyDockerTorNode" -e "CONTACTINFO=foo@example.com" svengo/tor
@@ -77,123 +77,24 @@ docker run -d -p 9001:9001 -p 9030:9030 --name tor -v /data/tor:/data -e "NICKNA
 
 #### Environment Variables
 
-svengo/tor uses several environment variables to generate the ``torrc-defaults``-file, the variables are set to reasonable defaults (see below). You can edit ``/data/torrc`` to your needs after the first run.
+svengo/tor uses several environment variables to generate the ``torrc-defaults``-file, the variables are set to reasonable defaults (see below). You can edit ``/data/torrc`` to your needs after the first start.
 
-##### ORPORT
-
-`ORPORT=[address:]PORT [flags]`
-
-Advertise this port to listen for connections from Tor clients and servers. This option is required to be a Tor server.
-
-(Default: ``9001``)
-
-##### DIRPORT
-
-`DIRPORT=[address:]PORT [flags]`
-
-If this option is nonzero, advertise the directory service on this port.
-
-(Default: ``9030``)
-
-##### EXITPOLICY
-
-`EXITPOLICY=policy,policy,…`
-
-Set an exit policy for this server. Each policy is of the form `accept[6]|reject[6] ADDR[/MASK][:PORT]`. If `/MASK` is omitted, then this policy just applies to the host given. Instead of giving a host or network you can also use `*` to denote the universe (0.0.0.0/0 and ::/128), or `*4` to denote all IPv4 addresses, and `*6` to denote all IPv6 addresses. `PORT` can be a single port number, an interval of ports `FROM_PORT-TO_PORT`, or `*` . If PORT is omitted, that means `*`.
-
-(Default: ``reject *:* # no exits allowed``)
-
-##### CONTROLPORT (optional)
-
-`CONTROLPORT=PORT|unix:path|auto [flags]`
-
-If set, Tor will accept connections on this port and allow those connections to control the Tor process using the Tor Control Prot
-ocol (described in control-spec.txt in torspec). Note: unless you also specify HASHEDCONTROLPASSWORD, setting this option will cau
-se Tor to allow any process on the local host to control it. If you use `docker compose`, you must also uncomment the corresponding port mapping in `docker-compose.yml` to make it reachable from the host.
-
-(Default: *empty*)
-
-##### HASHEDCONTROLPASSWORD (optional)
-
-`HASHEDCONTROLPASSWORD=16:ACDB834CF7DA60F360D2C932BA2B12E545EE7C4BC4BA33AC492B8E3C12`
-
-Allow connections on the control port if they present the password whose one-way hash is hashed_password. You can compute the hash of a password by running ``docker run -it --rm svengo/tor:latest tor --hash-password "your_password"``
-
-(Default: *empty*)
-
-##### NICKNAME
-
-`NICKNAME=name`
-
-Set the server’s nickname to 'name'. Nicknames must be between 1 and 19 characters inclusive, and must contain only the characters ``[a-zA-Z0-9]``.
-
-(Default: ``ididnteditheconfig``)
-
-##### CONTACTINFO
-
-`CONTACTINFO=email_address`
-
-Administrative contact information for this relay or bridge. This line can be used to contact you if your relay or bridge is misconfigured or something else goes wrong. Note that we archive and publish all descriptors containing these lines and that Google indexes them, so spammers might also collect them. You may want to obscure the fact that it’s an email address and/or generate a new address for this purpose.
-
-You can use [Tor ContactInfo Generator](https://torcontactinfogenerator.netlify.app/) to create a contact info following [ContactInfo-Information-Sharing-Specification](https://nusenu.github.io/ContactInfo-Information-Sharing-Specification/).
-
-(Default: ``Random Person <nobody AT example dot com>``)
-
-##### MYFAMILY (optional)
-
-`MYFAMILY=node,node,...`
-
-Declare that this Tor server is controlled or administered by a group or organization identical or similar to that of the other servers, defined by their identity fingerprints. When two servers both declare that they are in the same 'family', Tor clients will not use them in the same circuit. (Each server only needs to list the other servers in its family; it doesn’t need to list itself, but it won’t hurt.) Do not list any bridge relay as it would compromise its concealment.
-
-When listing a node, it’s better to list it by fingerprint than by nickname: fingerprints are more reliable.
-
-(Default: *empty*)
-
-##### ADDRESS (optional)
-
-`ADDRESS=tor-node01.example.com`
-
-The IPv4 address of this server, or a fully qualified domain name of this server that resolves to an IPv4 address.  You can leave this unset, and Tor will try to guess your IPv4 address.  This IPv4 address is the one used to tell clients and other servers where to find your Tor server; it doesn't affect the address that your server binds to.  It also seems to work with an IPv6 address.
-
-##### SOCKS_PORT (optional)
-
-`SOCKS_PORT=9050`
-
-Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connections. If you use `docker compose`, you must also uncomment the corresponding port mapping in `docker-compose.yml` to make it reachable from the host.
-
-(Default: *empty*)
-
-##### SOCKS_POLICY (optional)
-
-`SOCKS_POLICY=accept *`
-
-Access-control policy for the SOCKS proxy. If unset, all connections to SocksPort are accepted (potential security risk).
-
-(Default: *empty*)
-
-##### TZ (optional)
-
-`TZ=Europe/Berlin`
-
-Configure the system timezone for the container. If unset, the container uses UTC.
-
-(Default: *empty*)
-
-##### RELAY_BANDWIDTH_RATE (optional)
-
-`RELAY_BANDWIDTH_RATE=value`
-
-Average bandwidth limit for the relay (e.g., 100 KBytes). This allows the relay to use up to the specified rate, but averages the usage over time.
-
-(Default: *empty*)
-
-##### RELAY_BANDWIDTH_BURST (optional)
-
-`RELAY_BANDWIDTH_BURST=value`
-
-Maximum bandwidth burst for the relay (e.g., 200 KBytes). This allows short bursts above the average rate, but still limits the maximum rate.
-
-(Default: *empty*)
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `ORPORT` | `9001` | Advertise this port to listen for connections from Tor clients and servers. Format: `[address:]PORT [flags]`. This option is required to be a Tor server. |
+| `DIRPORT` | `9030` | If this option is nonzero, advertise the directory service on this port. Format: `[address:]PORT [flags]`. |
+| `EXITPOLICY` | `reject *:* # no exits allowed` | Set an exit policy for this server. Each policy is of the form `accept[6]\|reject[6] ADDR[/MASK][:PORT]`. If `/MASK` is omitted, then this policy just applies to the host given. Instead of giving a host or network you can also use `*` to denote the universe (`0.0.0.0/0` and `::/128`), or `*4` to denote all IPv4 addresses, and `*6` to denote all IPv6 addresses. `PORT` can be a single port number, an interval of ports `FROM_PORT-TO_PORT`, or `*` . If `PORT` is omitted, that means `*`. |
+| `CONTROLPORT` | *(optional)* | If set, Tor will accept connections on this port and allow those connections to control the Tor process using the Tor Control Protocol. Format: `PORT\|unix:path\|auto [flags]`. Note: unless you also specify `HASHEDCONTROLPASSWORD`, setting this option will cause Tor to allow any process on the local host to control it. If you use `docker compose`, you must also uncomment the corresponding port mapping in `docker-compose.yml` to make it reachable from the host. |
+| `HASHEDCONTROLPASSWORD` | *(optional)* | Allow connections on the control port if they present the password whose one-way hash is hashed_password. You can compute the hash of a password by running `docker run -it --rm svengo/tor:latest tor --hash-password "your_password"`. |
+| `NICKNAME` | `ididnteditheconfig` | Set the server's nickname to 'name'. Nicknames must be between 1 and 19 characters inclusive, and must contain only the characters ``[a-zA-Z0-9]``. |
+| `CONTACTINFO` | `Random Person <nobody AT example dot com>` | Administrative contact information for this relay or bridge. This line can be used to contact you if your relay or bridge is misconfigured or something else goes wrong. You can use [Tor ContactInfo Generator](https://torcontactinfogenerator.netlify.app/) to create a contact info following [ContactInfo-Information-Sharing-Specification](https://nusenu.github.io/ContactInfo-Information-Sharing-Specification/). |
+| `MYFAMILY` | *(optional)* | Declare that this Tor server is controlled or administered by a group or organization identical or similar to that of the other servers, defined by their identity fingerprints. When two servers both declare that they are in the same family, they are treated as a single server by the bandwidth authorities and entry guards. When listing a node, it's better to list it by fingerprint than by nickname: fingerprints are more reliable. |
+| `ADDRESS` | *(optional)* | The IPv4 address of this server, or a fully qualified domain name of this server that resolves to an IPv4 address. You can leave this unset, and Tor will try to guess your IPv4 address. |
+| `SOCKS_PORT` | *(optional)* | Port for the SOCKS proxy. If set, Tor will listen on this port for SOCKS connections. If you use `docker compose`, you must also uncomment the corresponding port mapping in `docker-compose.yml` to make it reachable from the host. |
+| `SOCKS_POLICY` | *(optional)* | Access-control policy for the SOCKS proxy. If unset, all connections to SocksPort are accepted (potential security risk). Example: `accept *` |
+| `TZ` | *(optional)* | Configure the system timezone for the container. If unset, the container uses UTC. Example: `Europe/Berlin` |
+| `RELAY_BANDWIDTH_RATE` | *(optional)* | Average bandwidth limit for the relay. This allows the relay to use up to the specified rate, but averages the usage over time. Example: `100 KBytes` |
+| `RELAY_BANDWIDTH_BURST` | *(optional)* | Maximum bandwidth burst for the relay. This allows short bursts above the average rate, but still limits the maximum rate. Example: `200 KBytes` |
 
 ## Feedback
 
