@@ -1,4 +1,5 @@
 # docker-tor
+
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/512b3288012c4c10b50ea7112eaa3deb)](https://app.codacy.com/gh/svengo/docker-tor/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Build and publish a Docker image](https://github.com/svengo/docker-tor/actions/workflows/publish-docker.yml/badge.svg)](https://github.com/svengo/docker-tor/actions/workflows/publish-docker.yml)
 ![GitHub publish (with filter)](https://img.shields.io/github/v/release/svengo/docker-tor)
