@@ -40,6 +40,8 @@ Security is a priority. I regularly rebuild this image with the latest Alpine pa
 - **GitHub Actions:** A suite of workflows monitors for updates and performs checks:
   - [Anchore Grype Scanning](.github/workflows/anchore-grype-scan.yml) for vulnerability detection.
   - [APK Update Checks](.github/workflows/apk-updates.yml) to ensure package repositories are up-to-date.
+  - [Rebuild on APK Updates](.github/workflows/rebuild-on-apk-update.yml) to automatically rebuild Docker images when APK security updates are available.
+  - [Update Tor Version](.github/workflows/update-tor.yml) to automatically check for and update to the latest Tor release.
   - [Codacy Integration](.github/workflows/codacy.yml) for code quality analysis.
   - [CodeQL](.github/workflows/codeql.yml) to identify vulnerabilities and errors in GitHub Actions workflows.
  
