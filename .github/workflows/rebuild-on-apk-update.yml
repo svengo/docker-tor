@@ -13,105 +13,59 @@ permissions:
 jobs:
   check-and-rebuild:
     runs-on: ubuntu-latest
-    env:
-      APK_CHECK_CMD: apk --quiet update; apk --quiet version -l '<'
 
     steps:
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Find latest release
-        id: latest-release
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const releases = await github.rest.repos.listReleases({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 1,
-            });
-
-            if (releases.data.length === 0) {
-              core.setFailed('No releases found');
-              return;
-            }
-
-            const latestRelease = releases.data[0];
-            core.setOutput('tag', latestRelease.tag_name);
-
-      - name: Get latest image tag from latest release
-        id: image-tag
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const tag = '${{ steps.latest-release.outputs.tag }}';
-            const imageTag = `ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:${tag.replace(/^v/, '')}`;
-            core.setOutput('image', imageTag);
-
-      - name: Check APK updates in released image
+      - name: Check APK updates
         id: check
         run: |
-          set -euo pipefail
-          OUTPUT="$(
-            docker run --rm --user root "${{ steps.image-tag.outputs.image }}" ash -c "$APK_CHECK_CMD" 2>&1 || echo ""
-          )"
-
+          set -uo pipefail
+          
+          IMAGE="ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest"
+          docker pull -q "$IMAGE"
+          
+          OUTPUT=$(docker run --rm --user root "$IMAGE" ash -c "apk --quiet update; apk --quiet version -l '<'" || echo "")
+          
           {
             echo "result<<EOF"
             echo "$OUTPUT"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
-
-          if [ -n "$(printf '%s' "$OUTPUT" | tr -d '[:space:]')" ]; then
-            echo "has_updates=true" >> "$GITHUB_OUTPUT"
-          else
+          
+          if [ -z "$(echo "$OUTPUT" | tr -d '[:space:]')" ]; then
             echo "has_updates=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_updates=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Trigger rebuild if updates found
+      - name: Print APK updates
         if: steps.check.outputs.has_updates == 'true'
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const workflowId = 'publish-docker.yml';
-            const ref = '${{ steps.latest-release.outputs.tag }}';
+        run: |
+          echo "Available APK updates:"
+          echo "${{ steps.check.outputs.result }}"
 
-            const workflows = await github.rest.actions.listRepoWorkflows({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            });
+      - name: Trigger rebuild
+        if: false && steps.check.outputs.has_updates == 'true'
+        run: |
+          gh workflow run publish-docker.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            const publishWorkflow = workflows.data.workflows.find(w => w.path.includes(workflowId));
-
-            if (!publishWorkflow) {
-              core.setFailed('publish-docker.yml workflow not found');
-              return;
-            }
-
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: publishWorkflow.id,
-              ref: ref,
-            });
-
-            core.notice(`APK updates found. Triggered publish-docker.yml workflow for release ${ref}`);
-
-      - name: Generate job summary
+      - name: Summary
         if: always()
         run: |
           {
-            echo "## APK Update Check for Latest Release"
+            echo "## APK Update Check"
             echo ""
-            echo "**Release:** ${{ steps.latest-release.outputs.tag }}"
-            echo "**Image:** ${{ steps.image-tag.outputs.image }}"
             echo "**Updates Found:** ${{ steps.check.outputs.has_updates }}"
-            echo ""
             if [ "${{ steps.check.outputs.has_updates }}" = "true" ]; then
+              echo ""
               echo "### Available Updates"
               echo "\`\`\`"
               echo "${{ steps.check.outputs.result }}"
@@ -119,6 +73,7 @@ jobs:
               echo ""
               echo "✅ Docker rebuild triggered"
             else
+              echo ""
               echo "ℹ️ No updates available"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
