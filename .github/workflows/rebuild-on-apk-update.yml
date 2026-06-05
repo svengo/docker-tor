@@ -44,6 +44,12 @@ jobs:
             echo "has_updates=true" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Print APK updates
+        if: steps.check.outputs.has_updates == 'true'
+        run: |
+          echo "Available APK updates:"
+          echo "${{ steps.check.outputs.result }}"
+
       - name: Trigger rebuild
         if: false && steps.check.outputs.has_updates == 'true'
         run: |
