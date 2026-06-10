@@ -50,10 +50,35 @@ jobs:
           echo "Available APK updates:"
           echo "${{ steps.check.outputs.result }}"
 
+      - name: Checkout
+        if: steps.check.outputs.has_updates == 'true'
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          persist-credentials: false
+          
       - name: Trigger rebuild
+        id: rebuild
         if: steps.check.outputs.has_updates == 'true'
         run: |
-          gh workflow run publish-docker.yml
+          set -uo pipefail
+          
+          # Get the last successful run of publish-docker.yml triggered by a release event
+          RUN_ID=$(gh run list \
+            --workflow=publish-docker.yml \
+            --status=success \
+            --event=release \
+            --limit=1 \
+            --json=databaseId \
+            --jq='.[0].databaseId // empty')
+          
+          if [ -n "$RUN_ID" ]; then
+            echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+            gh run rerun "$RUN_ID"
+          else
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+            echo "error=No successful release-triggered run found" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -63,7 +88,6 @@ jobs:
           {
             echo "## APK Update Check"
             echo ""
-            echo "**Updates Found:** ${{ steps.check.outputs.has_updates }}"
             if [ "${{ steps.check.outputs.has_updates }}" = "true" ]; then
               echo ""
               echo "### Available Updates"
@@ -71,7 +95,11 @@ jobs:
               echo "${{ steps.check.outputs.result }}"
               echo "\`\`\`"
               echo ""
-              echo "✅ Docker rebuild triggered"
+              if [ "${{ steps.rebuild.outcome }}" = "success" ]; then
+                echo "✅ Docker rebuild triggered (Run ID: ${{ steps.rebuild.outputs.run_id }})"
+              else
+                echo "❌ Failed to trigger rebuild: ${{ steps.rebuild.outputs.error }}"
+              fi
             else
               echo ""
               echo "ℹ️ No updates available"
