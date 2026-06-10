@@ -50,6 +50,10 @@ jobs:
           echo "Available APK updates:"
           echo "${{ steps.check.outputs.result }}"
 
+      - name: Checkout
+        if: steps.check.outputs.has_updates == 'true'
+        uses: actions/checkout@v6
+       
       - name: Trigger rebuild
         if: steps.check.outputs.has_updates == 'true'
         run: |
