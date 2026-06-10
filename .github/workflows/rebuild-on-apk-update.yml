@@ -96,7 +96,11 @@ jobs:
               echo "${{ steps.check.outputs.result }}"
               echo "\`\`\`"
               echo ""
-              echo "✅ Docker rebuild triggered"
+              if [ "${{ steps.rebuild.outcome }}" = "success" ]; then
+                echo "✅ Docker rebuild triggered (Run ID: ${{ steps.rebuild.outputs.run_id }})"
+              else
+                echo "❌ Failed to trigger rebuild: ${{ steps.rebuild.outputs.error }}"
+              fi
             else
               echo ""
               echo "ℹ️ No updates available"
