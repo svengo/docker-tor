@@ -69,7 +69,6 @@ jobs:
             --event=release \
             --limit=1 \
             --json=databaseId \
-            -r \
             --jq='.[0].databaseId // empty')
           
           if [ -n "$RUN_ID" ]; then
