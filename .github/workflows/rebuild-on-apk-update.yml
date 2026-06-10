@@ -51,7 +51,7 @@ jobs:
           echo "${{ steps.check.outputs.result }}"
 
       - name: Trigger rebuild
-        if: false && steps.check.outputs.has_updates == 'true'
+        if: steps.check.outputs.has_updates == 'true'
         run: |
           gh workflow run publish-docker.yml
         env:
