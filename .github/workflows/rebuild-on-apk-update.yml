@@ -69,7 +69,8 @@ jobs:
             --event=release \
             --limit=1 \
             --json=databaseId \
-            --jq='.[0].databaseId')
+            -r \
+            --jq='.[0].databaseId // empty')
           
           if [ -n "$RUN_ID" ]; then
             echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
