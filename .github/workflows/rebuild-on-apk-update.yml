@@ -57,9 +57,28 @@ jobs:
           persist-credentials: false
           
       - name: Trigger rebuild
+        id: rebuild
         if: steps.check.outputs.has_updates == 'true'
         run: |
-          gh workflow run publish-docker.yml
+          set -uo pipefail
+          
+          # Get the last successful run of publish-docker.yml triggered by a release event
+          RUN_ID=$(gh run list \
+            --workflow=publish-docker.yml \
+            --status=success \
+            --event=release \
+            --limit=1 \
+            --json=databaseId \
+            --jq='.[0].databaseId')
+          
+          if [ -n "$RUN_ID" ]; then
+            echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+            gh run rerun "$RUN_ID"
+          else
+            echo "status=failed" >> "$GITHUB_OUTPUT"
+            echo "error=No successful release-triggered run found" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
