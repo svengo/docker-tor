@@ -32,17 +32,7 @@ Simple Docker container to run a Tor node.
 
 The Docker images are tagged with the precise Tor version number. Only the current Tor release (aliased as `latest`) is supported. No other versions are guaranteed to be stable or secure.
 
-- [`latest`, `0.4.9.9`](https://github.com/svengo/docker-tor/blob/bc35965bc3d29b7508d99042634daae7fadd112e/Dockerfile) 
-
-Security is a priority. I regularly rebuild this image with the latest Alpine packages, ensuring you have the most recent security fixes. To maintain this, several automated systems are in place:
-
-- **Dependabot:** Configured to automatically update dependencies ([dependabot.yml](.github/dependabot.yml)).
-- **GitHub Actions:** A suite of workflows monitors for updates and performs checks:
-  - [Anchore Grype Scanning](.github/workflows/anchore-grype-scan.yml) for vulnerability detection.
-  - [Rebuild on APK Updates](.github/workflows/rebuild-on-apk-update.yml) to automatically rebuild Docker images when APK security updates are available.
-  - [Update Tor Version](.github/workflows/update-tor.yml) to automatically check for and update to the latest Tor release.
-  - [Codacy Integration](.github/workflows/codacy.yml) for code quality analysis.
-  - [CodeQL](.github/workflows/codeql.yml) to identify vulnerabilities and errors in GitHub Actions workflows.
+- [`latest`, `0.4.9.9`](https://github.com/svengo/docker-tor/blob/main/Dockerfile)
  
 ## How to use this image
 
