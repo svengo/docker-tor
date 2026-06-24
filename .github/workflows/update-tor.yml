@@ -86,3 +86,4 @@ jobs:
             Please verify the release and test the build before merging.
           branch: update/tor-${{ steps.tor.outputs.version }}
           delete-branch: true
+          sign-commits: true
