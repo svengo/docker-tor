@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Only the current release, the `latest` tag, and the current stable Tor version (e.g., `0.4.8.11`) are supported. See [README.md](https://github.com/svengo/docker-tor?tab=readme-ov-file#supported-tags-and-corresponding-dockerfile-links) for a list of currently supported tags.  All other tags will not receive updates.
+Only the current release, the `latest` tag, and the current stable Tor version (e.g., `0.4.8.11`) are supported. See [README.md](https://github.com/svengo/docker-tor/blob/main/README.md#supported-tor-versions-and-dockerfile) for a list of currently supported tags.  All other tags will not receive updates.
 
 ## Report a vulnerability
 
@@ -25,12 +25,16 @@ The issue will be published as a [security advisory](https://github.com/svengo/d
 
 ## Update Policy
 
-I will update the supported tags as soon as a new Tor or Alpine release is available. Please give me three days to perform and test the update. I will also periodically rebuild the image to include updated Alpine packages with important security fixes.
+Security is a priority.  I will update the supported tags as soon as a new Tor or Alpine release is available. Please give me three days to perform and test the update. I will also periodically rebuild the image to include updated Alpine packages with important security fixes.
 
 ## Tools
 
-The following automated tools are used to keep track of updated packages and known security problems:
+To keep the docker image secure, several automated systems are in place:
 
-- [Dependabot](https://docs.github.com/en/code-security/dependabot): Automated dependency updates built into GitHub.
-- [Grype](https://github.com/anchore/grype): A vulnerability scanner for container images and filesystems.
-- [Codacy Security Scan](https://github.com/marketplace/actions/codacy-analysis-cli): Code quality scanner.
+- **Dependabot:** Configured to automatically update dependencies ([dependabot.yml](.github/dependabot.yml)).
+- **GitHub Actions:** A suite of workflows monitors for updates and performs checks:
+  - [Anchore Grype Scanning](.github/workflows/anchore-grype-scan.yml) for vulnerability detection.
+  - [Rebuild on APK Updates](.github/workflows/rebuild-on-apk-update.yml) to automatically rebuild Docker images when APK security updates are available.
+  - [Update Tor Version](.github/workflows/update-tor.yml) to automatically check for and update to the latest Tor release.
+  - [Codacy Integration](.github/workflows/codacy.yml) for code quality analysis.
+  - [CodeQL](.github/workflows/codeql.yml) to identify vulnerabilities and errors in GitHub Actions workflows.
