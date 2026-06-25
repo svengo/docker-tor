@@ -87,6 +87,5 @@ jobs:
           branch: update/tor-${{ steps.tor.outputs.version }}
           labels: |
             tor
-            github_actions
           delete-branch: true
           sign-commits: true
