@@ -2,7 +2,7 @@ name: Rebuild Docker on APK Updates
 
 on:
   schedule:
-    - cron: '30 5 * * *'
+    - cron: '30 5 * * 0'
   workflow_dispatch:
 
 permissions:
@@ -51,14 +51,12 @@ jobs:
           echo "${{ steps.check.outputs.result }}"
 
       - name: Checkout
-        if: steps.check.outputs.has_updates == 'true'
         uses: actions/checkout@v7
         with:
           persist-credentials: false
           
       - name: Trigger rebuild
         id: rebuild
-        if: steps.check.outputs.has_updates == 'true'
         run: |
           set -uo pipefail
           
@@ -86,22 +84,21 @@ jobs:
         if: always()
         run: |
           {
-            echo "## APK Update Check"
+            echo "## APK Update Check & Docker Rebuild"
             echo ""
             if [ "${{ steps.check.outputs.has_updates }}" = "true" ]; then
-              echo ""
               echo "### Available Updates"
               echo "\`\`\`"
               echo "${{ steps.check.outputs.result }}"
               echo "\`\`\`"
               echo ""
-              if [ "${{ steps.rebuild.outcome }}" = "success" ]; then
-                echo "✅ Docker rebuild triggered (Run ID: ${{ steps.rebuild.outputs.run_id }})"
-              else
-                echo "❌ Failed to trigger rebuild: ${{ steps.rebuild.outputs.error }}"
-              fi
             else
+              echo "ℹ️ No APK updates available"
               echo ""
-              echo "ℹ️ No updates available"
+            fi
+            if [ "${{ steps.rebuild.outcome }}" = "success" ]; then
+              echo "✅ Docker rebuild triggered (Run ID: ${{ steps.rebuild.outputs.run_id }})"
+            else
+              echo "❌ Failed to trigger rebuild: ${{ steps.rebuild.outputs.error }}"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
