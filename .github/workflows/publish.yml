@@ -1,28 +1,27 @@
 name: Publish release and weekly rebuild
 
 on:
+  workflow_dispatch:
   release:
     types: [published]
   schedule:
     # weekly rebuild (UTC Sunday midnight)
-    - cron: '0 0 * * 0'
+    - cron: '0 2 * * 0'
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      id-token: write
+      attestations: write
     steps:
-      - name: Setup gh CLI
-        uses: cli/gh-action@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Determine checkout ref (release tag, latest release for schedule, or current ref)
         id: determine-ref
         run: |
           set -euo pipefail
 
-          if [ "${GITHUB_EVENT_NAME:-}" = "schedule" ]; then
-            # Use gh release list to get the latest release tag in a compatible way
+          if [ "${GITHUB_EVENT_NAME:-}" = "schedule" || "${GITHUB_EVENT_NAME:-}" = "workflow_dispatch" ]; then
             TAG=$(gh release list --repo "${{ github.repository }}" --limit 1 --json tagName -q '.[0].tagName' 2>/dev/null || echo "")
             if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
               echo "No latest release found; nothing to rebuild. Exiting."
@@ -40,7 +39,7 @@ jobs:
           fi
 
       - name: Checkout chosen ref
-        uses: actions/checkout@v4
+        uses: actions/checkout@v47
         with:
           ref: ${{ env.CHECKOUT_REF }}
           fetch-depth: 0
@@ -51,51 +50,63 @@ jobs:
           set -euo pipefail
           TOR_LINE=$(grep -E '^ARG[[:space:]]+TOR_VERSION=' Dockerfile | head -n1 || true)
           if [ -z "$TOR_LINE" ]; then
-            echo "TOR_VERSION=" >> $GITHUB_ENV
+            echo "ERROR: TOR_VERSION not found in Dockerfile. Aborting." >&2
+            exit 1
           else
             TOR_VERSION=$(echo "$TOR_LINE" | cut -d'=' -f2- | sed -e "s/['\"]//g" | tr -d '[:space:]')
             echo "TOR_VERSION=$TOR_VERSION" >> $GITHUB_ENV
           fi
 
-      - name: Validate for release (fail if TOR_VERSION missing)
-        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
-        run: |
-          if [ -z "${TOR_VERSION:-}" ]; then
-            echo "ERROR: TOR_VERSION not found in Dockerfile during release publish. Aborting." >&2
-            exit 1
-          fi
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8
 
-      - name: Validate for schedule (skip if TOR_VERSION missing)
-        if: ${{ github.event_name == 'schedule' }}
-        run: |
-          if [ -z "${TOR_VERSION:-}" ]; then
-            echo "No TOR_VERSION found on scheduled run; nothing to rebuild. Exiting."
-            exit 0
-          fi
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f
         with:
-          registry: docker.io
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Login to GHCR
-        uses: docker/login-action@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push TOR_VERSION + latest
-        uses: docker/build-push-action@v4
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
+          short-description: ${{ github.event.repository.description }}
+   
+      - name: Build and push Docker image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
         with:
           context: .
           file: ./Dockerfile
-          push: true
+          push: false
           tags: |
             ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ env.TOR_VERSION }}
             ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:${{ env.TOR_VERSION }}
             ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:latest
             ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
           platforms: linux/amd64
+          
+      - name: Attest DockerHub
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-name: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: false
+
+      - name: Attest ghcr
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: false
