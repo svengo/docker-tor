@@ -25,7 +25,7 @@ The issue will be published as a [security advisory](https://github.com/svengo/d
 
 ## Update Policy
 
-Security is a priority.  I will update the supported tags as soon as a new Tor or Alpine release is available. Please give me three days to perform and test the update. I will also periodically rebuild the image to include updated Alpine packages with important security fixes.
+Security is our top priority.  The Docker images are rebuilt every week and even faster in the event of serious security flaws.
 
 ## Tools
 
@@ -34,7 +34,5 @@ To keep the docker image secure, several automated systems are in place:
 - **Dependabot:** Configured to automatically update dependencies ([dependabot.yml](.github/dependabot.yml)).
 - **GitHub Actions:** A suite of workflows monitors for updates and performs checks:
   - [Anchore Grype Scanning](.github/workflows/anchore-grype-scan.yml) for vulnerability detection.
-  - [Rebuild on APK Updates](.github/workflows/rebuild-on-apk-update.yml) to automatically rebuild Docker images when APK security updates are available.
   - [Update Tor Version](.github/workflows/update-tor.yml) to automatically check for and update to the latest Tor release.
-  - [Codacy Integration](.github/workflows/codacy.yml) for code quality analysis.
   - [CodeQL](.github/workflows/codeql.yml) to identify vulnerabilities and errors in GitHub Actions workflows.
