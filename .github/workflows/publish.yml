@@ -21,7 +21,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ "${GITHUB_EVENT_NAME:-}" = "schedule" || "${GITHUB_EVENT_NAME:-}" = "workflow_dispatch" ]; then
+          if [ "${GITHUB_EVENT_NAME:-}" = "schedule" ] || [ "${GITHUB_EVENT_NAME:-}" = "workflow_dispatch" ]; then
             TAG=$(gh release list --repo "${{ github.repository }}" --limit 1 --json tagName -q '.[0].tagName' 2>/dev/null || echo "")
             if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
               echo "No latest release found; nothing to rebuild. Exiting."
