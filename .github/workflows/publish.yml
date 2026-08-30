@@ -85,7 +85,7 @@ jobs:
             echo "TOR_VERSION=$TOR_VERSION" >> $GITHUB_ENV
           fi
 
-      - name: Build Docker meta data
+      - name: Build Docker metadata
         id: meta
         uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302
         with:
@@ -95,7 +95,7 @@ jobs:
           flavor: |
             latest=true
           tags: |
-            {{ env.TOR_VERSION }}
+            ${{ env.TOR_VERSION }}
             type=sha
           
       - name: Build and push Docker image
