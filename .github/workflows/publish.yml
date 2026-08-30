@@ -1,0 +1,101 @@
+name: Publish release and weekly rebuild
+
+on:
+  release:
+    types: [published]
+  schedule:
+    # weekly rebuild (UTC Sunday midnight)
+    - cron: '0 0 * * 0'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup gh CLI
+        uses: cli/gh-action@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine checkout ref (release tag, latest release for schedule, or current ref)
+        id: determine-ref
+        run: |
+          set -euo pipefail
+
+          if [ "${GITHUB_EVENT_NAME:-}" = "schedule" ]; then
+            # Use gh release list to get the latest release tag in a compatible way
+            TAG=$(gh release list --repo "${{ github.repository }}" --limit 1 --json tagName -q '.[0].tagName' 2>/dev/null || echo "")
+            if [ -z "$TAG" ] || [ "$TAG" = "null" ]; then
+              echo "No latest release found; nothing to rebuild. Exiting."
+              exit 0
+            fi
+            echo "CHECKOUT_REF=refs/tags/$TAG" >> $GITHUB_ENV
+            echo "Using latest release tag: $TAG"
+          elif [ "${GITHUB_EVENT_NAME:-}" = "release" ]; then
+            TAG=$(jq -r .release.tag_name < "${GITHUB_EVENT_PATH}")
+            echo "CHECKOUT_REF=refs/tags/$TAG" >> $GITHUB_ENV
+            echo "Using release tag from event: $TAG"
+          else
+            echo "CHECKOUT_REF=${GITHUB_REF:-refs/heads/main}" >> $GITHUB_ENV
+            echo "Using event ref: ${GITHUB_REF:-refs/heads/main}"
+          fi
+
+      - name: Checkout chosen ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.CHECKOUT_REF }}
+          fetch-depth: 0
+
+      - name: Read TOR_VERSION from Dockerfile
+        id: torver
+        run: |
+          set -euo pipefail
+          TOR_LINE=$(grep -E '^ARG[[:space:]]+TOR_VERSION=' Dockerfile | head -n1 || true)
+          if [ -z "$TOR_LINE" ]; then
+            echo "TOR_VERSION=" >> $GITHUB_ENV
+          else
+            TOR_VERSION=$(echo "$TOR_LINE" | cut -d'=' -f2- | sed -e "s/['\"]//g" | tr -d '[:space:]')
+            echo "TOR_VERSION=$TOR_VERSION" >> $GITHUB_ENV
+          fi
+
+      - name: Validate for release (fail if TOR_VERSION missing)
+        if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
+        run: |
+          if [ -z "${TOR_VERSION:-}" ]; then
+            echo "ERROR: TOR_VERSION not found in Dockerfile during release publish. Aborting." >&2
+            exit 1
+          fi
+
+      - name: Validate for schedule (skip if TOR_VERSION missing)
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          if [ -z "${TOR_VERSION:-}" ]; then
+            echo "No TOR_VERSION found on scheduled run; nothing to rebuild. Exiting."
+            exit 0
+          fi
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: docker.io
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push TOR_VERSION + latest
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ env.TOR_VERSION }}
+            ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:${{ env.TOR_VERSION }}
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:latest
+            ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:latest
+          platforms: linux/amd64
