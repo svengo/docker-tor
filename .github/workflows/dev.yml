@@ -9,13 +9,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       packages: write
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-
-      - name: Short SHA
-        run: echo "SHA_SHORT=$(git rev-parse --short=8 HEAD)" >> $GITHUB_ENV
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8
@@ -35,14 +35,49 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and push SHA tag
-        uses: docker/build-push-action@v4
+          
+      - name: Build Docker meta data
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302
+        with:
+          images: |
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
+            ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}
+          tags: |
+            type=sha
+          
+      - name: Build and push Docker image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a
+        id: push
         with:
           context: .
           file: ./Dockerfile
           push: true
-          tags: |
-            ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}:${{ env.SHA_SHORT }}
-            ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}:${{ env.SHA_SHORT }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           platforms: linux/amd64
+          
+      - name: Attest DockerHub
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-name: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+      
+      - name: Attest ghcr
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-name: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
+           
+      - name: Generate job summary
+        id: job-summary
+        run: |
+          SUMMARY=$(printf '%s\n' "## Docker tags" '```' ${DOCKER_METADATA_OUTPUT_TAGS} '```')
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo "$SUMMARY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          printf '%s\n' "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
