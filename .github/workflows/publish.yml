@@ -11,10 +11,11 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
-      id-token: write
+      artifact-metadata: write
       attestations: write
+      contents: read
+      id-token: write
+      packages: write
     steps:
       - name: Determine checkout ref (release tag, latest release for schedule, or current ref)
         id: determine-ref
@@ -43,7 +44,6 @@ jobs:
         with:
           ref: ${{ env.CHECKOUT_REF }}
           fetch-depth: 0
-
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8
@@ -113,7 +113,7 @@ jobs:
         
       - name: Attest DockerHub
         id: attest-dh
-        uses: actions/attest-build-provenance@v4
+        uses: actions/attest@v4
         with:
           subject-name: docker.io/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
@@ -121,7 +121,7 @@ jobs:
 
       - name: Attest ghcr
         id: attest-ghcr
-        uses: actions/attest-build-provenance@v4
+        uses: actions/attest@v4
         with:
           subject-name: ghcr.io/${{ github.repository_owner }}/${{ vars.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
