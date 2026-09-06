@@ -1,10 +1,10 @@
 name: Update Tor Version
 
 on:
+  workflow_dispatch:
   schedule:
-    # Check for new releases every day at 2 AM UTC
-    - cron: '0 2 * * *'
-  workflow_dispatch:  # Allow manual trigger
+    - cron: '0 1 * * *'
+      timezone: 'Europe/Berlin'
 
 permissions:
   contents: write
