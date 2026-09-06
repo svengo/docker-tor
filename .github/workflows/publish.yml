@@ -6,6 +6,7 @@ on:
     types: [published]
   schedule:
     - cron: '0 2 * * 0'
+      timezone: 'Europe/Europe'
 
 jobs:
   publish:
