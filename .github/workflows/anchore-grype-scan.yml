@@ -10,8 +10,6 @@
 name: Anchore Grype Vulnerability Scan
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
@@ -25,7 +23,7 @@ permissions:
 jobs:
   build-and-scan:
     name: Build and Scan Docker Image
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request'
     permissions:
       contents: read
       actions: read
