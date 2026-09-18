@@ -77,7 +77,7 @@ jobs:
         id: torver
         run: |
           set -euo pipefail
-          TOR_VERSION=$(sed -nrE 's/^[[:blank:]]*(ARG|ENV)[[:blank:]]+TOR_VERSION=(.+)$/\2/p' Dockerfile | head --lines 1)
+          TOR_VERSION=$(sed -nrE 's/^[[:blank:]]*ARG[[:blank:]]+TOR_VERSION=(.+)$/\1/p' Dockerfile | head --lines 1)
 
           if [ -z "$TOR_VERSION" ]; then
             echo "ERROR: TOR_VERSION not found in Dockerfile. Aborting." >&2
