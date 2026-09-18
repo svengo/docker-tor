@@ -77,12 +77,12 @@ jobs:
         id: torver
         run: |
           set -euo pipefail
-          TOR_LINE=$(grep -E '^ARG[[:space:]]+TOR_VERSION=' Dockerfile | head -n1 || true)
-          if [ -z "$TOR_LINE" ]; then
+          TOR_VERSION=$(sed -nrE 's/^[[:blank:]]*ARG[[:blank:]]+TOR_VERSION=(.+)$/\1/p' Dockerfile | head --lines 1)
+
+          if [ -z "$TOR_VERSION" ]; then
             echo "ERROR: TOR_VERSION not found in Dockerfile. Aborting." >&2
-            exit 1
+            exit 1 
           else
-            TOR_VERSION=$(echo "$TOR_LINE" | cut -d'=' -f2- | sed -e "s/['\"]//g" | tr -d '[:space:]')
             echo "TOR_VERSION=$TOR_VERSION" >> $GITHUB_ENV
           fi
 
