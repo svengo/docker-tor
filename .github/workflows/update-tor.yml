@@ -56,20 +56,24 @@ jobs:
           echo "Updated Dockerfile:"
           grep "ARG TOR_VERSION" Dockerfile
 
-      - name: Commit Dockerfile
+      - name: Commit Dockerfile and capture SHA
         if: steps.check.outputs.update_needed == 'true'
         id: dockerfile
-        uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
-        with:
-          new_branch: update/tor-${{ steps.tor.outputs.version }}
-          add: 'Dockerfile'
-          message: "chore: update Dockerfile to Tor ${{ steps.tor.outputs.version }}"
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "update/tor-${{ steps.tor.outputs.version }}"
+          git add Dockerfile
+          git commit -m "chore: update Dockerfile to Tor ${{ steps.tor.outputs.version }}"
+
+          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - name: Update README.md
         if: steps.check.outputs.update_needed == 'true'
         run: |
           sed -E -i 's/`latest`, `[^`]+`/`latest`, `${{ steps.tor.outputs.version }}`/' README.md
-          sed -E -i 's;https://github.com/svengo/docker-tor/blob/[0-9a-f]+/Dockerfile;https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile.outputs.commit_long_sha }}/Dockerfile;' README.md
+          sed -E -i "s;https://github.com/svengo/docker-tor/blob/[0-9a-f]+/Dockerfile;https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile.outputs.commit_sha }}/Dockerfile;" README.md
 
           echo "Updated README.md:"
           grep -A 1 "Supported Tor Versions" README.md | head -3
@@ -83,13 +87,16 @@ jobs:
           title: "chore: update Tor to ${{ steps.tor.outputs.version }}"
           body: |
             Automated update from [Tor GitLab tag](https://gitlab.torproject.org/tpo/core/tor/-/tags/tor-${{ steps.tor.outputs.version }})
-            
+
             **Changes:**
             - Updated `TOR_VERSION` to `${{ steps.tor.outputs.version }}` in Dockerfile
             - Updated version references in README.md
-            
+            - Linked the README entry to the exact Dockerfile commit:
+              https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile.outputs.commit_sha }}/Dockerfile
+
             Please verify the release and test the build before merging.
           branch: update/tor-${{ steps.tor.outputs.version }}
           labels: |
             tor
+          delete-branch: true
           sign-commits: true
