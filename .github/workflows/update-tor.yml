@@ -101,7 +101,7 @@ jobs:
           TOR_VERSION: ${{ steps.tor.outputs.version }}
           DOCKERFILE_COMMIT: ${{ steps.dockerfile_sha.outputs.sha }}
         run: |
-          sed -E -i 's/`latest`, `[^`]+`/`latest`, `${TOR_VERSION}`/' README.md
+          sed -E -i "s/`latest`, `[^`]+`/`latest`, `${TOR_VERSION}`/" README.md
           sed -E -i "s;https://github.com/svengo/docker-tor/blob/[^/]+/Dockerfile;https://github.com/svengo/docker-tor/blob/${DOCKERFILE_COMMIT}/Dockerfile;" README.md
 
           echo "Updated README.md:"
