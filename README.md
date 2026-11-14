@@ -34,7 +34,7 @@ The Docker images are tagged with the precise Tor version number. Only the curre
 
 <!-- BEGIN VERSION -->
 - [`latest`, `0.4.9.17`](https://github.com/svengo/docker-tor/blob/b4cd71022c8d002b2f48eeccdcc42db7d36e5917/Dockerfile)
-<!-- END VERSION  -->
+<!-- END VERSION -->
 
 ## How to use this image
 
