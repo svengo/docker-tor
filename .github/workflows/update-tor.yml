@@ -19,16 +19,25 @@ jobs:
       - name: Get latest Tor release from Atom feed
         id: tor
         run: |
+          set -euo pipefail
+
           FEED=$(curl -s "https://gitlab.torproject.org/tpo/core/tor/-/tags?format=atom")
-          
-          VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[^<]+' | head -1)
-          
+
+          VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[^<]+' | head -n 1)
+
           if [ -z "$VERSION" ]; then
-            echo "Failed to parse Atom feed"
-            echo "Feed content:"
-            echo "$FEED"
+            echo "Failed to parse Atom feed" >&2
+            echo "Feed content:" >&2
+            echo "$FEED" >&2
             exit 1
           fi
+
+          case "$VERSION" in
+            ''|*[!0-9A-Za-z.+-]*)
+              echo "Invalid Tor version: '$VERSION'" >&2
+              exit 1
+              ;;
+          esac
           
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           
@@ -67,11 +76,33 @@ jobs:
           branch: update/tor-${{ steps.tor.outputs.version }}
           sign-commits: true
 
+      - name: Get Dockerfile commit SHA on PR branch
+        id: dockerfile_sha
+        if: steps.check.outputs.update_needed == 'true'
+        env:
+          TOR_VERSION: ${{ steps.tor.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          BRANCH="update/tor-${TOR_VERSION}"
+          git fetch origin "$BRANCH" --depth=20
+
+          SHA=$(git log --format=%H "origin/$BRANCH" -- Dockerfile | head -n 1)
+          if [ -z "$SHA" ]; then
+            echo "No Dockerfile commit found on branch $BRANCH" >&2
+            exit 1
+          fi
+
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+
       - name: Update README.md
         if: steps.check.outputs.update_needed == 'true'
+        env:
+          TOR_VERSION: ${{ steps.tor.outputs.version }}
+          DOCKERFILE_COMMIT: ${{ steps.dockerfile_sha.outputs.sha }}
         run: |
-          sed -E -i 's/`latest`, `[^`]+`/`latest`, `${{ steps.tor.outputs.version }}`/' README.md
-          sed -E -i "s;https://github.com/svengo/docker-tor/blob/[^/]+/Dockerfile;https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile_pr.outputs.pull-request-head-sha }}/Dockerfile;" README.md
+          sed -E -i 's/`latest`, `[^`]+`/`latest`, `${TOR_VERSION}`/' README.md
+          sed -E -i "s;https://github.com/svengo/docker-tor/blob/[^/]+/Dockerfile;https://github.com/svengo/docker-tor/blob/${DOCKERFILE_COMMIT}/Dockerfile;" README.md
 
           echo "Updated README.md:"
           grep -A 1 "Supported Tor Versions" README.md | head -3
@@ -91,7 +122,7 @@ jobs:
             - Updated `TOR_VERSION` to `${{ steps.tor.outputs.version }}` in Dockerfile
             - Updated version references in README.md
             - Linked the README entry to the exact Dockerfile commit:
-              https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile.outputs.commit_sha }}/Dockerfile
+              https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile_sha.outputs.sha }}/Dockerfile
 
             Please verify the release and test the build before merging.
           branch: update/tor-${{ steps.tor.outputs.version }}
