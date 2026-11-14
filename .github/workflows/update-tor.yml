@@ -21,7 +21,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          FEED=$(curl -s "https://gitlab.torproject.org/tpo/core/tor/-/tags?format=atom")
+          FEED=$(curl -fsS "https://gitlab.torproject.org/tpo/core/tor/-/tags?format=atom")
 
           VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[^<]+' | head -n 1)
 
@@ -85,7 +85,7 @@ jobs:
           set -euo pipefail
 
           BRANCH="update/tor-${TOR_VERSION}"
-          git fetch origin "$BRANCH" --depth=20
+          git fetch --depth=20 origin "refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}"
 
           SHA=$(git log --format=%H "origin/$BRANCH" -- Dockerfile | head -n 1)
           if [ -z "$SHA" ]; then
@@ -101,11 +101,30 @@ jobs:
           TOR_VERSION: ${{ steps.tor.outputs.version }}
           DOCKERFILE_COMMIT: ${{ steps.dockerfile_sha.outputs.sha }}
         run: |
-          sed -E -i "s/`latest`, `[^`]+`/`latest`, `${TOR_VERSION}`/" README.md
-          sed -E -i "s;https://github.com/svengo/docker-tor/blob/[^/]+/Dockerfile;https://github.com/svengo/docker-tor/blob/${DOCKERFILE_COMMIT}/Dockerfile;" README.md
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
 
-          echo "Updated README.md:"
-          grep -A 1 "Supported Tor Versions" README.md | head -3
+          path = Path("README.md")
+          content = path.read_text()
+          lines = content.splitlines(keepends=True)
+
+          begin_marker = "<!-- BEGIN VERSION -->"
+          end_marker = "<!-- END VERSION -->"
+          begin = [i for i, line in enumerate(lines) if line.strip() == begin_marker]
+          end = [i for i, line in enumerate(lines) if line.strip() == end_marker]
+
+          if len(begin) != 1 or len(end) != 1 or begin[0] >= end[0]:
+              raise SystemExit("Expected exactly one ordered VERSION marker pair")
+
+          replacement = (
+              f"- [`latest`, `{os.environ['TOR_VERSION']}`]"
+              f"(https://github.com/svengo/docker-tor/blob/"
+              f"{os.environ['DOCKERFILE_COMMIT']}/Dockerfile)\n"
+          )
+          lines[begin[0] + 1:end[0]] = [replacement]
+          path.write_text("".join(lines))
+          PY
 
       - name: Create Pull Request
         if: steps.check.outputs.update_needed == 'true'
