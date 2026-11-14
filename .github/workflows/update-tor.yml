@@ -39,10 +39,10 @@ jobs:
               ;;
           esac
           
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           
           CURRENT=$(grep '^ARG TOR_VERSION=' Dockerfile | grep -oP '(?<=ARG TOR_VERSION=)[^[:space:]]+')
-          echo "current_version=$CURRENT" >> $GITHUB_OUTPUT
+          echo "current_version=$CURRENT" >> "$GITHUB_OUTPUT"
           
           echo "Latest Tor version: $VERSION"
           echo "Current version: $CURRENT"
@@ -51,17 +51,19 @@ jobs:
         id: check
         run: |
           if [ "${{ steps.tor.outputs.version }}" != "${{ steps.tor.outputs.current_version }}" ]; then
-            echo "update_needed=true" >> $GITHUB_OUTPUT
+            echo "update_needed=true" >> "$GITHUB_OUTPUT"
             echo "Update needed: ${{ steps.tor.outputs.current_version }} → ${{ steps.tor.outputs.version }}"
           else
-            echo "update_needed=false" >> $GITHUB_OUTPUT
+            echo "update_needed=false" >> "$GITHUB_OUTPUT"
             echo "Already up to date: ${{ steps.tor.outputs.version }}"
           fi
 
       - name: Update Dockerfile
         if: steps.check.outputs.update_needed == 'true'
+        env:
+          TOR_VERSION: ${{ steps.tor.outputs.version }}
         run: |
-          sed -i "s/ARG TOR_VERSION=.*/ARG TOR_VERSION=${{ steps.tor.outputs.version }}/" Dockerfile
+          sed -i "s/ARG TOR_VERSION=.*/ARG TOR_VERSION=${TOR_VERSION}/" Dockerfile
           echo "Updated Dockerfile:"
           grep "ARG TOR_VERSION" Dockerfile
 
@@ -95,6 +97,15 @@ jobs:
 
           echo "sha=$SHA" >> "$GITHUB_OUTPUT"
 
+      - name: Checkout PR branch before updating README
+        if: steps.check.outputs.update_needed == 'true'
+        env:
+          TOR_VERSION: ${{ steps.tor.outputs.version }}
+        run: |
+          set -euo pipefail
+          BRANCH="update/tor-${TOR_VERSION}"
+          git checkout --force -B "$BRANCH" "origin/$BRANCH"
+          
       - name: Update README.md
         if: steps.check.outputs.update_needed == 'true'
         env:
@@ -144,6 +155,7 @@ jobs:
               https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile_sha.outputs.sha }}/Dockerfile
 
             Please verify the release and test the build before merging.
+          base: ${{ github.event.repository.default_branch }}
           branch: update/tor-${{ steps.tor.outputs.version }}
           labels: |
             tor
