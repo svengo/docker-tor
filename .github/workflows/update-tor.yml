@@ -56,24 +56,22 @@ jobs:
           echo "Updated Dockerfile:"
           grep "ARG TOR_VERSION" Dockerfile
 
-      - name: Commit Dockerfile and capture SHA
+      - name: Create signed Dockerfile commit
+        id: dockerfile_pr
         if: steps.check.outputs.update_needed == 'true'
-        id: dockerfile
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git checkout -b "update/tor-${{ steps.tor.outputs.version }}"
-          git add Dockerfile
-          git commit -m "chore: update Dockerfile to Tor ${{ steps.tor.outputs.version }}"
-
-          echo "commit_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: Dockerfile
+          commit-message: "chore: update Dockerfile to Tor ${{ steps.tor.outputs.version }}"
+          branch: update/tor-${{ steps.tor.outputs.version }}
+          sign-commits: true
 
       - name: Update README.md
         if: steps.check.outputs.update_needed == 'true'
         run: |
           sed -E -i 's/`latest`, `[^`]+`/`latest`, `${{ steps.tor.outputs.version }}`/' README.md
-          sed -E -i "s;https://github.com/svengo/docker-tor/blob/[0-9a-f]+/Dockerfile;https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile.outputs.commit_sha }}/Dockerfile;" README.md
+          sed -E -i "s;https://github.com/svengo/docker-tor/blob/[^/]+/Dockerfile;https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile_pr.outputs.pull-request-head-sha }}/Dockerfile;" README.md
 
           echo "Updated README.md:"
           grep -A 1 "Supported Tor Versions" README.md | head -3
@@ -83,7 +81,8 @@ jobs:
         uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update README.md to Tor ${{ steps.tor.outputs.version }}"
+          add-paths: README.md
+          commit-message: "docs: update README to Tor ${{ steps.tor.outputs.version }}"
           title: "chore: update Tor to ${{ steps.tor.outputs.version }}"
           body: |
             Automated update from [Tor GitLab tag](https://gitlab.torproject.org/tpo/core/tor/-/tags/tor-${{ steps.tor.outputs.version }})
