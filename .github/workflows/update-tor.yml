@@ -68,7 +68,7 @@ jobs:
         if: steps.check.outputs.update_needed == 'true'
         run: |
           sed -E -i 's/`latest`, `[^`]+`/`latest`, `${{ steps.tor.outputs.version }}`/' README.md
-          sed -E -i 's/svengo\/docker-tor\/files\/[0-9a-f]+\/Dockerfile/svengo\/docker-tor\/files\/ ${{ steps.dockerfile_commit.outputs.commit_long_sha }}\/Dockerfile' README.md
+          sed -E -i 's;https://github.com/svengo/docker-tor/blob/[0-9a-f]+/Dockerfile;https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile_commit.outputs.commit_long_sha }}/Dockerfile;' README.md
 
           echo "Updated README.md:"
           grep -A 1 "Supported Tor Versions" README.md | head -3
