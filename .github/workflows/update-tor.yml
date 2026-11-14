@@ -19,25 +19,30 @@ jobs:
       - name: Get latest Tor release from Atom feed
         id: tor
         run: |
-          # Fetch Atom feed from GitLab Tor tags
-          FEED=$(curl -s "https://gitlab.torproject.org/tpo/core/tor/-/tags?format=atom")
-          
-          # Extract latest version from first entry in Atom feed
-          # The title format is "tor-X.Y.Z.W"
-          VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(?=</title>)' | head -1)
-          
+          set -euo pipefail
+
+          FEED=$(curl -fsS "https://gitlab.torproject.org/tpo/core/tor/-/tags?format=atom")
+
+          VERSION=$(printf '%s\n' "$FEED" | grep -oPm1 '(?<=<title>tor-)[^<]+')
+
           if [ -z "$VERSION" ]; then
-            echo "Failed to parse Atom feed"
-            echo "Feed content:"
-            echo "$FEED"
+            echo "Failed to parse Atom feed" >&2
+            echo "Feed content:" >&2
+            echo "$FEED" >&2
             exit 1
           fi
+
+          case "$VERSION" in
+            ''|*[!0-9A-Za-z.+-]*)
+              echo "Invalid Tor version: '$VERSION'" >&2
+              exit 1
+              ;;
+          esac
           
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           
-          # Get current version from Dockerfile
-          CURRENT=$(grep 'ARG TOR_VERSION' Dockerfile | grep -oP '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-          echo "current_version=$CURRENT" >> $GITHUB_OUTPUT
+          CURRENT=$(grep '^ARG TOR_VERSION=' Dockerfile | grep -oP '(?<=ARG TOR_VERSION=)[^[:space:]]+')
+          echo "current_version=$CURRENT" >> "$GITHUB_OUTPUT"
           
           echo "Latest Tor version: $VERSION"
           echo "Current version: $CURRENT"
@@ -46,44 +51,111 @@ jobs:
         id: check
         run: |
           if [ "${{ steps.tor.outputs.version }}" != "${{ steps.tor.outputs.current_version }}" ]; then
-            echo "update_needed=true" >> $GITHUB_OUTPUT
+            echo "update_needed=true" >> "$GITHUB_OUTPUT"
             echo "Update needed: ${{ steps.tor.outputs.current_version }} → ${{ steps.tor.outputs.version }}"
           else
-            echo "update_needed=false" >> $GITHUB_OUTPUT
+            echo "update_needed=false" >> "$GITHUB_OUTPUT"
             echo "Already up to date: ${{ steps.tor.outputs.version }}"
           fi
 
       - name: Update Dockerfile
         if: steps.check.outputs.update_needed == 'true'
+        env:
+          TOR_VERSION: ${{ steps.tor.outputs.version }}
         run: |
-          sed -i "s/ARG TOR_VERSION=.*/ARG TOR_VERSION=${{ steps.tor.outputs.version }}/" Dockerfile
+          sed -i "s/ARG TOR_VERSION=.*/ARG TOR_VERSION=${TOR_VERSION}/" Dockerfile
           echo "Updated Dockerfile:"
           grep "ARG TOR_VERSION" Dockerfile
 
+      - name: Create signed Dockerfile commit
+        id: dockerfile_pr
+        if: steps.check.outputs.update_needed == 'true'
+        uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: Dockerfile
+          commit-message: "chore: update Dockerfile to Tor ${{ steps.tor.outputs.version }}"
+          branch: update/tor-${{ steps.tor.outputs.version }}
+          sign-commits: true
+
+      - name: Get Dockerfile commit SHA on PR branch
+        id: dockerfile_sha
+        if: steps.check.outputs.update_needed == 'true'
+        env:
+          TOR_VERSION: ${{ steps.tor.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          BRANCH="update/tor-${TOR_VERSION}"
+          git fetch --depth=20 origin "refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}"
+
+          SHA=$(git log --format=%H "origin/$BRANCH" -- Dockerfile | head -n 1)
+          if [ -z "$SHA" ]; then
+            echo "No Dockerfile commit found on branch $BRANCH" >&2
+            exit 1
+          fi
+
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout PR branch before updating README
+        if: steps.check.outputs.update_needed == 'true'
+        env:
+          TOR_VERSION: ${{ steps.tor.outputs.version }}
+        run: |
+          set -euo pipefail
+          BRANCH="update/tor-${TOR_VERSION}"
+          git checkout --force -B "$BRANCH" "origin/$BRANCH"
+          
       - name: Update README.md
         if: steps.check.outputs.update_needed == 'true'
+        env:
+          TOR_VERSION: ${{ steps.tor.outputs.version }}
+          DOCKERFILE_COMMIT: ${{ steps.dockerfile_sha.outputs.sha }}
         run: |
-          # Update version in README's supported versions section
-          # Line 35: [`latest`, `0.4.9.8`](...) → [`latest`, `X.Y.Z.W`](...)
-          sed -i "s/\`latest\`, \`[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\`/\`latest\`, \`${{ steps.tor.outputs.version }}\`/" README.md
-          echo "Updated README.md:"
-          grep -A 1 "Supported Tor Versions" README.md | head -3
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+
+          path = Path("README.md")
+          content = path.read_text()
+          lines = content.splitlines(keepends=True)
+
+          begin_marker = "<!-- BEGIN VERSION -->"
+          end_marker = "<!-- END VERSION -->"
+          begin = [i for i, line in enumerate(lines) if line.strip() == begin_marker]
+          end = [i for i, line in enumerate(lines) if line.strip() == end_marker]
+
+          if len(begin) != 1 or len(end) != 1 or begin[0] >= end[0]:
+              raise SystemExit("Expected exactly one ordered VERSION marker pair")
+
+          replacement = (
+              f"- [`latest`, `{os.environ['TOR_VERSION']}`]"
+              f"(https://github.com/svengo/docker-tor/blob/"
+              f"{os.environ['DOCKERFILE_COMMIT']}/Dockerfile)\n"
+          )
+          lines[begin[0] + 1:end[0]] = [replacement]
+          path.write_text("".join(lines))
+          PY
 
       - name: Create Pull Request
         if: steps.check.outputs.update_needed == 'true'
         uses: peter-evans/create-pull-request@15733dbdfeedb4f7fdb73d13c6f5ac83b710fab8 # v8.1.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update Tor to ${{ steps.tor.outputs.version }}"
+          add-paths: README.md
+          commit-message: "docs: update README to Tor ${{ steps.tor.outputs.version }}"
           title: "chore: update Tor to ${{ steps.tor.outputs.version }}"
           body: |
             Automated update from [Tor GitLab tag](https://gitlab.torproject.org/tpo/core/tor/-/tags/tor-${{ steps.tor.outputs.version }})
-            
+
             **Changes:**
             - Updated `TOR_VERSION` to `${{ steps.tor.outputs.version }}` in Dockerfile
             - Updated version references in README.md
-            
+            - Linked the README entry to the exact Dockerfile commit:
+              https://github.com/svengo/docker-tor/blob/${{ steps.dockerfile_sha.outputs.sha }}/Dockerfile
+
             Please verify the release and test the build before merging.
+          base: ${{ github.event.repository.default_branch }}
           branch: update/tor-${{ steps.tor.outputs.version }}
           labels: |
             tor
