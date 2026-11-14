@@ -23,7 +23,7 @@ jobs:
 
           FEED=$(curl -fsS "https://gitlab.torproject.org/tpo/core/tor/-/tags?format=atom")
 
-          VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[^<]+' | head -n 1)
+          VERSION=$(printf '%s\n' "$FEED" | grep -oPm1 '(?<=<title>tor-)[^<]+')
 
           if [ -z "$VERSION" ]; then
             echo "Failed to parse Atom feed" >&2
