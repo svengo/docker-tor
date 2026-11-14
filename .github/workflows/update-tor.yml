@@ -56,10 +56,20 @@ jobs:
           echo "Updated Dockerfile:"
           grep "ARG TOR_VERSION" Dockerfile
 
+      - name: Commit Dockerfile
+        if: steps.check.outputs.update_needed == 'true'
+        id: dockerfile_commit
+        uses: EndBug/add-and-commit@cc9c08ba6c8df3b93a8f2db63e89b98368ae2ae8 # v11.1.1
+        with:
+          new_branch: update/tor-${{ steps.tor.outputs.version }}
+          add: 'Dockerfile'
+
       - name: Update README.md
         if: steps.check.outputs.update_needed == 'true'
         run: |
           sed -E -i 's/`latest`, `[^`]+`/`latest`, `${{ steps.tor.outputs.version }}`/' README.md
+          sed -E -i 's/svengo\/docker-tor\/files\/[0-9a-f]+\/Dockerfile/svengo\/docker-tor\/files\/ ${{ steps.dockerfile_commit.outputs.commit_long_sha }}\/Dockerfile' README.md
+
           echo "Updated README.md:"
           grep -A 1 "Supported Tor Versions" README.md | head -3
 
