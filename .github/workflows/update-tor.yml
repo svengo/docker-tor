@@ -19,12 +19,9 @@ jobs:
       - name: Get latest Tor release from Atom feed
         id: tor
         run: |
-          # Fetch Atom feed from GitLab Tor tags
           FEED=$(curl -s "https://gitlab.torproject.org/tpo/core/tor/-/tags?format=atom")
           
-          # Extract latest version from first entry in Atom feed
-          # The title format is "tor-X.Y.Z.W"
-          VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(?=</title>)' | head -1)
+          VERSION=$(echo "$FEED" | grep -oP '(?<=<title>tor-)[^<]+' | head -1)
           
           if [ -z "$VERSION" ]; then
             echo "Failed to parse Atom feed"
@@ -35,8 +32,7 @@ jobs:
           
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           
-          # Get current version from Dockerfile
-          CURRENT=$(grep 'ARG TOR_VERSION' Dockerfile | grep -oP '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
+          CURRENT=$(grep '^ARG TOR_VERSION=' Dockerfile | grep -oP '(?<=ARG TOR_VERSION=)[^[:space:]]+')
           echo "current_version=$CURRENT" >> $GITHUB_OUTPUT
           
           echo "Latest Tor version: $VERSION"
@@ -63,9 +59,7 @@ jobs:
       - name: Update README.md
         if: steps.check.outputs.update_needed == 'true'
         run: |
-          # Update version in README's supported versions section
-          # Line 35: [`latest`, `0.4.9.8`](...) → [`latest`, `X.Y.Z.W`](...)
-          sed -i "s/\`latest\`, \`[0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\`/\`latest\`, \`${{ steps.tor.outputs.version }}\`/" README.md
+          sed -E -i 's/`latest`, `[^`]+`/`latest`, `${{ steps.tor.outputs.version }}`/' README.md
           echo "Updated README.md:"
           grep -A 1 "Supported Tor Versions" README.md | head -3
 
