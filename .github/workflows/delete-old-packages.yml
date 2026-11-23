@@ -18,6 +18,5 @@ jobs:
         type: 'container'
         version-pattern: '^(?:\\d+)\\.(?:\\d+)\\.(?:\\d+).*$'
         keep: 10
-        dry-run: 'true'
         names: |
           tor
