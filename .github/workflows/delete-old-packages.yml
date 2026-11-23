@@ -12,10 +12,11 @@ jobs:
     permissions:
       packages: write
     steps:
-    - uses: actions/delete-package-versions@v5
+    - uses: smartsquaregmbh/delete-old-packages@78421c4341be2a20cc4766902b4dc2925efa5117
       with:
-        package-name: 'tor'
-        package-type: 'container'
-        # MAJOR.MINOR.MICRO[.PATCHLEVEL][-STATUS_TAG][ (EXTRA_INFO)]*
-        ignore-versions: '^(?:\\d+)\\.(?:\\d+)\.(?:\\d+)'
-        min-versions-to-keep: 10
+        type: 'container'
+        version-pattern: '^(?:\\d+)\\.(?:\\d+)\\.(?:\\d+).*$'
+        keep: 10
+        dry-run: 'true'
+        names: |
+          tor
