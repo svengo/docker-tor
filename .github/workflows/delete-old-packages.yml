@@ -14,6 +14,7 @@ jobs:
     steps:
     - uses: smartsquaregmbh/delete-old-packages@78421c4341be2a20cc4766902b4dc2925efa5117
       with:
+        user: 'svengo'
         type: 'container'
         version-pattern: '^(?:\\d+)\\.(?:\\d+)\\.(?:\\d+).*$'
         keep: 10
