@@ -1,0 +1,21 @@
+name: Delete Old Packages
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 * * 6'
+      timezone: 'Europe/Berlin'
+
+jobs:
+  delete-packages:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+    - uses: actions/delete-package-versions@v5
+      with:
+        package-name: 'tor'
+        package-type: 'container'
+        # MAJOR.MINOR.MICRO[.PATCHLEVEL][-STATUS_TAG][ (EXTRA_INFO)]*
+        ignore-versions: '^(?:\\d+)\\.(?:\\d+)\.(?:\\d+)'
+        min-versions-to-keep: 10
