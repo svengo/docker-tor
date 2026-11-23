@@ -16,5 +16,6 @@ jobs:
       with:
         package-name: 'tor'
         package-type: 'container'
+        # MAJOR.MINOR.MICRO[.PATCHLEVEL][-STATUS_TAG][ (EXTRA_INFO)]*
+        ignore-versions: '^(?:\\d+)\\.(?:\\d+)\.(?:\\d+)'
         min-versions-to-keep: 10
-        delete-only-pre-release-versions: "true"
